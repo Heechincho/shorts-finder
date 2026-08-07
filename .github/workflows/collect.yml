@@ -1,0 +1,45 @@
+.github/workflows/collect.yml
+name: 인기 급상승 수집
+
+on:
+  schedule:
+    # 매시 17분에 실행 (정각은 붐벼서 밀립니다)
+    - cron: '17 * * * *'
+  workflow_dispatch:   # 손으로도 실행 가능
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 저장소 가져오기
+        uses: actions/checkout@v4
+
+      - name: Node 준비
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 수집 실행
+        env:
+          YT_API_KEY: ${{ secrets.YT_API_KEY }}
+          REGION: KR
+        run: node scripts/collect.js
+
+      - name: 결과 저장
+        run: |
+          git config user.name "trend-bot"
+          git config user.email "trend-bot@users.noreply.github.com"
+          git add data/trending.json
+          if git diff --staged --quiet; then
+            echo "변경 없음 — 커밋 생략"
+          else
+            git commit -m "수집: $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push
+          fi

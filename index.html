@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>떡상 쇼츠 파인더</title>
+<style>
+  :root{
+    --ink: #1A1610;
+    --surface: #24201A;
+    --surface-2: #2E2820;
+    --gold: #C9A227;
+    --gold-bright: #E6C34D;
+    --apricot: #E8845C;
+    --text: #F5EFE0;
+    --text-muted: #A89B82;
+    --line: #3A3327;
+    --danger: #C9584A;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    min-height:100vh;
+  }
+  .wrap{max-width:1000px;margin:0 auto;padding:32px 20px 80px;}
+
+  header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:24px;
+    padding-bottom:24px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:28px;
+    flex-wrap:wrap;
+  }
+  .brand{display:flex;flex-direction:column;gap:6px;}
+  .eyebrow{font-size:11px;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase;font-weight:700;}
+  h1{margin:0;font-family:Georgia,"Nanum Myeongjo",serif;font-size:32px;font-weight:700;letter-spacing:-0.01em;}
+  h1 em{color:var(--apricot);font-style:normal;}
+
+  .keybox{display:flex;flex-direction:column;gap:6px;min-width:260px;}
+  .keybox label{font-size:12px;color:var(--text-muted);}
+  .keybox input{
+    background:var(--surface);border:1px solid var(--line);color:var(--text);
+    padding:9px 12px;border-radius:8px;font-size:13px;
+    font-family:"SFMono-Regular",Consolas,monospace;width:260px;
+  }
+  .keybox input:focus{outline:none;border-color:var(--gold);}
+  .keybox .note{font-size:11px;color:var(--text-muted);opacity:0.8;}
+
+  .panel{
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    padding:20px;margin-bottom:20px;
+  }
+  .panel-title{font-size:12px;color:var(--text-muted);letter-spacing:0.05em;margin-bottom:12px;font-weight:700;}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+  .chip{
+    background:var(--surface-2);border:1px solid var(--line);color:var(--text-muted);
+    padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer;
+    transition:all 0.15s ease;user-select:none;
+  }
+  .chip:hover{border-color:var(--gold);color:var(--text);}
+  .chip.active{background:var(--gold);border-color:var(--gold);color:#231D0F;font-weight:700;}
+
+  .row-fields{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:12px;align-items:end;}
+  @media (max-width:760px){ .row-fields{grid-template-columns:1fr 1fr;} }
+
+  .field label{display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;}
+  .field input, .field select{
+    width:100%;background:var(--surface-2);border:1px solid var(--line);color:var(--text);
+    padding:10px 12px;border-radius:8px;font-size:14px;
+  }
+  .field input:focus, .field select:focus{outline:none;border-color:var(--gold);}
+
+  .toggle-group{display:flex;gap:8px;}
+  .toggle-btn{
+    background:var(--surface-2);border:1px solid var(--line);color:var(--text-muted);
+    padding:9px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-weight:600;
+    transition:all 0.15s ease;
+  }
+  .toggle-btn.active{background:var(--gold);border-color:var(--gold);color:#231D0F;}
+
+  button.primary{
+    background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:#231D0F;border:none;
+    padding:11px 22px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;white-space:nowrap;
+  }
+  button.primary:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(201,162,39,0.25);}
+  button.primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none;}
+
+  .status{text-align:center;color:var(--text-muted);padding:40px 0;font-size:14px;}
+  .status.error{color:var(--danger);}
+
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px;font-size:12px;color:var(--text-muted);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+
+  .result-count{font-size:13px;color:var(--text-muted);margin-bottom:12px;}
+
+  .row{
+    display:grid;grid-template-columns:44px 120px 1fr 130px;gap:16px;align-items:center;
+    padding:14px 12px;border-bottom:1px solid var(--line);transition:background 0.15s ease;
+  }
+  .row:hover{background:var(--surface);}
+  @media (max-width:720px){ .row{grid-template-columns:32px 90px 1fr;} .row .score-col{display:none;} }
+
+  .rank{font-family:Georgia,serif;font-size:20px;color:var(--text-muted);text-align:center;}
+  .row:nth-child(1) .rank, .row:nth-child(2) .rank, .row:nth-child(3) .rank{color:var(--gold-bright);font-weight:700;}
+
+  .thumb{width:120px;height:68px;border-radius:6px;object-fit:cover;background:var(--surface-2);display:block;}
+
+  .meta a{color:var(--text);text-decoration:none;font-weight:600;font-size:14.5px;line-height:1.4;display:block;margin-bottom:6px;}
+  .meta a:hover{color:var(--gold-bright);}
+  .meta .sub{font-size:12px;color:var(--text-muted);display:flex;gap:10px;flex-wrap:wrap;}
+
+  .score-col{text-align:right;}
+  .score{font-family:"SFMono-Regular",Consolas,monospace;font-size:20px;font-weight:700;}
+  .score-label{font-size:10px;color:var(--text-muted);letter-spacing:0.05em;}
+  .badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:4px;}
+  .badge.jackpot{background:rgba(230,195,77,0.18);color:var(--gold-bright);}
+  .badge.hot{background:rgba(232,132,92,0.18);color:var(--apricot);}
+  .badge.normal{background:rgba(168,155,130,0.12);color:var(--text-muted);}
+
+  footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--text-muted);line-height:1.7;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <span class="eyebrow">Viral Shorts Radar</span>
+      <h1>떡상 <em>쇼츠</em> 파인더</h1>
+    </div>
+    <div class="keybox">
+      <label for="apiKey">유튜브 데이터 API 키</label>
+      <input type="password" id="apiKey" placeholder="AIza..." autocomplete="off">
+      <span class="note">브라우저 세션에만 저장돼요 (새로고침하면 사라짐)</span>
+    </div>
+  </header>
+
+  <div class="panel">
+    <div class="panel-title">관심 주제</div>
+    <div class="chips" id="categoryChips"></div>
+
+    <div class="panel-title">영상 타입</div>
+    <div class="toggle-group" style="margin-bottom:18px;">
+      <div class="toggle-btn active" data-type="short" onclick="setVideoType('short', this)">쇼츠</div>
+      <div class="toggle-btn" data-type="long" onclick="setVideoType('long', this)">롱폼</div>
+    </div>
+
+    <div class="panel-title">구독자 구간</div>
+    <div class="toggle-group" style="margin-bottom:18px;flex-wrap:wrap;">
+      <div class="toggle-btn active" data-range="all" onclick="setSubRange('all', this)">전체</div>
+      <div class="toggle-btn" data-range="0-10000" onclick="setSubRange('0-10000', this)">0~1만 (급성장)</div>
+      <div class="toggle-btn" data-range="10000-50000" onclick="setSubRange('10000-50000', this)">1만~5만</div>
+      <div class="toggle-btn" data-range="50000-100000" onclick="setSubRange('50000-100000', this)">5만~10만</div>
+      <div class="toggle-btn" data-range="100000-999999999" onclick="setSubRange('100000-999999999', this)">10만+</div>
+    </div>
+
+    <div class="panel-title">정렬 기준</div>
+    <div class="toggle-group" style="margin-bottom:20px;">
+      <div class="toggle-btn active" data-sort="score" onclick="setSort('score', this)">떡상지수 순</div>
+      <div class="toggle-btn" data-sort="views" onclick="setSort('views', this)">조회수 높은 순</div>
+      <div class="toggle-btn" data-sort="subs" onclick="setSort('subs', this)">구독자 많은 순</div>
+    </div>
+
+    <div class="row-fields">
+      <div class="field">
+        <label for="keyword">검색 키워드 (직접 입력도 가능)</label>
+        <input type="text" id="keyword" placeholder="예: 건조과일, 홈메이드 간식" value="건조과일">
+      </div>
+      <div class="field">
+        <label for="days">기간</label>
+        <select id="days">
+          <option value="3">최근 3일</option>
+          <option value="7" selected>최근 7일</option>
+          <option value="14">최근 14일</option>
+          <option value="30">최근 30일</option>
+          <option value="60">최근 60일</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="region">지역</label>
+        <select id="region">
+          <option value="KR" selected>대한민국</option>
+          <option value="US">미국</option>
+          <option value="">전체</option>
+        </select>
+      </div>
+      <button class="primary" id="searchBtn" onclick="runSearch()">검색</button>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><span class="dot" style="background:var(--gold-bright)"></span>떡상지수 10 이상 (대박)</span>
+    <span><span class="dot" style="background:var(--apricot)"></span>5~10 (떡상)</span>
+    <span><span class="dot" style="background:var(--text-muted)"></span>5 미만</span>
+  </div>
+
+  <div id="resultCount" class="result-count"></div>
+  <div id="results"></div>
+
+  <footer>
+    떡상지수 = 조회수 ÷ 채널 구독자 수. 구독자 대비 조회수가 높을수록 상위에 표시돼요.<br>
+    "쇼츠"는 60초 이하, "롱폼"은 4~20분 영상만 표시해요. 검색은 매번 직접 눌러야 하며 — 자동 새로고침이나 매일 자정 자동 업데이트 같은 예약 기능은 이 페이지(정적 파일)만으로는 불가능해요. 그런 기능이 꼭 필요하면 별도 서버나 스케줄러 연동이 필요해요.<br>
+    API 키는 서버로 전송되지 않고 브라우저에서 유튜브로 직접 요청돼요.
+  </footer>
+
+</div>
+
+<script>
+const categories = [
+  {label:'전체', kw:''},
+  {label:'건조과일/홈메이드간식', kw:'건조과일 홈메이드 간식'},
+  {label:'건강/다이어트', kw:'건강 다이어트 식단'},
+  {label:'요리/레시피', kw:'요리 레시피'},
+  {label:'라이프스타일/Vlog', kw:'브이로그'},
+  {label:'뷰티', kw:'뷰티'},
+  {label:'반려동물', kw:'반려동물'},
+  {label:'여행', kw:'여행'},
+  {label:'AI/IT 꿀팁', kw:'AI 활용법'},
+  {label:'동기부여/명언', kw:'동기부여'},
+];
+
+let videoType = 'short';
+let subRange = 'all';
+let sortMode = 'score';
+let lastRanked = [];
+
+function initChips(){
+  const el = document.getElementById('categoryChips');
+  el.innerHTML = categories.map((c,i) =>
+    `<div class="chip ${i===0?'active':''}" data-kw="${c.kw}" onclick="selectCategory(this)">${c.label}</div>`
+  ).join('');
+}
+function selectCategory(node){
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  node.classList.add('active');
+  const kw = node.getAttribute('data-kw');
+  if(kw) document.getElementById('keyword').value = kw;
+}
+function setVideoType(type, node){
+  videoType = type;
+  node.parentElement.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  node.classList.add('active');
+}
+function setSubRange(range, node){
+  subRange = range;
+  node.parentElement.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  node.classList.add('active');
+  if(lastRanked.length) renderResults();
+}
+function setSort(mode, node){
+  sortMode = mode;
+  node.parentElement.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  node.classList.add('active');
+  if(lastRanked.length) renderResults();
+}
+
+function fmtNum(n){
+  if(n >= 100000000) return (n/100000000).toFixed(1)+'억';
+  if(n >= 10000) return (n/10000).toFixed(1)+'만';
+  return n.toLocaleString();
+}
+function parseISODuration(iso){
+  const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if(!m) return 0;
+  const h = parseInt(m[1]||0), min = parseInt(m[2]||0), s = parseInt(m[3]||0);
+  return h*3600 + min*60 + s;
+}
+function scoreBadge(score){
+  if(score >= 10) return '<span class="badge jackpot">대박</span>';
+  if(score >= 5) return '<span class="badge hot">떡상</span>';
+  return '<span class="badge normal">보통</span>';
+}
+function scoreColor(score){
+  if(score >= 10) return 'var(--gold-bright)';
+  if(score >= 5) return 'var(--apricot)';
+  return 'var(--text-muted)';
+}
+
+function renderResults(){
+  const resultsEl = document.getElementById('results');
+  const countEl = document.getElementById('resultCount');
+
+  let [lo, hi] = subRange === 'all' ? [0, Infinity] : subRange.split('-').map(Number);
+  let filtered = lastRanked.filter(r => r.subs >= lo && r.subs <= hi);
+
+  if(sortMode === 'views') filtered.sort((a,b) => b.views - a.views);
+  else if(sortMode === 'subs') filtered.sort((a,b) => b.subs - a.subs);
+  else filtered.sort((a,b) => b.score - a.score);
+
+  countEl.textContent = filtered.length + '개 결과';
+
+  if(filtered.length === 0){
+    resultsEl.innerHTML = '<div class="status">이 구독자 구간에 해당하는 영상이 없어요. 구간을 넓혀보세요.</div>';
+    return;
+  }
+
+  resultsEl.innerHTML = filtered.map((r, idx) => {
+    const v = r.v;
+    const title = v.snippet.title.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const channel = v.snippet.channelTitle.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const thumb = v.snippet.thumbnails.medium ? v.snippet.thumbnails.medium.url : v.snippet.thumbnails.default.url;
+    const url = 'https://www.youtube.com/watch?v=' + v.id;
+    const subsLabel = r.subs > 0 ? fmtNum(r.subs) + ' 구독' : '구독자 비공개';
+    return `
+      <div class="row">
+        <div class="rank">${idx+1}</div>
+        <img class="thumb" src="${thumb}" alt="">
+        <div class="meta">
+          <a href="${url}" target="_blank" rel="noopener">${title}</a>
+          <div class="sub">
+            <span>${channel}</span>
+            <span>조회 ${fmtNum(r.views)}</span>
+            <span>${subsLabel}</span>
+          </div>
+        </div>
+        <div class="score-col">
+          <div class="score" style="color:${scoreColor(r.score)}">${r.score.toFixed(1)}x</div>
+          <div class="score-label">떡상지수</div>
+          ${scoreBadge(r.score)}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function runSearch(){
+  const apiKey = document.getElementById('apiKey').value.trim();
+  const keyword = document.getElementById('keyword').value.trim();
+  const days = parseInt(document.getElementById('days').value);
+  const region = document.getElementById('region').value;
+  const resultsEl = document.getElementById('results');
+  const countEl = document.getElementById('resultCount');
+  const btn = document.getElementById('searchBtn');
+
+  if(!apiKey){ resultsEl.innerHTML = '<div class="status error">API 키를 먼저 입력해주세요.</div>'; countEl.textContent=''; return; }
+  if(!keyword){ resultsEl.innerHTML = '<div class="status error">검색 키워드를 입력해주세요.</div>'; countEl.textContent=''; return; }
+
+  btn.disabled = true;
+  btn.textContent = '검색 중...';
+  countEl.textContent = '';
+  resultsEl.innerHTML = '<div class="status">유튜브에서 영상을 찾고 있어요...</div>';
+
+  try{
+    const publishedAfter = new Date(Date.now() - days*24*60*60*1000).toISOString();
+    const durationParam = videoType === 'short' ? 'short' : 'medium';
+
+    const searchParams = new URLSearchParams({
+      part: 'snippet', q: keyword, type: 'video',
+      videoDuration: durationParam, order: 'viewCount',
+      publishedAfter: publishedAfter, maxResults: '25', key: apiKey
+    });
+    if(region) searchParams.set('regionCode', region);
+
+    const searchRes = await fetch('https://www.googleapis.com/youtube/v3/search?' + searchParams.toString());
+    const searchData = await searchRes.json();
+    if(searchData.error) throw new Error(searchData.error.message || '검색 요청이 실패했어요.');
+    const items = searchData.items || [];
+    if(items.length === 0){
+      resultsEl.innerHTML = '<div class="status">해당 조건에 맞는 영상이 없어요. 기간을 늘리거나 키워드를 바꿔보세요.</div>';
+      return;
+    }
+
+    const videoIds = items.map(i => i.id.videoId).join(',');
+    const videosRes = await fetch('https://www.googleapis.com/youtube/v3/videos?' + new URLSearchParams({
+      part: 'snippet,statistics,contentDetails', id: videoIds, key: apiKey
+    }));
+    const videosData = await videosRes.json();
+    if(videosData.error) throw new Error(videosData.error.message || '영상 정보를 가져오지 못했어요.');
+
+    let videos = videosData.items.filter(v => {
+      const dur = parseISODuration(v.contentDetails.duration);
+      return videoType === 'short' ? dur <= 60 : (dur > 60 && dur <= 1200);
+    });
+    if(videos.length === 0){
+      resultsEl.innerHTML = '<div class="status">조건에 맞는 영상이 없어요. 기간을 늘려보세요.</div>';
+      return;
+    }
+
+    const channelIds = [...new Set(videos.map(v => v.snippet.channelId))];
+    const channelStats = {};
+    for(let i=0; i<channelIds.length; i+=50){
+      const batch = channelIds.slice(i, i+50).join(',');
+      const chRes = await fetch('https://www.googleapis.com/youtube/v3/channels?' + new URLSearchParams({
+        part: 'statistics', id: batch, key: apiKey
+      }));
+      const chData = await chRes.json();
+      if(chData.error) throw new Error(chData.error.message || '채널 정보를 가져오지 못했어요.');
+      (chData.items||[]).forEach(c => { channelStats[c.id] = c.statistics; });
+    }
+
+    lastRanked = videos.map(v => {
+      const views = parseInt(v.statistics.viewCount || 0);
+      const stats = channelStats[v.snippet.channelId] || {};
+      const subs = stats.hiddenSubscriberCount ? 0 : parseInt(stats.subscriberCount || 0);
+      const score = subs > 0 ? views / subs : views / 1000;
+      return { v, views, subs, score };
+    });
+
+    renderResults();
+
+  }catch(err){
+    resultsEl.innerHTML = '<div class="status error">오류가 발생했어요: ' + err.message + '</div>';
+    countEl.textContent = '';
+  }finally{
+    btn.disabled = false;
+    btn.textContent = '검색';
+  }
+}
+
+initChips();
+</script>
+</body>
+</html>

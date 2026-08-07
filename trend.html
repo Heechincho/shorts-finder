@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>터진 영상 · 떡상 쇼츠 파인더</title>
+<style>
+  :root{
+    --ink:#1A1610; --surface:#24201A; --surface-2:#2E2820;
+    --gold:#C9A227; --gold-bright:#E6C34D; --apricot:#E8845C;
+    --text:#F5EFE0; --text-muted:#A89B82; --line:#3A3327;
+    --danger:#C9584A; --up:#5FBF7F; --down:#D8705F; --new:#5BA9D8; --hold:#8A8272;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--ink);color:var(--text);min-height:100vh;
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 90px;}
+  a{color:inherit;text-decoration:none;}
+
+  header{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
+    padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:20px;flex-wrap:wrap;}
+  .eyebrow{font-size:11px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:6px;}
+  h1{margin:0;font-family:Georgia,"Nanum Myeongjo",serif;font-size:30px;font-weight:700;letter-spacing:-.01em;}
+  h1 em{color:var(--apricot);font-style:normal;}
+  .navlink{font-size:13px;color:var(--gold-bright);}
+
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    padding:20px;margin-bottom:22px;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .row + .row{margin-top:14px;}
+  .flabel{font-size:11px;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;
+    font-weight:700;width:100%;margin-bottom:-4px;}
+  .chip{background:var(--surface-2);border:1px solid var(--line);color:var(--text-muted);
+    padding:8px 14px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;transition:.15s;}
+  .chip:hover{color:var(--text);border-color:var(--gold);}
+  .chip.on{background:var(--gold);border-color:var(--gold);color:#1A1610;font-weight:700;}
+  .go{background:var(--apricot);border:none;color:#1A1610;padding:11px 24px;border-radius:10px;
+    font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;}
+  .go:hover{background:var(--gold-bright);}
+  .hint{font-size:12px;color:var(--text-muted);line-height:1.6;margin-top:12px;}
+
+  .statbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px;}
+  .total{font-size:13px;color:var(--text-muted);}
+  .spacer{flex:1;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:18px;}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    overflow:hidden;display:flex;flex-direction:column;transition:.18s;}
+  .card:hover{border-color:var(--gold);transform:translateY(-3px);}
+  .thumb{position:relative;display:block;width:100%;aspect-ratio:9/13;background:#000;overflow:hidden;}
+  .thumb.wide{aspect-ratio:16/10;}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .rank{position:absolute;top:8px;left:8px;background:rgba(26,22,16,.86);color:var(--gold-bright);
+    font-size:12px;font-weight:700;padding:4px 9px;border-radius:6px;}
+  .hot{position:absolute;top:8px;right:8px;background:var(--apricot);color:#1A1610;
+    font-size:11px;font-weight:700;padding:4px 9px;border-radius:6px;letter-spacing:.04em;}
+  .dur{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.75);color:#fff;
+    font-size:11px;padding:3px 7px;border-radius:5px;}
+  .body{padding:13px 14px 15px;display:flex;flex-direction:column;gap:9px;flex:1;}
+  .title{font-size:14px;line-height:1.42;font-weight:600;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .chan{font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .foot{margin-top:auto;padding-top:10px;border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .rate{font-size:13px;font-weight:700;color:var(--up);}
+  .rate small{font-weight:400;color:var(--text-muted);font-size:11px;}
+  .score{font-size:13px;font-weight:700;color:var(--gold-bright);}
+
+  .msg{padding:44px 20px;text-align:center;color:var(--text-muted);font-size:14px;line-height:1.7;}
+  .msg strong{color:var(--text);display:block;margin-bottom:6px;font-size:16px;}
+  .err{background:rgba(201,88,74,.12);border:1px solid var(--danger);color:#F0BDB5;
+    padding:16px 18px;border-radius:10px;font-size:14px;margin-bottom:18px;line-height:1.7;}
+  .err b{color:#fff;}
+  pre{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;
+    padding:14px;overflow:auto;max-height:340px;font-size:12px;line-height:1.55;
+    color:var(--text);white-space:pre-wrap;word-break:break-all;}
+  .spin{display:inline-block;width:15px;height:15px;border:2px solid var(--line);
+    border-top-color:var(--apricot);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-3px;}
+  @keyframes sp{to{transform:rotate(360deg);}}
+  @media (max-width:640px){
+    h1{font-size:24px;}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="eyebrow">YouTube Research</div>
+      <h1>🔥 터진 <em>영상</em></h1>
+      <a class="navlink" href="/search.html">🔍 키워드 검색으로 →</a>
+    </div>
+  </header>
+
+  <div class="panel">
+    <div class="row">
+      <div class="flabel">영상 타입</div>
+      <button class="chip on" data-g="type" data-v="short">쇼츠</button>
+      <button class="chip" data-g="type" data-v="long">롱폼</button>
+      <button class="chip" data-g="type" data-v="all">전체</button>
+      <div style="width:1px;height:24px;background:var(--line);margin:0 6px"></div>
+      <button class="chip on" data-g="sort" data-v="rate">🔥 급등순</button>
+      <button class="chip" data-g="sort" data-v="views">조회수순</button>
+      <button class="chip" data-g="sort" data-v="date">최신순</button>
+    </div>
+    <div class="row">
+      <button class="go" id="btnReload">🔄 새로고침</button>
+      <button class="chip" id="btnDebug">🔧 데이터 구조 보기</button>
+    </div>
+    <div class="hint" id="collectInfo"><span class="spin"></span> 데이터를 불러오는 중…</div>
+  </div>
+
+  <div class="statbar" id="statbar" style="display:none">
+    <div class="spacer"></div>
+    <div class="total" id="total"></div>
+  </div>
+
+  <div id="out"><div class="msg"><span class="spin"></span> 불러오는 중…</div></div>
+</div>
+
+<script>
+const DATA_URL = 'data/trending.json';
+let raw = null;      // 원본 JSON
+let items = [];      // 정규화된 영상 목록
+let type = 'short', sort = 'rate';
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function fmtNum(n){
+  n = Number(n) || 0;
+  if(n >= 100000000) return (n/100000000).toFixed(1)+'억';
+  if(n >= 10000) return (n/10000).toFixed(1)+'만';
+  return n.toLocaleString();
+}
+function fmtDur(sec){
+  sec = Math.round(Number(sec) || 0);
+  if(!sec) return '';
+  const m = Math.floor(sec/60), s = sec%60;
+  return m + ':' + String(s).padStart(2,'0');
+}
+// "PT1M23S" 같은 형식도, 그냥 숫자(초)도 모두 처리
+function toSeconds(v){
+  if(v == null) return 0;
+  if(typeof v === 'number') return v;
+  const str = String(v);
+  if(/^\d+$/.test(str)) return parseInt(str,10);
+  const m = str.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if(!m) return 0;
+  return (parseInt(m[1]||0))*3600 + (parseInt(m[2]||0))*60 + (parseInt(m[3]||0));
+}
+// 여러 후보 키 중 값이 있는 첫 번째를 꺼냅니다
+function pick(obj, keys){
+  for(const k of keys){
+    const parts = k.split('.');
+    let cur = obj, ok = true;
+    for(const p of parts){
+      if(cur && typeof cur === 'object' && p in cur) cur = cur[p];
+      else { ok = false; break; }
+    }
+    if(ok && cur !== undefined && cur !== null && cur !== '') return cur;
+  }
+  return undefined;
+}
+// JSON 어디에 배열이 숨어 있든 찾아냅니다
+function findList(json){
+  if(Array.isArray(json)) return json;
+  if(json && typeof json === 'object'){
+    for(const k of ['videos','items','data','results','list','shorts','trending']){
+      if(Array.isArray(json[k])) return json[k];
+    }
+    for(const k of Object.keys(json)){
+      if(Array.isArray(json[k]) && json[k].length && typeof json[k][0] === 'object') return json[k];
+    }
+  }
+  return null;
+}
+
+function normalize(list){
+  const now = Date.now();
+  return list.map(o => {
+    const id = pick(o, ['id.videoId','videoId','video_id','id']) || '';
+    const title = pick(o, ['title','snippet.title']) || '(제목 없음)';
+    const channel = pick(o, ['channelTitle','channel','channel_title','snippet.channelTitle']) || '';
+    const views = Number(pick(o, ['viewCount','views','view_count','statistics.viewCount'])) || 0;
+    const subs = Number(pick(o, ['subscriberCount','subs','subscribers','channelSubscribers'])) || 0;
+    const publishedAt = pick(o, ['publishedAt','published_at','snippet.publishedAt','uploadDate','date']);
+    const dur = toSeconds(pick(o, ['durationSeconds','duration_sec','duration','contentDetails.duration']));
+    let thumb = pick(o, ['thumbnail','thumb','thumbnailUrl',
+      'snippet.thumbnails.maxres.url','snippet.thumbnails.high.url',
+      'snippet.thumbnails.medium.url','snippet.thumbnails.default.url']);
+    if(!thumb && id) thumb = 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg';
+
+    const prev = Number(pick(o, ['prevViews','previousViews','prev_view_count','lastViews'])) || 0;
+    const delta = prev > 0 ? views - prev : 0;
+    const days = publishedAt
+      ? Math.max(1, Math.round((now - new Date(publishedAt).getTime())/86400000))
+      : 1;
+    const daily = Math.round(views / days);
+    const score = subs > 0 ? views / subs : 0;
+    // 급등 지표: 이전 조회수가 있으면 증가분, 없으면 일일 조회수
+    const rate = delta > 0 ? delta : daily;
+
+    return { o, id, title, channel, views, subs, publishedAt, days, dur, thumb, delta, daily, score, rate };
+  }).filter(v => v.id);
+}
+
+function render(){
+  const out = $('out');
+  let list = items.slice();
+
+  if(type === 'short') list = list.filter(v => v.dur > 0 ? v.dur <= 180 : true);
+  else if(type === 'long') list = list.filter(v => v.dur > 180);
+
+  if(sort === 'views') list.sort((a,b) => b.views - a.views);
+  else if(sort === 'date') list.sort((a,b) => new Date(b.publishedAt||0) - new Date(a.publishedAt||0));
+  else list.sort((a,b) => b.rate - a.rate);
+
+  $('statbar').style.display = 'flex';
+  $('total').textContent = list.length + '개 표시 중 (전체 ' + items.length + '개)';
+
+  if(!list.length){
+    out.innerHTML = '<div class="msg"><strong>조건에 맞는 영상이 없어요</strong>' +
+      '영상 타입을 "전체"로 바꿔보세요.</div>';
+    return;
+  }
+
+  out.innerHTML = '<div class="grid">' + list.map((v, i) => {
+    const url = 'https://www.youtube.com/watch?v=' + v.id;
+    const wide = v.dur > 180 ? ' wide' : '';
+    return '<div class="card">' +
+      '<a class="thumb' + wide + '" href="' + url + '" target="_blank" rel="noopener">' +
+        (v.thumb ? '<img src="' + v.thumb + '" alt="" loading="lazy">' : '') +
+        '<div class="rank">' + (i+1) + '</div>' +
+        (i < 3 ? '<div class="hot">HOT</div>' : '') +
+        (v.dur ? '<div class="dur">' + fmtDur(v.dur) + '</div>' : '') +
+      '</a>' +
+      '<div class="body">' +
+        '<a class="title" href="' + url + '" target="_blank" rel="noopener">' + esc(v.title) + '</a>' +
+        '<div class="chan">' + esc(v.channel) +
+          (v.subs ? ' · 구독 ' + fmtNum(v.subs) : '') + '</div>' +
+        '<div class="foot">' +
+          '<div class="rate">' + fmtNum(v.rate) +
+            '<small>' + (v.delta > 0 ? ' 증가' : '/일') + '</small></div>' +
+          '<div class="score">' + fmtNum(v.views) + '회</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('') + '</div>';
+}
+
+function showDebug(){
+  const sample = raw && findList(raw) ? findList(raw)[0] : raw;
+  $('out').innerHTML =
+    '<div class="err"><b>데이터 구조</b><br>' +
+    '아래는 <code>' + DATA_URL + '</code> 안에 들어 있는 내용의 첫 번째 항목이에요. ' +
+    '화면에 영상이 안 나온다면 이 내용을 그대로 복사해서 알려주세요.</div>' +
+    '<pre>' + esc(JSON.stringify(sample, null, 2)).slice(0, 4000) + '</pre>';
+}
+
+async function load(){
+  $('out').innerHTML = '<div class="msg"><span class="spin"></span> 불러오는 중…</div>';
+  $('collectInfo').innerHTML = '<span class="spin"></span> 데이터를 불러오는 중…';
+  try{
+    const res = await fetch(DATA_URL + '?t=' + Date.now(), { cache:'no-store' });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+
+    const text = await res.text();
+    try{ raw = JSON.parse(text); }
+    catch(e){ throw new Error('JSON 형식이 아니에요. 앞부분: ' + text.slice(0,120)); }
+
+    const list = findList(raw);
+    if(!list){
+      $('collectInfo').textContent = '데이터를 읽었지만 영상 목록을 못 찾았어요.';
+      $('out').innerHTML =
+        '<div class="err"><b>영상 목록을 찾지 못했어요</b><br>' +
+        '파일은 정상적으로 열렸는데, 그 안에 영상 배열이 안 보입니다. ' +
+        '아래 내용을 복사해서 알려주시면 맞춰드릴게요.</div>' +
+        '<pre>' + esc(JSON.stringify(raw, null, 2)).slice(0, 3000) + '</pre>';
+      return;
+    }
+
+    items = normalize(list);
+    const collectedAt = pick(raw, ['collectedAt','collected_at','updatedAt','updated_at','timestamp','generatedAt']);
+    $('collectInfo').innerHTML = '✅ ' + list.length + '개 수집됨' +
+      (collectedAt ? ' · 마지막 수집 ' + esc(String(collectedAt)) : '') +
+      (items.length !== list.length ? ' · 영상 ID가 없는 ' + (list.length - items.length) + '개 제외' : '');
+
+    if(!items.length){
+      $('out').innerHTML =
+        '<div class="err"><b>영상 ID를 못 찾았어요</b><br>' +
+        '목록은 ' + list.length + '개인데, 각 항목에서 영상 ID를 못 읽었습니다. ' +
+        '아래 내용을 알려주시면 맞춰드릴게요.</div>' +
+        '<pre>' + esc(JSON.stringify(list[0], null, 2)).slice(0, 2000) + '</pre>';
+      return;
+    }
+    render();
+
+  }catch(err){
+    const m = err.message || '';
+    $('collectInfo').textContent = '불러오기 실패';
+    let tip = '';
+    if(/HTTP 404/.test(m)){
+      tip = '<b>파일을 찾을 수 없어요 (404)</b><br>' +
+        'GitHub 저장소의 <code>data/trending.json</code> 이 배포에 포함됐는지 확인해주세요. ' +
+        '주소창에 <code>/data/trending.json</code> 을 직접 쳐서 열리는지 보시면 됩니다.';
+    } else {
+      tip = '<b>불러오기 실패</b><br>' + esc(m);
+    }
+    $('out').innerHTML = '<div class="err">' + tip + '</div>';
+  }
+}
+
+document.querySelectorAll('.chip[data-g]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const g = btn.dataset.g;
+    document.querySelectorAll('.chip[data-g="' + g + '"]').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    if(g === 'type') type = btn.dataset.v;
+    if(g === 'sort') sort = btn.dataset.v;
+    if(items.length) render();
+  });
+});
+$('btnReload').addEventListener('click', load);
+$('btnDebug').addEventListener('click', showDebug);
+
+load();
+</script>
+</body>
+</html>

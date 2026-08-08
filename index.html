@@ -135,6 +135,7 @@
   .trow:last-child{border-bottom:none;}
   .trow.head{color:var(--text-muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;}
   .trow:not(.head):hover{background:var(--surface-2);}
+  a.trow{color:inherit;text-decoration:none;cursor:pointer;}
   .tr-rank{font-weight:700;color:var(--gold-bright);font-size:15px;}
   .tr-chan{display:flex;align-items:center;gap:11px;min-width:0;}
   .tr-chan img{width:36px;height:36px;border-radius:50%;object-fit:cover;background:var(--surface-2);flex-shrink:0;}
@@ -193,7 +194,6 @@
     </div>
     <div class="menu-label">메뉴</div>
     <nav class="nav" id="nav">
-      <a data-page="golden"><span class="ic">📊</span>황금 채널 발굴기</a>
       <a data-page="search"><span class="ic">🔍</span>조회수 폭발 쇼츠 찾기</a>
       <a data-page="trend"><span class="ic">🔥</span>터진 영상</a>
       <a data-page="rank"><span class="ic">📈</span>채널 랭킹</a>
@@ -249,8 +249,7 @@ const DEPTHS={
   max:{orders:['viewCount','relevance','date','rating'],pages:6,cost:2400},
 };
 const PAGES={
-  golden:{ic:'📊',t:'황금 채널 발굴기',d:'카테고리별 성장 채널 분석'},
-  search:{ic:'🔍',t:'조회수 폭발 쇼츠 찾기',d:'조건 맞춤 쇼츠 발굴'},
+  search:{ic:'🔍',t:'조회수 폭발 쇼츠 찾기',d:'검색 한 번으로 영상과 채널을 같이 봅니다'},
   trend:{ic:'🔥',t:'터진 영상',d:'급등하는 영상 확인'},
   rank:{ic:'📈',t:'채널 랭킹',d:'조회수 기준 채널 순위'},
   fav:{ic:'⭐',t:'즐겨찾기',d:'저장해 둔 영상'},
@@ -440,7 +439,7 @@ function go(p){
   $('pgIcon').textContent=m.ic; $('pgTitle').textContent=m.t; $('pgDesc').textContent=m.d;
   $('banner').innerHTML = (!getKey()&&p!=='key'&&p!=='trend')
     ? '<div class="banner">🔑 아직 API 키가 없어요. <a onclick="go(\'key\')">지금 등록하기</a> — 무료이고 5분이면 됩니다.</div>' : '';
-  ({golden:pgGolden,search:pgSearch,trend:pgTrend,rank:pgRank,fav:pgFav,key:pgKey}[p]||pgSearch)();
+  ({search:pgSearch,trend:pgTrend,rank:pgRank,fav:pgFav,key:pgKey}[p]||pgSearch)();
   window.scrollTo({top:0});
 }
 window.go=go;
@@ -464,7 +463,8 @@ function bindChips(state,onChange){
 }
 
 /* ===== 1. 조회수 폭발 쇼츠 찾기 ===== */
-const S={cat:'',type:'short',depth:'normal',sort:'score',sub:'all',minv:'0'};
+const S={cat:'',type:'short',depth:'normal',sort:'score',sub:'all',minv:'0',view:'video'};
+let sChanInfo={};
 let sResults=[],sFetched=0;
 function pgSearch(){
   $('page').innerHTML=
@@ -484,6 +484,8 @@ function pgSearch(){
     '<div class="flabel">정렬 기준</div><div class="row">'+chipRow('sort',[
       {v:'score',l:'떡상지수 순'},{v:'views',l:'조회수 높은 순'},
       {v:'daily',l:'일일 조회수 순'},{v:'subs',l:'구독자 많은 순'}],S.sort)+'</div>'+
+    '<div class="flabel">보기 방식 <span style="font-weight:400;letter-spacing:0;text-transform:none;opacity:.75">같은 검색 결과를 두 가지로 볼 수 있어요 · 추가 사용량 없음</span></div><div class="row">'+chipRow('view',[
+      {v:'video',l:'🎬 영상으로 보기'},{v:'channel',l:'📊 채널로 묶어보기'}],S.view)+'</div>'+
     '<div class="preset"><button class="btn" id="btnPreset">🎯 배울 만한 것만 보기</button>'+
       '<span>떡상지수 5x 이상 · 조회수 10만 이상 · 구독자 1만~5만 을 한 번에 적용해요. '+
       '알고리즘을 탔고(지수), 실제로 컸고(조회수), 나도 따라 할 만한 규모(구독자) — 셋을 다 만족하는 영상만 남깁니다.</span></div>'+
@@ -510,7 +512,7 @@ function pgSearch(){
 
   bindChips(S,(g,v)=>{
     if(g==='cat'&&v) $('q').value=v;
-    if((g==='sort'||g==='sub')&&sResults.length) drawSearch();
+    if((g==='sort'||g==='sub'||g==='minv'||g==='view')&&sResults.length) drawSearch();
   });
   $('btnGo').onclick=runSearch;
   $('btnPreset').onclick=()=>{
@@ -537,10 +539,46 @@ function drawSearch(){
   else if(S.sort==='daily') list.sort((a,b)=>b.daily-a.daily);
   else if(S.sort==='subs') list.sort((a,b)=>b.subs-a.subs);
   else list.sort((a,b)=>b.score-a.score);
-  $('cnt').innerHTML='<b>'+list.length+'개</b> 결과 · 유튜브에서 '+sFetched+'개 수집 후 걸러냈어요';
+  if(S.view==='channel'){ drawSearchChannels(list); return; }
+
+  $('cnt').innerHTML='<b>'+list.length+'개</b> 영상 · 유튜브에서 '+sFetched+'개 수집 후 걸러냈어요';
   $('out').innerHTML=list.length
     ? '<div class="grid">'+list.map((v,i)=>cardHTML(v,i)).join('')+'</div>'
     : '<div class="msg">이 조건에 맞는 영상이 없어요. 구독자 구간을 넓혀보세요.</div>';
+}
+
+// 같은 검색 결과를 채널 단위로 묶어서 보여줍니다 (추가 호출 없음)
+function drawSearchChannels(list){
+  const map={};
+  list.forEach(v=>{
+    const k=v.channelId||v.channel;
+    if(!map[k]) map[k]={id:k,name:v.channel,subs:v.subs,views:0,n:0,
+      thumb:(sChanInfo[k]&&sChanInfo[k].thumb)||v.thumb};
+    map[k].views+=v.views; map[k].n++;
+    if(v.subs>map[k].subs) map[k].subs=v.subs;
+  });
+  let chans=Object.values(map).map(c=>({...c,avg:Math.round(c.views/c.n),
+    score:c.subs>0?(c.views/c.n)/c.subs:0}));
+
+  if(S.sort==='subs') chans.sort((a,b)=>b.subs-a.subs);
+  else if(S.sort==='score') chans.sort((a,b)=>b.score-a.score);
+  else chans.sort((a,b)=>b.avg-a.avg);
+  chans=chans.slice(0,50);
+
+  $('cnt').innerHTML='<b>'+chans.length+'개</b> 채널 · 영상 '+list.length+'개를 묶었어요';
+  if(!chans.length){ $('out').innerHTML='<div class="msg">조건에 맞는 채널이 없어요.</div>'; return; }
+
+  const medal=i=>i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+  $('out').innerHTML='<div class="tbl">'+
+    '<div class="trow head"><span>순위</span><span>채널</span><span class="tr-num">평균 조회수</span><span class="tr-num">구독자</span></div>'+
+    chans.map((c,i)=>'<a class="trow" href="https://www.youtube.com/channel/'+c.id+'" target="_blank" rel="noopener">'+
+      '<span class="tr-rank">'+medal(i)+'</span>'+
+      '<span class="tr-chan"><img src="'+c.thumb+'" alt="" loading="lazy">'+
+        '<span style="min-width:0"><span class="nm">'+esc(c.name)+'</span>'+
+        '<span class="sub">이 주제 영상 '+c.n+'개 · 떡상지수 '+c.score.toFixed(1)+'x</span></span></span>'+
+      '<span class="tr-num">'+fmtNum(c.avg)+'</span>'+
+      '<span class="tr-num muted">'+(c.subs?fmtNum(c.subs):'—')+'</span>'+
+    '</a>').join('')+'</div>';
 }
 async function runSearch(){
   const key=getKey(); if(!key){ $('out').innerHTML=needKey(); return; }
@@ -564,8 +602,13 @@ async function runSearch(){
 
     $('out').innerHTML='<div class="msg"><span class="spin"></span> 구독자 수를 확인하는 중…</div>';
     const chIds=[...new Set(vids.map(v=>v.snippet.channelId))];
-    const chs=await batch(key,'channels',chIds,'statistics');
-    const st={}; chs.forEach(c=>st[c.id]=c.statistics);
+    const chs=await batch(key,'channels',chIds,'snippet,statistics');
+    const st={}; sChanInfo={};
+    chs.forEach(c=>{
+      st[c.id]=c.statistics;
+      sChanInfo[c.id]={name:c.snippet.title,
+        thumb:(c.snippet.thumbnails.medium||c.snippet.thumbnails.default).url};
+    });
 
     sResults=enrich(vids,st);
     $('qt').textContent='이번 검색 약 '+(ls.get(USE_STORE,{n:0}).n-before).toLocaleString()+' 유닛 사용';
@@ -776,88 +819,7 @@ function drawRank(){
     }).join('')+'</div>';
 }
 
-/* ===== 4. 황금 채널 발굴기 ===== */
-const G={cat:'',type:'short',sub:'all',sort:'views'};
-let gChannels=[];
-function pgGolden(){
-  $('page').innerHTML=
-  '<div class="panel">'+
-    '<div class="flabel">관심 주제</div><div class="row">'+
-      CATEGORIES.map(c=>'<button class="chip'+(c.kw===G.cat?' on':'')+'" data-g="cat" data-v="'+c.kw+'">'+c.l+'</button>').join('')+'</div>'+
-    '<div class="flabel">영상 타입</div><div class="row">'+chipRow('type',[{v:'short',l:'쇼츠'},{v:'long',l:'롱폼'}],G.type)+'</div>'+
-    '<div class="flabel">구독자 구간</div><div class="row">'+chipRow('sub',[
-      {v:'all',l:'전체'},{v:'0-10000',l:'0~1만 (급성장)'},{v:'10000-50000',l:'1만~5만'},{v:'50000-100000',l:'5만~10만'}],G.sub)+'</div>'+
-    '<div class="flabel">정렬 기준</div><div class="row">'+chipRow('sort',[
-      {v:'views',l:'조회수 높은 순'},{v:'score',l:'떡상지수 순'},{v:'subs',l:'구독자 많은 순'}],G.sort)+'</div>'+
-    '<div class="row" style="margin-top:18px"><button class="go block" id="btnG">🚀 채널 분석 시작</button></div>'+
-    '<div class="note">고른 주제의 영상을 모아 <b>채널 단위</b>로 묶습니다. 한 번에 약 600유닛을 씁니다.</div>'+
-  '</div>'+
-  '<div class="bar"><span class="count" id="gcnt"></span></div>'+
-  '<div id="gout"></div>';
-  bindChips(G,g=>{ if((g==='sort'||g==='sub')&&gChannels.length) drawGolden(); });
-  $('btnG').onclick=runGolden;
-  if(!getKey()) $('gout').innerHTML=needKey();
-  else if(gChannels.length) drawGolden();
-  else $('gout').innerHTML='<div class="msg"><span class="big">👆</span><strong>관심 주제를 선택해 주세요</strong>주제를 고르고 분석을 시작하면 그 분야의 채널을 보여드려요</div>';
-}
-function drawGolden(){
-  const [lo,hi]=G.sub==='all'?[0,Infinity]:G.sub.split('-').map(Number);
-  let list=gChannels.filter(c=>c.subs>=lo&&c.subs<=hi);
-  if(G.sort==='score') list.sort((a,b)=>b.score-a.score);
-  else if(G.sort==='subs') list.sort((a,b)=>b.subs-a.subs);
-  else list.sort((a,b)=>b.views-a.views);
-  list=list.slice(0,50);
-  $('gcnt').innerHTML='채널 <b>'+list.length+'개</b>';
-  if(!list.length){ $('gout').innerHTML='<div class="msg">이 구독자 구간에 채널이 없어요. 구간을 넓혀보세요.</div>'; return; }
-  $('gout').innerHTML='<div class="tbl">'+
-    '<div class="trow head"><span>순위</span><span>채널</span><span class="tr-num">평균 조회수</span><span class="tr-num">구독자</span></div>'+
-    list.map((c,i)=>'<div class="trow">'+
-      '<span class="tr-rank">'+(i+1)+'</span>'+
-      '<span class="tr-chan"><img src="'+c.thumb+'" alt="" loading="lazy">'+
-        '<span style="min-width:0"><span class="nm">'+esc(c.name)+'</span>'+
-        '<span class="sub">영상 '+c.n+'개 · 떡상지수 '+c.score.toFixed(1)+'x</span></span></span>'+
-      '<span class="tr-num">'+fmtNum(Math.round(c.views/c.n))+'</span>'+
-      '<span class="tr-num muted">'+(c.subs?fmtNum(c.subs):'—')+'</span>'+
-    '</div>').join('')+'</div>';
-}
-async function runGolden(){
-  const key=getKey(); if(!key){ $('gout').innerHTML=needKey(); return; }
-  const kw=G.cat||'쇼츠';
-  const btn=$('btnG'); btn.disabled=true; btn.textContent='분석 중…';
-  try{
-    const after=new Date(Date.now()-90*86400000).toISOString();
-    $('gout').innerHTML='<div class="msg"><span class="spin"></span> 영상을 모으는 중…</div>';
-    const ids=await collectIds(key,kw,after,'KR',G.type==='short'?'short':'medium','normal',
-      n=>$('gout').innerHTML='<div class="msg"><span class="spin"></span> 영상을 모으는 중… '+n+'개</div>');
-    if(!ids.length){ $('gout').innerHTML='<div class="msg">이 주제의 영상을 찾지 못했어요.</div>'; return; }
-
-    $('gout').innerHTML='<div class="msg"><span class="spin"></span> 채널을 분석하는 중…</div>';
-    const vids=(await batch(key,'videos',ids,'snippet,statistics,contentDetails')).filter(v=>{
-      const d=toSec(v.contentDetails&&v.contentDetails.duration);
-      return G.type==='short'?(d>0&&d<=180):(d>180&&d<=1800);
-    });
-    const chIds=[...new Set(vids.map(v=>v.snippet.channelId))];
-    const chs=await batch(key,'channels',chIds,'snippet,statistics');
-    const info={}; chs.forEach(c=>info[c.id]={
-      name:c.snippet.title,
-      thumb:(c.snippet.thumbnails.medium||c.snippet.thumbnails.default).url,
-      subs:c.statistics.hiddenSubscriberCount?0:parseInt(c.statistics.subscriberCount||0),
-    });
-
-    const map={};
-    vids.forEach(v=>{
-      const id=v.snippet.channelId, m=info[id]; if(!m) return;
-      if(!map[id]) map[id]={name:m.name,thumb:m.thumb,subs:m.subs,views:0,n:0};
-      map[id].views+=parseInt(v.statistics.viewCount||0); map[id].n++;
-    });
-    gChannels=Object.values(map).map(c=>({...c,score:c.subs>0?(c.views/c.n)/c.subs:0}));
-    drawGolden();
-  }catch(e){
-    $('gout').innerHTML='<div class="err"><b>'+esc(errText(e.message||''))+'</b></div>';
-  }finally{ btn.disabled=false; btn.textContent='🚀 채널 분석 시작'; }
-}
-
-/* ===== 5. 즐겨찾기 ===== */
+/* ===== 4. 즐겨찾기 ===== */
 function pgFav(){
   $('page').innerHTML='<div class="bar"><span class="count" id="fcnt"></span></div><div id="fout"></div>';
   renderFav();
@@ -871,7 +833,7 @@ function renderFav(){
     : '<div class="msg"><span class="big">⭐</span><strong>아직 저장한 영상이 없어요</strong>영상 카드 왼쪽 아래 별을 누르면 여기에 모입니다</div>';
 }
 
-/* ===== 6. API 키 설정 ===== */
+/* ===== 5. API 키 설정 ===== */
 function pgKey(){
   $('page').innerHTML=
   '<div class="panel">'+

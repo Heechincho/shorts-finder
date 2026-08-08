@@ -1,6 +1,5 @@
 {
   "_설명": "내가 지켜볼 채널 목록입니다. keywords에 적은 검색어로 채널을 자동으로 찾아 channels에 채워 넣습니다. 직접 채널을 추가하고 싶으면 channels 배열에 {\"id\":\"UC...\"} 형태로 넣으면 됩니다.",
-
   "keywords": [
     "건조과일",
     "홈메이드 간식",
@@ -13,10 +12,626 @@
     "아이 간식",
     "비건 디저트"
   ],
-
   "maxChannels": 300,
   "videosPerChannel": 6,
   "keepDays": 60,
-
-  "channels": []
+  "channels": [
+    {
+      "id": "UCoi7nHa392NjwquNj_JsRkw",
+      "name": "Sunshine Farm",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUoi7nHa392NjwquNj_JsRkw"
+    },
+    {
+      "id": "UChIgH6NybaNC_mkp4-gbX3A",
+      "name": "잔망루피 ZANMANG LOOPY",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUhIgH6NybaNC_mkp4-gbX3A"
+    },
+    {
+      "id": "UCopSq0kgBC1DQpPNDt00bZQ",
+      "name": "현템",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUopSq0kgBC1DQpPNDt00bZQ"
+    },
+    {
+      "id": "UClPfJjQ-Ywc7jaWkjJ86lAQ",
+      "name": "Jings ASMR 징스",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUlPfJjQ-Ywc7jaWkjJ86lAQ"
+    },
+    {
+      "id": "UCsw4QoA6T45ayEyX8OY_DSA",
+      "name": "별별간식연구소",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUsw4QoA6T45ayEyX8OY_DSA"
+    },
+    {
+      "id": "UCHQm8RHMv6BxfTk2b8DcRJw",
+      "name": "꿈스토랑",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUHQm8RHMv6BxfTk2b8DcRJw"
+    },
+    {
+      "id": "UC5nidwnWR4zwICVT4rf6-9g",
+      "name": "지우네텃밭",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU5nidwnWR4zwICVT4rf6-9g"
+    },
+    {
+      "id": "UCLBl83WfaE4zoZS2kR3NNEQ",
+      "name": "Tuyết Ruồi Vlogs",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UULBl83WfaE4zoZS2kR3NNEQ"
+    },
+    {
+      "id": "UCGvW4zPgVJgbwKsxdcMXf3A",
+      "name": "Little Village Homestead",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUGvW4zPgVJgbwKsxdcMXf3A"
+    },
+    {
+      "id": "UCB4oZShglzGa_1QN5KVUGjA",
+      "name": "vạn sự tuỳ duyên",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUB4oZShglzGa_1QN5KVUGjA"
+    },
+    {
+      "id": "UC7z6WoN03Wd4gyETp29pTeA",
+      "name": "꿀팁왕국",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU7z6WoN03Wd4gyETp29pTeA"
+    },
+    {
+      "id": "UCPdZet9FHQmr5UEnwYGqwCw",
+      "name": "도파민플라이트",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUPdZet9FHQmr5UEnwYGqwCw"
+    },
+    {
+      "id": "UCkW7e-dRvhy1pW0DjchsXzg",
+      "name": "잔쟌바리",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUkW7e-dRvhy1pW0DjchsXzg"
+    },
+    {
+      "id": "UCL_VtjcUsJ4YtPcleKd029w",
+      "name": "채스 ㅣ 프랙티카 코리아",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUL_VtjcUsJ4YtPcleKd029w"
+    },
+    {
+      "id": "UCDd8dFv242YJJaeKRJzMzwA",
+      "name": "멜로우베리",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUDd8dFv242YJJaeKRJzMzwA"
+    },
+    {
+      "id": "UCFhT7Q3AXqlrdWH4MDgh6tA",
+      "name": "듬뿍스쿱마켓",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUFhT7Q3AXqlrdWH4MDgh6tA"
+    },
+    {
+      "id": "UCQMAvQs5Y2DGPuLVL5VXpQA",
+      "name": "가니야미",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUQMAvQs5Y2DGPuLVL5VXpQA"
+    },
+    {
+      "id": "UCR401YwYcDxmvHRwbRmUJJQ",
+      "name": "설기 seolgi",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUR401YwYcDxmvHRwbRmUJJQ"
+    },
+    {
+      "id": "UCrHiLkk2j9fF5gE1UI0nErw",
+      "name": "꽁이네 TV  💕  kkong's house 💕",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUrHiLkk2j9fF5gE1UI0nErw"
+    },
+    {
+      "id": "UC2VYknKvBcUfQK0FzI5qRWQ",
+      "name": "일흔집밥",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU2VYknKvBcUfQK0FzI5qRWQ"
+    },
+    {
+      "id": "UC6E-CZDV_ysEEn0wuxtHfzg",
+      "name": "Hyd News",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU6E-CZDV_ysEEn0wuxtHfzg"
+    },
+    {
+      "id": "UCKlwjZbdMCSrNoakY34joLg",
+      "name": "둥글 asmr",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUKlwjZbdMCSrNoakY34joLg"
+    },
+    {
+      "id": "UCxuKEBHMpP0fULh6vBQ5aIA",
+      "name": "jaekang_eating",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUxuKEBHMpP0fULh6vBQ5aIA"
+    },
+    {
+      "id": "UCeSpY30RH0uA3eM-jwfdHxg",
+      "name": "둥히",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUeSpY30RH0uA3eM-jwfdHxg"
+    },
+    {
+      "id": "UCWyRvxQMZ4TtruMlIl4I08g",
+      "name": "구쁘린",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUWyRvxQMZ4TtruMlIl4I08g"
+    },
+    {
+      "id": "UCqsj-EMunTSPwSlyoij-RYQ",
+      "name": "와뜨기",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUqsj-EMunTSPwSlyoij-RYQ"
+    },
+    {
+      "id": "UCkEwx6MoHRybOTXwaNEH2yg",
+      "name": "맛진짜 서울 l 서울 맛집 전국 맛집",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUkEwx6MoHRybOTXwaNEH2yg"
+    },
+    {
+      "id": "UCto99YK-0moyGL2Rbh7uedg",
+      "name": "미밍쓰mimingss",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUto99YK-0moyGL2Rbh7uedg"
+    },
+    {
+      "id": "UCMS2No4IrgShblbuqufPCrQ",
+      "name": "무명치의 - 인생 후기",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUMS2No4IrgShblbuqufPCrQ"
+    },
+    {
+      "id": "UCqWVwnD0-8o7fbiflYYWWgw",
+      "name": "유이모네 yuemone",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUqWVwnD0-8o7fbiflYYWWgw"
+    },
+    {
+      "id": "UC-2tBIZ7gXlFVDUSz4_RORw",
+      "name": "띵초 DDING CHO",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU-2tBIZ7gXlFVDUSz4_RORw"
+    },
+    {
+      "id": "UC6WwGod7OsfEqPC9-NZNoNw",
+      "name": "유기농 아기과자 올바름",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU6WwGod7OsfEqPC9-NZNoNw"
+    },
+    {
+      "id": "UCTJgnwc8JJcKN9oSQpGwPGQ",
+      "name": "까까스쿱",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUTJgnwc8JJcKN9oSQpGwPGQ"
+    },
+    {
+      "id": "UC8XJnaCpA4LDd5258bCcz2Q",
+      "name": "1분컷 리뷰",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU8XJnaCpA4LDd5258bCcz2Q"
+    },
+    {
+      "id": "UCh3PP4WsYFoMRHAfUTZ_mZA",
+      "name": "베리 이즈 블루",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUh3PP4WsYFoMRHAfUTZ_mZA"
+    },
+    {
+      "id": "UCi5MjD9p5y3dQyWVrOt78CA",
+      "name": "nicoshopping",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUi5MjD9p5y3dQyWVrOt78CA"
+    },
+    {
+      "id": "UC7POLEOaiEwqVs-Ct52j8ZA",
+      "name": "(서브)군바리스타",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU7POLEOaiEwqVs-Ct52j8ZA"
+    },
+    {
+      "id": "UCRjtXiuodekScCT8Wq3LBbA",
+      "name": "대전의 자랑",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UURjtXiuodekScCT8Wq3LBbA"
+    },
+    {
+      "id": "UCDnx2pixGzz_CxNICNMsYQg",
+      "name": "주희네힐링공간",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUDnx2pixGzz_CxNICNMsYQg"
+    },
+    {
+      "id": "UCt0AucK1c6twu4EwcBMYeLA",
+      "name": "DailyNut",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUt0AucK1c6twu4EwcBMYeLA"
+    },
+    {
+      "id": "UC6_ORtSIAnJpy3STiQ4mN1Q",
+      "name": "자연한알",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU6_ORtSIAnJpy3STiQ4mN1Q"
+    },
+    {
+      "id": "UCrWTLAqca-YAZ-RINTb6AdQ",
+      "name": "아뿌월드",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUrWTLAqca-YAZ-RINTb6AdQ"
+    },
+    {
+      "id": "UCw7irzRqWs26duKDCyrh67A",
+      "name": "동글패밀리 Dongle Family",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUw7irzRqWs26duKDCyrh67A"
+    },
+    {
+      "id": "UC8jmBFmLN1sSByVdM4QPXAQ",
+      "name": "아연",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU8jmBFmLN1sSByVdM4QPXAQ"
+    },
+    {
+      "id": "UCiJqk5VUa8yIGTOzCyix4ag",
+      "name": "골목대장 퐁듀",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUiJqk5VUa8yIGTOzCyix4ag"
+    },
+    {
+      "id": "UC1vZ8AXNOW7_eMm1GQwEu6A",
+      "name": "건강의 달인 건달TV",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU1vZ8AXNOW7_eMm1GQwEu6A"
+    },
+    {
+      "id": "UCkic7P_cuKD69wBxnpH3J_w",
+      "name": "인그리디언트 랩",
+      "from": "건조과일",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUkic7P_cuKD69wBxnpH3J_w"
+    },
+    {
+      "id": "UCUABZAjD3KjgqC1M34e6Iag",
+      "name": "Capuchino7899",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUUABZAjD3KjgqC1M34e6Iag"
+    },
+    {
+      "id": "UCU2zNeYhf9pi_wSqFbYE96w",
+      "name": "Boram Tube Vlog [보람튜브 브이로그]",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUU2zNeYhf9pi_wSqFbYE96w"
+    },
+    {
+      "id": "UC9SK-pX_fN1pESRxSY0s1sA",
+      "name": "시니어생활보감",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU9SK-pX_fN1pESRxSY0s1sA"
+    },
+    {
+      "id": "UCf8mtHBgqezlIK7eb09uDDw",
+      "name": "와일드키키 Wild KIKI",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUf8mtHBgqezlIK7eb09uDDw"
+    },
+    {
+      "id": "UCE5U3u_AJRa00aQPpMpZ58g",
+      "name": "지지미의 집밥",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUE5U3u_AJRa00aQPpMpZ58g"
+    },
+    {
+      "id": "UC3by3Nz495vK9erWmH_emFw",
+      "name": "노하우플러스",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU3by3Nz495vK9erWmH_emFw"
+    },
+    {
+      "id": "UCyGQ7kvgRRuKjYi13xtBfEQ",
+      "name": "티나홈",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUyGQ7kvgRRuKjYi13xtBfEQ"
+    },
+    {
+      "id": "UCxesz1orJyIog8R-r2stXsA",
+      "name": "초콜릿공장장",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUxesz1orJyIog8R-r2stXsA"
+    },
+    {
+      "id": "UCbaZOBe5Yd_FvHdTPu1QDNg",
+      "name": "베러__아이템",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUbaZOBe5Yd_FvHdTPu1QDNg"
+    },
+    {
+      "id": "UC-RFyPFdmVj1ecYjCUlT80Q",
+      "name": "평범한살림&경제",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU-RFyPFdmVj1ecYjCUlT80Q"
+    },
+    {
+      "id": "UCppkVVjeO7IyztmRyX1v48w",
+      "name": "이지상",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUppkVVjeO7IyztmRyX1v48w"
+    },
+    {
+      "id": "UCMXFSqYCTcB4iIJLwUJaBrQ",
+      "name": "심방골주부 Korean Food Recipes",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUMXFSqYCTcB4iIJLwUJaBrQ"
+    },
+    {
+      "id": "UCvKLCgnu0BG_fiMXecwhQyA",
+      "name": "베러픽",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUvKLCgnu0BG_fiMXecwhQyA"
+    },
+    {
+      "id": "UCM0J0EvtwG9W4QB4s-bmzkA",
+      "name": "셀렉핑",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUM0J0EvtwG9W4QB4s-bmzkA"
+    },
+    {
+      "id": "UCoJBrYgw0KwZFLluMN86uWQ",
+      "name": "뷰티풀홈",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUoJBrYgw0KwZFLluMN86uWQ"
+    },
+    {
+      "id": "UCin6C2EyQdRc0MAJr_Knvjw",
+      "name": "랜덤스낵",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUin6C2EyQdRc0MAJr_Knvjw"
+    },
+    {
+      "id": "UCmTNhOPFC64EQHeuzxuBWjw",
+      "name": "살림튜닝",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUmTNhOPFC64EQHeuzxuBWjw"
+    },
+    {
+      "id": "UCxdG85Kvj77wuI23MTqEm1A",
+      "name": "집순이_zip",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUxdG85Kvj77wuI23MTqEm1A"
+    },
+    {
+      "id": "UCpB7W0orJAv0JW8keHU3LJQ",
+      "name": "_yesurii",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUpB7W0orJAv0JW8keHU3LJQ"
+    },
+    {
+      "id": "UCfSe51qFTPauKp8M945b4rQ",
+      "name": "올라 hola",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUfSe51qFTPauKp8M945b4rQ"
+    },
+    {
+      "id": "UC8juNAAAHnGiJ3dgYq-KDww",
+      "name": "담쿡 Damcook",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU8juNAAAHnGiJ3dgYq-KDww"
+    },
+    {
+      "id": "UCufZeWPo8vcqJ-yj8D87qig",
+      "name": "숏나잇",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUufZeWPo8vcqJ-yj8D87qig"
+    },
+    {
+      "id": "UCiFU5o8x_pBwfLisi9L0xWw",
+      "name": "미니소_82",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUiFU5o8x_pBwfLisi9L0xWw"
+    },
+    {
+      "id": "UCFNiTxo-w4UnsfdVjfjlYjA",
+      "name": "허그덩 (다이어터)",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUFNiTxo-w4UnsfdVjfjlYjA"
+    },
+    {
+      "id": "UCWrL1EurrxP022rGGoqDyJg",
+      "name": "HADA at HOME하다앳홈",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUWrL1EurrxP022rGGoqDyJg"
+    },
+    {
+      "id": "UCrQLyo_igc7_AZOGJaWZdwg",
+      "name": "애템픽",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUrQLyo_igc7_AZOGJaWZdwg"
+    },
+    {
+      "id": "UCnXqa7qyES4BUIvybA2C7AA",
+      "name": "살림무화과",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUnXqa7qyES4BUIvybA2C7AA"
+    },
+    {
+      "id": "UCcF-tPtX4M_FcIADJgLSHJQ",
+      "name": "룰루팡",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUcF-tPtX4M_FcIADJgLSHJQ"
+    },
+    {
+      "id": "UCwnPyLwXHPEfGa1zdawsOUg",
+      "name": "또린아빠요리일기",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUwnPyLwXHPEfGa1zdawsOUg"
+    },
+    {
+      "id": "UCzyydhJkUU_rSVXqIgVkZNA",
+      "name": "우리집미슐랭",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUzyydhJkUU_rSVXqIgVkZNA"
+    },
+    {
+      "id": "UCZxsZhua8DAo4oWxL6m9h9w",
+      "name": "살림 아빠",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUZxsZhua8DAo4oWxL6m9h9w"
+    },
+    {
+      "id": "UCtW5DIMGhrYB5cKJjU9qu5w",
+      "name": "호미",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUtW5DIMGhrYB5cKJjU9qu5w"
+    },
+    {
+      "id": "UCtJuwNgNLWqX7q0CfO7IqyQ",
+      "name": "델라맘",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUtJuwNgNLWqX7q0CfO7IqyQ"
+    },
+    {
+      "id": "UC3O2w4G8JPARrQhrKh7KSgg",
+      "name": "후후네키친 #건강집밥요리#퀸요리#건강밥상",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU3O2w4G8JPARrQhrKh7KSgg"
+    },
+    {
+      "id": "UC3dJS8_h1PvyQ5B2YNKLwMg",
+      "name": "트렌드 24시",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU3dJS8_h1PvyQ5B2YNKLwMg"
+    },
+    {
+      "id": "UC63lUbvXZCCWhjsMeh9HIKQ",
+      "name": "Orange bingsu",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UU63lUbvXZCCWhjsMeh9HIKQ"
+    },
+    {
+      "id": "UCOfQ38LHwr-tlw19wgZrTug",
+      "name": "담아바요",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUOfQ38LHwr-tlw19wgZrTug"
+    },
+    {
+      "id": "UCW2FDOBYHrzJLJOvAtLAFyQ",
+      "name": "리뷰지니",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUW2FDOBYHrzJLJOvAtLAFyQ"
+    },
+    {
+      "id": "UCYdj2d4U4ZweF4nZTZMZgog",
+      "name": "한끼절약",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUYdj2d4U4ZweF4nZTZMZgog"
+    },
+    {
+      "id": "UCK0MZ-3b_-sWp5sJeMB1aQw",
+      "name": "나는김이얀",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUK0MZ-3b_-sWp5sJeMB1aQw"
+    },
+    {
+      "id": "UCSSMQGeuMMhSkp2Sk0leJ1w",
+      "name": "RICH'S HOME(리치네집)",
+      "from": "홈메이드 간식",
+      "addedAt": "2026-08-08T06:25:53.170Z",
+      "uploads": "UUSSMQGeuMMhSkp2Sk0leJ1w"
+    }
+  ],
+  "_turn": 2
 }

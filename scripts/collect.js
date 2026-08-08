@@ -1,7 +1,10 @@
 /* =========================================================
    떡상 쇼츠 파인더 — 인기 급상승 수집기
    GitHub Actions가 1시간마다 이 파일을 실행합니다.
-   결과는 data/trending.json 으로 저장됩니다.
+
+   저장 결과
+   - data/trending.json : 지금 이 순간의 급상승 200개 (매번 덮어씀)
+   - data/history.json  : 최근 7일간 급상승에 올랐던 영상 누적 (채널 랭킹용)
    ========================================================= */
 
 const fs = require('fs');
@@ -9,7 +12,9 @@ const fs = require('fs');
 const KEY = process.env.YT_API_KEY;
 const REGION = process.env.REGION || 'KR';
 const OUT = 'data/trending.json';
-const PAGES = 4; // 50개씩 4페이지 = 최대 200개
+const HIST = 'data/history.json';
+const PAGES = 4;        // 50개씩 4페이지 = 최대 200개
+const KEEP_DAYS = 7;    // 누적 보관 기간
 
 /* ---------- 유튜브 API 호출 ---------- */
 async function api(endpoint, params) {
@@ -137,7 +142,7 @@ function parseDur(iso) {
     };
   });
 
-  /* 5. 저장 */
+  /* 5. 지금 이 순간 저장 */
   fs.mkdirSync('data', { recursive: true });
   fs.writeFileSync(OUT, JSON.stringify({
     collectedAt: nowISO,
@@ -149,8 +154,96 @@ function parseDur(iso) {
     items
   }));
 
+  /* ---------------------------------------------------------
+     6. 누적 기록 — 채널 랭킹을 제대로 만들기 위한 부분
+
+     급상승 차트는 한 채널에서 한 편만 올려주기 때문에,
+     한 시점만 보면 "채널당 영상 1개"가 되어 순위가 의미 없습니다.
+     여러 날 치를 모으면 "이번 주에 3편 올려서 총 800만" 같은
+     진짜 채널 순위를 만들 수 있습니다.
+     --------------------------------------------------------- */
+  let hist = { items: [] };
+  try {
+    hist = JSON.parse(fs.readFileSync(HIST, 'utf8'));
+    if (!Array.isArray(hist.items)) hist.items = [];
+  } catch (e) {
+    console.log('ℹ️  누적 기록이 없습니다. 새로 시작합니다.');
+  }
+
+  const histMap = {};
+  hist.items.forEach(v => { histMap[v.id] = v; });
+
+  let added = 0;
+  items.forEach(v => {
+    const h = histMap[v.id];
+    if (h) {
+      // 이미 본 영상이면 최신 수치로 갱신 (조회수는 계속 올라가므로)
+      h.views = Math.max(h.views, v.views);
+      h.subs = v.subs || h.subs;
+      h.lastSeen = nowISO;
+      h.seenCount = (h.seenCount || 1) + 1;
+      h.bestRank = Math.min(h.bestRank || v.rank, v.rank);
+      if (v.rate > (h.peakRate || 0)) h.peakRate = v.rate;
+    } else {
+      histMap[v.id] = {
+        id: v.id,
+        title: v.title,
+        channel: v.channel,
+        channelId: v.channelId,
+        thumb: v.thumb,
+        dur: v.dur,
+        category: v.category,
+        published: v.published,
+        views: v.views,
+        subs: v.subs,
+        firstSeen: v.firstSeen,
+        lastSeen: nowISO,
+        seenCount: 1,
+        bestRank: v.rank,
+        peakRate: v.rate
+      };
+      added++;
+    }
+  });
+
+  // 오래된 기록 정리
+  const cutoff = now - KEEP_DAYS * 24 * 3600 * 1000;
+  const kept = Object.values(histMap).filter(v => new Date(v.lastSeen).getTime() >= cutoff);
+
+  // 채널별 요약도 같이 저장 (앱이 계산할 필요 없게)
+  const chMap = {};
+  kept.forEach(v => {
+    const k = v.channelId || v.channel;
+    if (!chMap[k]) {
+      chMap[k] = {
+        channelId: v.channelId, name: v.channel, thumb: v.thumb,
+        subs: v.subs, videos: 0, views: 0, shorts: 0, longs: 0, bestRank: 999
+      };
+    }
+    const c = chMap[k];
+    c.videos++;
+    c.views += v.views;
+    if (v.subs > c.subs) c.subs = v.subs;
+    if (v.dur > 0 && v.dur <= 180) c.shorts++; else if (v.dur > 180) c.longs++;
+    if (v.bestRank < c.bestRank) c.bestRank = v.bestRank;
+  });
+  const channels = Object.values(chMap)
+    .map(c => ({ ...c, avg: Math.round(c.views / c.videos) }))
+    .sort((a, b) => b.views - a.views);
+
+  fs.writeFileSync(HIST, JSON.stringify({
+    updatedAt: nowISO,
+    keepDays: KEEP_DAYS,
+    videoCount: kept.length,
+    channelCount: channels.length,
+    channels,
+    items: kept
+  }));
+
   const liveCount = items.filter(x => x.live).length;
+  const multi = channels.filter(c => c.videos > 1).length;
   console.log(`✅ 저장 완료 — ${items.length}개 / 실측 증가량 ${liveCount}개 / 간격 ${gapH.toFixed(2)}시간`);
+  console.log(`📚 누적 — 영상 ${kept.length}개 (신규 ${added}) / 채널 ${channels.length}개 / 2편 이상 올린 채널 ${multi}개`);
 })().catch(err => {
   console.error('❌ 실패:', err.message);
   process.exit(1);

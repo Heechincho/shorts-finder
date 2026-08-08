@@ -124,6 +124,22 @@
   .preset span{flex:1;min-width:220px;font-size:12px;color:var(--text-muted);line-height:1.7;}
   .preset .btn.active{background:var(--gold);border-color:var(--gold);color:#fff;}
   .warn{color:var(--apricot);font-size:10.5px;font-weight:700;margin-left:4px;}
+  .analyze{background:linear-gradient(180deg,#F4FBF8,#FFFFFF);}
+  .astats{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:10px;margin-bottom:12px;}
+  .astats div{background:var(--surface-2);border-radius:10px;padding:12px 10px;text-align:center;}
+  .astats b{display:block;font-size:18px;font-weight:700;color:var(--gold);}
+  .astats span{display:block;font-size:11px;color:var(--text-muted);margin-top:3px;}
+  .awords{display:flex;gap:7px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--text-muted);}
+  .awords em{font-style:normal;background:var(--surface-2);border:1px solid var(--line);
+    border-radius:20px;padding:5px 11px;font-size:12.5px;color:var(--text);}
+  .awords em i{font-style:normal;color:var(--gold);font-weight:700;}
+  .favwrap{display:flex;flex-direction:column;gap:7px;}
+  .memo{width:100%;min-height:62px;resize:vertical;background:var(--surface);
+    border:1px solid var(--line);border-radius:10px;padding:9px 11px;
+    font-family:inherit;font-size:12.5px;color:var(--text);line-height:1.6;}
+  .memo:focus{outline:none;border-color:var(--gold);}
+  .memo.saved{border-color:var(--ok);}
+  .chip.hist{font-size:12px;padding:6px 12px;}
   .legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;font-size:12px;color:var(--text-muted);}
   .legend span{display:inline-flex;align-items:center;gap:6px;}
   .ldot{width:8px;height:8px;border-radius:50%;display:inline-block;}
@@ -136,11 +152,12 @@
   .trow.head{color:var(--text-muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;}
   .trow:not(.head):hover{background:var(--surface-2);}
   a.trow{color:inherit;text-decoration:none;cursor:pointer;}
+  a.trow:hover .nm{color:var(--gold);}
   .tr-rank{font-weight:700;color:var(--gold-bright);font-size:15px;}
   .tr-chan{display:flex;align-items:center;gap:11px;min-width:0;}
   .tr-chan img{width:36px;height:36px;border-radius:50%;object-fit:cover;background:var(--surface-2);flex-shrink:0;}
   .tr-chan .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .tr-chan .sub{font-size:11.5px;color:var(--text-muted);}
+  .tr-chan .sub{display:block;font-size:11.5px;color:var(--text-muted);margin-top:2px;}
   .tr-num{text-align:right;font-weight:700;}
   .tr-num.muted{color:var(--text-muted);font-weight:400;}
   @media (max-width:720px){
@@ -502,6 +519,7 @@ function pgSearch(){
         '<option value="JP">일본</option><option value="">전체</option></select></div>'+
       '<div style="display:flex;align-items:flex-end"><button class="go block" id="btnGo">검색</button></div>'+
     '</div>'+
+    '<div class="row" style="margin-top:14px" id="histrow"></div>'+
   '</div>'+
   '<div class="legend">'+
     '<span><span class="ldot" style="background:var(--gold-bright)"></span>떡상지수 10 이상 (대박)</span>'+
@@ -515,7 +533,8 @@ function pgSearch(){
     if(g==='cat'&&v) $('q').value=v;
     if((g==='sort'||g==='sub'||g==='minv'||g==='view')&&sResults.length) drawSearch();
   });
-  $('btnGo').onclick=runSearch;
+  $('btnGo').onclick=()=>runSearch(false);
+  renderHistory();
   $('btnPreset').onclick=()=>{
     S.pick=!S.pick;
     if(S.pick){ S.sub='10000-50000'; S.minv='100000'; S.sort='score'; }
@@ -526,11 +545,23 @@ function pgSearch(){
     $('btnPreset').textContent=S.pick?'✓ 배울 만한 것만 보는 중 (해제)':'🎯 배울 만한 것만 보기';
     if(sResults.length) drawSearch();
   };
-  $('q').addEventListener('keydown',e=>{ if(e.key==='Enter') runSearch(); });
+  $('q').addEventListener('keydown',e=>{ if(e.key==='Enter') runSearch(false); });
   if(!getKey()) $('out').innerHTML=needKey();
   else if(sResults.length) drawSearch();
   else $('out').innerHTML='<div class="msg"><span class="big">👆</span><strong>검색어를 입력하고 발굴을 시작해보세요</strong>구독자 대비 조회수가 터진 영상을 찾아드립니다</div>';
 }
+function renderHistory(){
+  const el=$('histrow'); if(!el) return;
+  const h=ls.get(HIST_STORE,[]);
+  el.innerHTML = h.length
+    ? '<span class="flabel" style="width:auto;margin:0 4px 0 0">최근</span>'+
+      h.map(k=>'<button class="chip hist" data-k="'+esc(k)+'">'+esc(k)+'</button>').join('')+
+      '<button class="chip" id="btnFresh" title="캐시를 무시하고 유튜브에 다시 물어봅니다">🔄 새로 검색</button>'
+    : '';
+  el.querySelectorAll('.chip.hist').forEach(b=>b.onclick=()=>{ $('q').value=b.dataset.k; runSearch(false); });
+  if($('btnFresh')) $('btnFresh').onclick=()=>runSearch(true);
+}
+
 function drawSearch(){
   const [lo,hi]=S.sub==='all'?[0,Infinity]:S.sub.split('-').map(Number);
   const minv=Number(S.minv)||0;
@@ -544,7 +575,7 @@ function drawSearch(){
 
   $('cnt').innerHTML='<b>'+list.length+'개</b> 영상 · 유튜브에서 '+sFetched+'개 수집 후 걸러냈어요';
   $('out').innerHTML=list.length
-    ? '<div class="grid">'+list.map((v,i)=>cardHTML(v,i)).join('')+'</div>'
+    ? analyze(list)+'<div class="grid">'+list.map((v,i)=>cardHTML(v,i)).join('')+'</div>'
     : '<div class="msg">이 조건에 맞는 영상이 없어요. 구독자 구간을 넓혀보세요.</div>';
 }
 
@@ -581,15 +612,26 @@ function drawSearchChannels(list){
       '<span class="tr-num muted">'+(c.subs?fmtNum(c.subs):'—')+'</span>'+
     '</a>').join('')+'</div>';
 }
-async function runSearch(){
+async function runSearch(force){
   const key=getKey(); if(!key){ $('out').innerHTML=needKey(); return; }
   const q=$('q').value.trim(); if(!q){ $('out').innerHTML='<div class="msg">검색어를 입력해주세요.</div>'; return; }
+  const days=parseInt($('days').value), region=$('region').value;
+  const ck=cacheKey(q,days,region);
+  if(!force){
+    const hit=readCache(ck);
+    if(hit){
+      sResults=hit.items; sFetched=hit.fetched; pushHistory(q);
+      const mins=Math.round((Date.now()-hit.t)/60000);
+      $('qt').textContent='저장된 결과 사용 · '+mins+'분 전 검색 · 0 유닛';
+      drawSearch(); renderHistory(); return;
+    }
+  }
   const btn=$('btnGo'); btn.disabled=true; btn.textContent='검색 중…';
   const before=ls.get(USE_STORE,{n:0}).n;
   try{
-    const after=new Date(Date.now()-parseInt($('days').value)*86400000).toISOString();
+    const after=new Date(Date.now()-days*86400000).toISOString();
     $('out').innerHTML='<div class="msg"><span class="spin"></span> 영상을 모으는 중…</div>';
-    const ids=await collectIds(key,q,after,$('region').value,S.type==='short'?'short':'medium',S.depth,
+    const ids=await collectIds(key,q,after,region,S.type==='short'?'short':'medium',S.depth,
       n=>$('out').innerHTML='<div class="msg"><span class="spin"></span> 영상을 모으는 중… '+n+'개</div>');
     sFetched=ids.length;
     if(!ids.length){ $('out').innerHTML='<div class="msg">조건에 맞는 영상이 없어요. 기간을 늘려보세요.</div>'; return; }
@@ -612,6 +654,7 @@ async function runSearch(){
     });
 
     sResults=enrich(vids,st);
+    writeCache(ck,sResults,sFetched); pushHistory(q); renderHistory();
     $('qt').textContent='이번 검색 약 '+(ls.get(USE_STORE,{n:0}).n-before).toLocaleString()+' 유닛 사용';
     drawSearch();
   }catch(e){
@@ -771,13 +814,15 @@ async function fillDurations(){
 }
 
 /* ===== 3. 채널 랭킹 ===== */
-const R={type:'all',cap:'all'};
+const R={type:'all',cap:'all',sort:'views'};
 function pgRank(){
   $('page').innerHTML=
   '<div class="panel">'+
     '<div class="row">'+chipRow('type',[{v:'all',l:'전체'},{v:'short',l:'쇼츠'},{v:'long',l:'롱폼'}],R.type)+
       '<div style="width:1px;height:24px;background:var(--line);margin:0 6px"></div>'+
       chipRow('cap',[{v:'all',l:'구독자 전체'},{v:'10000',l:'1만 미만'},{v:'100000',l:'10만 미만'},{v:'1000000',l:'100만 미만'}],R.cap)+
+      '<div style="width:1px;height:24px;background:var(--line);margin:0 6px"></div>'+
+      chipRow('sort',[{v:'views',l:'조회수순'},{v:'rate',l:'🔥 급등순'}],R.sort)+
       '<span class="spacer"></span><span class="count" id="rcnt"></span></div>'+
     '<div class="note">터진 영상 수집 데이터를 채널별로 합산한 순위예요. 구독자 수는 API 키가 있을 때만 표시됩니다.</div>'+
   '</div>'+
@@ -794,14 +839,15 @@ function drawRank(){
   const map={};
   vids.forEach(v=>{
     const k=v.channelId||v.channel;
-    if(!map[k]) map[k]={name:v.channel,subs:v.subs,views:0,rate:0,n:0,thumb:v.thumb,short:0,long:0};
+    if(!map[k]) map[k]={id:v.channelId||'',name:v.channel,subs:v.subs,views:0,rate:0,n:0,thumb:v.thumb,short:0,long:0};
     map[k].views+=v.views; map[k].n++; map[k].rate+=(v.rate||0);
     if(v.subs>map[k].subs) map[k].subs=v.subs;
     if(v.dur>0&&v.dur<=180) map[k].short++; else if(v.dur>180) map[k].long++;
   });
   let list=Object.values(map);
   if(R.cap!=='all') list=list.filter(c=>c.subs===0||c.subs<Number(R.cap));
-  list.sort((a,b)=>b.views-a.views);
+  if(R.sort==='rate') list.sort((a,b)=>b.rate-a.rate);
+  else list.sort((a,b)=>b.views-a.views);
   list=list.slice(0,50);
 
   $('rcnt').innerHTML='채널 <b>'+list.length+'개</b>';
@@ -809,23 +855,119 @@ function drawRank(){
 
   const medal=i=>i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
   $('rout').innerHTML='<div class="tbl">'+
-    '<div class="trow head"><span>순위</span><span>채널</span><span class="tr-num">합산 조회수</span><span class="tr-num">구독자</span></div>'+
+    '<div class="trow head"><span>순위</span><span>채널</span><span class="tr-num">'+
+      (R.sort==='rate'?'시간당 증가':'합산 조회수')+'</span><span class="tr-num">구독자</span></div>'+
     list.map((c,i)=>{
       const kind=c.short>c.long?'SHORTS':c.long>c.short?'LONG':'MIX';
-      return '<div class="trow">'+
+      const open=c.id?'<a class="trow" href="https://www.youtube.com/channel/'+c.id+'" target="_blank" rel="noopener">':'<div class="trow">';
+      const close=c.id?'</a>':'</div>';
+      return open+
         '<span class="tr-rank">'+medal(i)+'</span>'+
         '<span class="tr-chan"><img src="'+c.thumb+'" alt="" loading="lazy">'+
           '<span style="min-width:0"><span class="nm">'+esc(c.name)+'</span>'+
           '<span class="sub">'+kind+' · 영상 '+c.n+'개</span></span></span>'+
-        '<span class="tr-num">'+fmtNum(c.views)+'</span>'+
+        '<span class="tr-num">'+(R.sort==='rate'?'+'+fmtNum(c.rate)+'/h':fmtNum(c.views))+'</span>'+
         '<span class="tr-num muted">'+(c.subs?fmtNum(c.subs):'—')+'</span>'+
-      '</div>';
+      close;
     }).join('')+'</div>';
 }
 
+
+/* ===== 검색 결과 캐시 (같은 조건이면 유닛 0) ===== */
+const CACHE_STORE='yt_search_cache', HIST_STORE='yt_kw_history', CACHE_HOURS=6;
+function cacheKey(q,days,region){ return [q,days,region,S.type,S.depth].join('|'); }
+function readCache(k){
+  const c=ls.get(CACHE_STORE,{});
+  const hit=c[k];
+  if(!hit) return null;
+  if((Date.now()-hit.t)/3600000 > CACHE_HOURS) return null;
+  return hit;
+}
+function writeCache(k,items,fetched){
+  const c=ls.get(CACHE_STORE,{});
+  c[k]={t:Date.now(),items:items,fetched:fetched};
+  const keys=Object.keys(c).sort((a,b)=>c[a].t-c[b].t);
+  while(keys.length>8){ delete c[keys.shift()]; }
+  ls.set(CACHE_STORE,c);
+}
+function pushHistory(q){
+  let h=ls.get(HIST_STORE,[]);
+  h=[q].concat(h.filter(x=>x!==q)).slice(0,10);
+  ls.set(HIST_STORE,h);
+}
+
+/* ===== 패턴 분석 — 상위 영상들의 공통점 (유닛 0) ===== */
+const STOPWORDS=new Set(['그','이','저','것','수','때','더','및','등','좀','너무','진짜','정말','하는','하고','에서','으로','에게','shorts','shorts','the','a','of','and','for','to','in','is','my','you']);
+function analyze(list){
+  const top=list.slice(0,20);
+  if(top.length<5) return '';
+  const titles=top.map(v=>v.title);
+  const avgLen=Math.round(titles.reduce((a,t)=>a+t.length,0)/titles.length);
+  const pct=n=>Math.round(n/top.length*100);
+  const hasNum=pct(titles.filter(t=>/\d/.test(t)).length);
+  const hasQ=pct(titles.filter(t=>/[?？]/.test(t)).length);
+  const hasBracket=pct(titles.filter(t=>/[\[\]("'"'《〈]/.test(t)).length);
+  const avgDur=Math.round(top.reduce((a,v)=>a+(v.dur||0),0)/top.length);
+  const DAY=['일','월','화','수','목','금','토'];
+  const dayCnt={};
+  top.forEach(v=>{ if(v.v&&v.v.snippet){ const d=new Date(v.v.snippet.publishedAt).getDay(); dayCnt[d]=(dayCnt[d]||0)+1; } });
+  const bestDay=Object.keys(dayCnt).sort((a,b)=>dayCnt[b]-dayCnt[a])[0];
+
+  const wc={};
+  titles.forEach(t=>{
+    (t.match(/[가-힣A-Za-z]{2,}/g)||[]).forEach(w=>{
+      const lw=w.toLowerCase();
+      if(STOPWORDS.has(lw)||lw.length<2) return;
+      wc[w]=(wc[w]||0)+1;
+    });
+  });
+  const words=Object.keys(wc).filter(w=>wc[w]>=2).sort((a,b)=>wc[b]-wc[a]).slice(0,6);
+
+  return '<div class="panel analyze">'+
+    '<div class="flabel">📌 상위 '+top.length+'개의 공통점 <span style="font-weight:400;letter-spacing:0;text-transform:none;opacity:.75">여기서 패턴을 찾는 게 진짜 공부예요</span></div>'+
+    '<div class="astats">'+
+      '<div><b>'+avgLen+'자</b><span>평균 제목 길이</span></div>'+
+      '<div><b>'+hasNum+'%</b><span>제목에 숫자</span></div>'+
+      '<div><b>'+hasQ+'%</b><span>제목에 물음표</span></div>'+
+      '<div><b>'+hasBracket+'%</b><span>괄호·따옴표</span></div>'+
+      '<div><b>'+fmtDur(avgDur)+'</b><span>평균 길이</span></div>'+
+      (bestDay!=null?'<div><b>'+DAY[bestDay]+'요일</b><span>가장 많이 업로드</span></div>':'')+
+    '</div>'+
+    (words.length?'<div class="awords"><span>자주 쓰인 단어</span>'+
+      words.map(w=>'<em>'+esc(w)+' <i>'+wc[w]+'</i></em>').join('')+'</div>':'')+
+    '<div class="note">이 숫자들은 <b>결과</b>일 뿐이에요. 실제로 배우려면 상위 3개를 열어서 <b>첫 3초에 무엇이 나오는지</b> 직접 보세요.</div>'+
+  '</div>';
+}
+
+/* ===== 즐겨찾기 메모 · CSV ===== */
+window.saveMemo=function(el,id){
+  const list=favs(); const f=list.find(x=>x.id===id);
+  if(f){ f.memo=el.value; ls.set(FAV_STORE,list); el.classList.add('saved');
+    setTimeout(()=>el.classList.remove('saved'),900); }
+};
+function toCSV(){
+  const rows=[['제목','채널','조회수','구독자','떡상지수','길이(초)','업로드전(일)','메모','링크']];
+  favs().forEach(f=>rows.push([f.title,f.channel,f.views,f.subs,
+    (f.score||0).toFixed(1),f.dur||'',f.days||'',f.memo||'',
+    'https://www.youtube.com/watch?v='+f.id]));
+  return '\ufeff'+rows.map(r=>r.map(c=>'"'+String(c==null?'':c).replace(/"/g,'""')+'"').join(',')).join('\n');
+}
+window.downloadCSV=function(){
+  const blob=new Blob([toCSV()],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='떡상쇼츠_즐겨찾기_'+today()+'.csv';
+  a.click(); URL.revokeObjectURL(a.href);
+};
+
 /* ===== 4. 즐겨찾기 ===== */
 function pgFav(){
-  $('page').innerHTML='<div class="bar"><span class="count" id="fcnt"></span></div><div id="fout"></div>';
+  $('page').innerHTML=
+    '<div class="bar"><span class="count" id="fcnt"></span><span class="spacer"></span>'+
+      '<button class="btn" onclick="downloadCSV()">⬇ CSV로 내보내기</button></div>'+
+    '<div class="note" style="margin:-6px 0 16px">각 영상 아래에 <b>왜 저장했는지</b> 메모를 남겨보세요. '+
+      '첫 3초, 썸네일 문구, 후킹 방식 같은 걸 적어두면 나중에 패턴이 보입니다. CSV로 내보내면 엑셀·노션에서 이어서 정리할 수 있어요.</div>'+
+    '<div id="fout"></div>';
   renderFav();
 }
 function renderFav(){
@@ -833,7 +975,10 @@ function renderFav(){
   const list=favs();
   $('fcnt').innerHTML='<b>'+list.length+'개</b> 저장됨';
   $('fout').innerHTML=list.length
-    ? '<div class="grid">'+list.map(v=>cardHTML(v,null)).join('')+'</div>'
+    ? '<div class="grid">'+list.map(v=>
+        '<div class="favwrap">'+cardHTML(v,null)+
+        '<textarea class="memo" placeholder="왜 저장했나요? (첫 3초 / 썸네일 / 후킹)" '+
+        'onchange="saveMemo(this,\''+v.id+'\')">'+esc(v.memo||'')+'</textarea></div>').join('')+'</div>'
     : '<div class="msg"><span class="big">⭐</span><strong>아직 저장한 영상이 없어요</strong>영상 카드 왼쪽 아래 별을 누르면 여기에 모입니다</div>';
 }
 

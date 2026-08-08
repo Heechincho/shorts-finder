@@ -91,6 +91,7 @@
   .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
     overflow:hidden;display:flex;flex-direction:column;transition:.18s;position:relative;}
   .card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:var(--shadow-hi);}
+  .thumbwrap{position:relative;}
   .thumb{position:relative;display:block;width:100%;aspect-ratio:9/13;background:#000;overflow:hidden;}
   .thumb.wide{aspect-ratio:16/10;}
   .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -115,7 +116,8 @@
     padding-top:10px;border-top:1px solid var(--line);
     font-size:11px;color:var(--text-muted);text-align:center;}
   .cstats div span{display:block;color:var(--text);font-weight:700;font-size:12.5px;margin-top:2px;}
-  .cline{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--text-muted);}
+  .cline{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:11.5px;color:var(--text-muted);}
+  .cline > span:first-child{min-width:0;}
   .cline b{color:var(--gold-bright);font-size:13px;}
   .btrack{width:100%;height:5px;border-radius:4px;background:var(--surface-2);overflow:hidden;}
   .bfill{height:100%;border-radius:4px;}
@@ -123,7 +125,7 @@
     display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;}
   .preset span{flex:1;min-width:220px;font-size:12px;color:var(--text-muted);line-height:1.7;}
   .preset .btn.active{background:var(--gold);border-color:var(--gold);color:#fff;}
-  .warn{color:var(--apricot);font-size:10.5px;font-weight:700;margin-left:4px;}
+  .warn{display:block;color:var(--apricot);font-size:10px;font-weight:700;margin-top:1px;}
   .analyze{background:linear-gradient(180deg,#F4FBF8,#FFFFFF);}
   .astats{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:10px;margin-bottom:12px;}
   .astats div{background:var(--surface-2);border-radius:10px;padding:12px 10px;text-align:center;}
@@ -439,12 +441,14 @@ function cardHTML(v,idx,fixedRank){
       '<b style="color:var(--up)">+'+fmtNum(v.rate)+'/h</b></div>'
     : '<div class="cline"><span>일일 조회수</span><b>'+fmtNum(v.daily)+'/일</b></div>';
   return '<div class="card">'+
-    '<a class="thumb'+wide+'" href="'+url+'" target="_blank" rel="noopener">'+
-      '<img src="'+v.thumb+'" alt="" loading="lazy">'+
-      (rankLabel?'<div class="rank">'+rankLabel+'</div>':'')+tag+
-      (v.dur?'<div class="dur">'+fmtDur(v.dur)+'</div>':'')+
-    '</a>'+
-    '<button class="fav'+(fav?' on':'')+'" data-v="'+data+'" onclick="onFav(this,\''+v.id+'\')">'+(fav?'★':'☆')+'</button>'+
+    '<div class="thumbwrap">'+
+      '<a class="thumb'+wide+'" href="'+url+'" target="_blank" rel="noopener">'+
+        '<img src="'+v.thumb+'" alt="" loading="lazy">'+
+        (rankLabel?'<div class="rank">'+rankLabel+'</div>':'')+tag+
+        (v.dur?'<div class="dur">'+fmtDur(v.dur)+'</div>':'')+
+      '</a>'+
+      '<button class="fav'+(fav?' on':'')+'" data-v="'+data+'" onclick="onFav(this,\''+v.id+'\')">'+(fav?'★':'☆')+'</button>'+
+    '</div>'+
     '<div class="cbody">'+
       '<a class="ctitle" href="'+url+'" target="_blank" rel="noopener">'+esc(v.title)+'</a>'+
       '<div class="cchan">'+esc(v.channel)+'</div>'+
@@ -504,7 +508,7 @@ function bindChips(state,onChange){
 }
 
 /* ===== 1. 조회수 폭발 쇼츠 찾기 ===== */
-const S={cat:'',type:'short',depth:'normal',sort:'score',sub:'all',minv:'0',view:'video'};
+const S={cat:'',type:'short',depth:'fast',sort:'score',sub:'all',minv:'10000',view:'video'};
 let sChanInfo={};
 let sResults=[],sFetched=0;
 function pgSearch(){
@@ -533,8 +537,8 @@ function pgSearch(){
     '<div class="selects" style="margin-top:20px;margin-bottom:0">'+
       '<div><label>검색 키워드 (직접 입력도 가능)</label><input type="text" id="q" style="width:100%" placeholder="예: 건조과일, 홈메이드 간식" value="건조과일"></div>'+
       '<div><label>기간</label><select id="days">'+
-        '<option value="3">최근 3일</option><option value="7" selected>최근 7일</option>'+
-        '<option value="14">최근 14일</option><option value="30">최근 30일</option>'+
+        '<option value="3">최근 3일</option><option value="7">최근 7일</option>'+
+        '<option value="14">최근 14일</option><option value="30" selected>최근 30일</option>'+
         '<option value="60">최근 60일</option><option value="90">최근 90일</option>'+
         '<option value="180">최근 180일</option></select></div>'+
       '<div><label>지역</label><select id="region">'+
@@ -799,14 +803,23 @@ function drawRadar(){
 /* ===== 2. 터진 영상 ===== */
 const T={type:'short',sort:'rate',st:'all',cat:''};
 let tItems=[],tInfo='';
-const CATNAMES={'24':'엔터테인먼트','10':'음악','23':'코미디','26':'노하우/스타일','22':'인물/블로그',
-  '20':'게임','17':'스포츠','25':'뉴스/정치','27':'교육','28':'과학/기술','1':'영화/애니','15':'동물','19':'여행','2':'자동차'};
+const CATNAMES={
+  '1':'영화/애니메이션','2':'자동차','10':'음악','15':'반려동물/동물','17':'스포츠',
+  '18':'단편영화','19':'여행/이벤트','20':'게임','21':'동영상 블로그','22':'인물/블로그',
+  '23':'코미디','24':'엔터테인먼트','25':'뉴스/정치','26':'노하우/스타일','27':'교육',
+  '28':'과학기술','29':'비영리/사회운동','30':'영화','31':'애니메이션','32':'액션/모험',
+  '33':'클래식','34':'코미디(영화)','35':'다큐멘터리','36':'드라마','37':'가족',
+  '38':'해외','39':'공포','40':'SF/판타지','41':'스릴러','42':'단편','43':'쇼','44':'예고편'
+};
 const STLABEL={new:'신규',up:'상승',down:'하락',hold:'유지'};
 const STCOLOR={new:'#3B8FC4',up:'#12A06F',down:'#D06A55',hold:'#8B9C96'};
 
 function pgTrend(){
-  const cats=[...new Set(tItems.map(v=>v.category).filter(Boolean))]
-    .sort((a,b)=>(CATNAMES[a]||a).localeCompare(CATNAMES[b]||b));
+  const cnt={};
+  tItems.forEach(v=>{ if(v.category) cnt[v.category]=(cnt[v.category]||0)+1; });
+  // 수집된 것 + 유튜브 전체 카테고리를 모두 넣고, 많은 순 → 이름 순으로 정렬
+  const cats=[...new Set([...Object.keys(cnt),...Object.keys(CATNAMES)])]
+    .sort((a,b)=>(cnt[b]||0)-(cnt[a]||0) || (CATNAMES[a]||a).localeCompare(CATNAMES[b]||b));
   $('page').innerHTML=
   '<div class="panel">'+
     '<div class="row">'+chipRow('type',[{v:'short',l:'쇼츠'},{v:'long',l:'롱폼'},{v:'all',l:'전체'}],T.type)+
@@ -814,9 +827,10 @@ function pgTrend(){
       chipRow('sort',[{v:'rate',l:'🔥 급등순'},{v:'views',l:'조회수순'},{v:'date',l:'최신순'}],T.sort)+
       '<span class="spacer"></span><button class="btn" id="btnRe">🔄 새로고침</button></div>'+
     '<div class="row" style="margin-top:14px" id="strow"></div>'+
-    (cats.length?'<div class="row" style="margin-top:14px"><select id="cat"><option value="">카테고리 전체</option>'+
-      cats.map(c=>'<option value="'+c+'"'+(c===T.cat?' selected':'')+'>'+(CATNAMES[c]||'카테고리 '+c)+'</option>').join('')+
-      '</select></div>':'')+
+    '<div class="row" style="margin-top:14px"><select id="cat"><option value="">카테고리 전체 ('+tItems.length+')</option>'+
+      cats.map(c=>'<option value="'+c+'"'+(c===T.cat?' selected':'')+(cnt[c]?'':' disabled')+'>'+
+        (CATNAMES[c]||'카테고리 '+c)+' ('+(cnt[c]||0)+')</option>').join('')+
+      '</select></div>'+
     '<div class="note" id="tinfo">'+(tInfo||'<span class="spin"></span> 불러오는 중…')+'</div>'+
   '</div>'+
   '<div class="bar"><span class="count" id="tcnt"></span></div>'+
@@ -912,9 +926,7 @@ async function loadTrend(force){
     put('tinfo',tInfo);
     if(!known&&T.type==='short'){ T.type='all';
       document.querySelectorAll('.chip[data-g="type"]').forEach(b=>b.classList.toggle('on',b.dataset.v==='all')); }
-    if(current==='trend'){
-      if(!$('cat')&&tItems.some(v=>v.category)) pgTrend(); else drawTrend();
-    }
+    if(current==='trend') pgTrend();
   }catch(e){
     const m=e.message||'';
     put('tinfo','불러오기 실패');

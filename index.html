@@ -238,6 +238,8 @@
 const KEY_STORE='yt_finder_key', DUR_STORE='yt_dur_cache', FAV_STORE='yt_favs', USE_STORE='yt_used';
 const DATA_URL='data/trending.json';
 // 로컬 파일이나 미리보기로 열었을 때는 저장소에서 직접 가져옵니다
+const HIST_URL='data/history.json';
+const HIST_FALLBACK='https://raw.githubusercontent.com/Heechincho/shorts-finder/main/data/history.json';
 const DATA_FALLBACK='https://raw.githubusercontent.com/Heechincho/shorts-finder/main/data/trending.json';
 
 const CATEGORIES=[
@@ -814,24 +816,80 @@ async function fillDurations(){
 }
 
 /* ===== 3. 채널 랭킹 ===== */
-const R={type:'all',cap:'all',sort:'views'};
+const R={type:'all',cap:'all',sort:'views',src:'hist'};
+let hChannels=null, hInfoLine='';
+async function loadHistory(){
+  if(hChannels) return true;
+  try{
+    let raw=null;
+    try{
+      const r=await fetch(HIST_URL+'?t='+Date.now(),{cache:'no-store'});
+      if(!r.ok) throw 0; raw=await r.json();
+    }catch(e){
+      const r2=await fetch(HIST_FALLBACK+'?t='+Date.now(),{cache:'no-store'});
+      if(!r2.ok) throw new Error('none'); raw=await r2.json();
+    }
+    if(!raw||!Array.isArray(raw.channels)) throw new Error('none');
+    hChannels=raw.channels;
+    const when=raw.updatedAt?new Date(raw.updatedAt).toLocaleString('ko-KR'):'';
+    const multi=hChannels.filter(c=>c.videos>1).length;
+    hInfoLine='최근 '+(raw.keepDays||7)+'일 누적 · 영상 '+raw.videoCount+'개 · 채널 '+raw.channelCount+
+      '개 · <b>2편 이상 올린 채널 '+multi+'개</b>'+(when?' · 갱신 '+esc(when):'');
+    return true;
+  }catch(e){ hChannels=null; return false; }
+}
 function pgRank(){
   $('page').innerHTML=
   '<div class="panel">'+
-    '<div class="row">'+chipRow('type',[{v:'all',l:'전체'},{v:'short',l:'쇼츠'},{v:'long',l:'롱폼'}],R.type)+
+    '<div class="row" id="rsrc"></div>'+
+    '<div class="row" style="margin-top:14px">'+chipRow('type',[{v:'all',l:'전체'},{v:'short',l:'쇼츠'},{v:'long',l:'롱폼'}],R.type)+
       '<div style="width:1px;height:24px;background:var(--line);margin:0 6px"></div>'+
       chipRow('cap',[{v:'all',l:'구독자 전체'},{v:'10000',l:'1만 미만'},{v:'100000',l:'10만 미만'},{v:'1000000',l:'100만 미만'}],R.cap)+
       '<div style="width:1px;height:24px;background:var(--line);margin:0 6px"></div>'+
       chipRow('sort',[{v:'views',l:'조회수순'},{v:'rate',l:'🔥 급등순'}],R.sort)+
       '<span class="spacer"></span><span class="count" id="rcnt"></span></div>'+
-    '<div class="note">터진 영상 수집 데이터를 채널별로 합산한 순위예요. 구독자 수는 API 키가 있을 때만 표시됩니다.</div>'+
+    '<div class="note" id="rinfo"><span class="spin"></span> 불러오는 중…</div>'+
   '</div>'+
   '<div id="rout"><div class="msg"><span class="spin"></span> 불러오는 중…</div></div>';
-  bindChips(R,()=>drawRank());
-  if(tItems.length) drawRank(); else loadTrend().then(()=>{ if(current==='rank') drawRank(); });
+  bindChips(R,(g)=>{
+    if(g==='src'&&R.src==='now'&&!tItems.length){
+      put('rout','<div class="msg"><span class="spin"></span> 불러오는 중…</div>');
+      loadTrend().then(()=>{ if(current==='rank') drawRank(); });
+      return;
+    }
+    drawRank();
+  });
+
+  loadHistory().then(has=>{
+    if(!$('rsrc')) return;
+    $('rsrc').innerHTML = has
+      ? chipRow('src',[{v:'hist',l:'📚 최근 7일 누적'},{v:'now',l:'⏱ 지금 이 순간'}],R.src)
+      : '';
+    if(!has) R.src='now';
+    if(R.src==='now'&&!tItems.length) loadTrend().then(()=>{ if(current==='rank') drawRank(); });
+    else drawRank();
+  });
 }
 function drawRank(){
   if(!$('rout')) return;
+
+  // 누적 데이터가 있으면 그걸 쓰고, 없으면 지금 이 순간 데이터로
+  if(R.src==='hist'&&hChannels){
+    let list=hChannels.slice();
+    if(R.type==='short') list=list.filter(c=>c.shorts>0);
+    else if(R.type==='long') list=list.filter(c=>c.longs>0);
+    if(R.cap!=='all') list=list.filter(c=>c.subs===0||c.subs<Number(R.cap));
+    list.sort((a,b)=>R.sort==='rate'?(b.avg-a.avg):(b.views-a.views));
+    put('rinfo',hInfoLine);
+    renderRankTable(list.slice(0,50),
+      R.sort==='rate'?'평균 조회수':'7일 합산 조회수',
+      c=>R.sort==='rate'?fmtNum(c.avg):fmtNum(c.views),
+      c=>(c.shorts>c.longs?'SHORTS':c.longs>c.shorts?'LONG':'MIX')+' · 영상 '+c.videos+'개'+
+         (c.bestRank<999?' · 최고 '+c.bestRank+'위':''));
+    return;
+  }
+
+  if(!tItems.length){ put('rout','<div class="msg"><span class="spin"></span> 불러오는 중…</div>'); return; }
   let vids=tItems.slice();
   if(R.type==='short') vids=vids.filter(v=>v.dur>0&&v.dur<=180);
   else if(R.type==='long') vids=vids.filter(v=>v.dur>180);
@@ -839,39 +897,43 @@ function drawRank(){
   const map={};
   vids.forEach(v=>{
     const k=v.channelId||v.channel;
-    if(!map[k]) map[k]={id:v.channelId||'',name:v.channel,subs:v.subs,views:0,rate:0,n:0,thumb:v.thumb,short:0,long:0};
-    map[k].views+=v.views; map[k].n++; map[k].rate+=(v.rate||0);
+    if(!map[k]) map[k]={channelId:v.channelId||'',name:v.channel,subs:v.subs,views:0,rate:0,videos:0,thumb:v.thumb,shorts:0,longs:0};
+    map[k].views+=v.views; map[k].videos++; map[k].rate+=(v.rate||0);
     if(v.subs>map[k].subs) map[k].subs=v.subs;
-    if(v.dur>0&&v.dur<=180) map[k].short++; else if(v.dur>180) map[k].long++;
+    if(v.dur>0&&v.dur<=180) map[k].shorts++; else if(v.dur>180) map[k].longs++;
   });
   let list=Object.values(map);
   if(R.cap!=='all') list=list.filter(c=>c.subs===0||c.subs<Number(R.cap));
-  if(R.sort==='rate') list.sort((a,b)=>b.rate-a.rate);
-  else list.sort((a,b)=>b.views-a.views);
-  list=list.slice(0,50);
+  list.sort((a,b)=>R.sort==='rate'?(b.rate-a.rate):(b.views-a.views));
 
-  $('rcnt').innerHTML='채널 <b>'+list.length+'개</b>';
-  if(!list.length){ $('rout').innerHTML='<div class="msg">조건에 맞는 채널이 없어요.</div>'; return; }
+  put('rinfo','지금 이 순간의 급상승 '+tItems.length+'개를 채널별로 묶은 순위예요. '+
+    '급상승 차트는 채널당 한 편만 올려주기 때문에 대부분 <b>영상 1개</b>로 나옵니다.');
+  renderRankTable(list.slice(0,50),
+    R.sort==='rate'?'시간당 증가':'합산 조회수',
+    c=>R.sort==='rate'?'+'+fmtNum(c.rate)+'/h':fmtNum(c.views),
+    c=>(c.shorts>c.longs?'SHORTS':c.longs>c.shorts?'LONG':'MIX')+' · 영상 '+c.videos+'개');
+}
 
+function renderRankTable(list,numLabel,numFn,subFn){
+  put('rcnt','채널 <b>'+list.length+'개</b>');
+  if(!list.length){ put('rout','<div class="msg">조건에 맞는 채널이 없어요.</div>'); return; }
   const medal=i=>i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
-  $('rout').innerHTML='<div class="tbl">'+
-    '<div class="trow head"><span>순위</span><span>채널</span><span class="tr-num">'+
-      (R.sort==='rate'?'시간당 증가':'합산 조회수')+'</span><span class="tr-num">구독자</span></div>'+
+  put('rout','<div class="tbl">'+
+    '<div class="trow head"><span>순위</span><span>채널</span><span class="tr-num">'+numLabel+
+      '</span><span class="tr-num">구독자</span></div>'+
     list.map((c,i)=>{
-      const kind=c.short>c.long?'SHORTS':c.long>c.short?'LONG':'MIX';
-      const open=c.id?'<a class="trow" href="https://www.youtube.com/channel/'+c.id+'" target="_blank" rel="noopener">':'<div class="trow">';
-      const close=c.id?'</a>':'</div>';
+      const open=c.channelId?'<a class="trow" href="https://www.youtube.com/channel/'+c.channelId+'" target="_blank" rel="noopener">':'<div class="trow">';
+      const close=c.channelId?'</a>':'</div>';
       return open+
         '<span class="tr-rank">'+medal(i)+'</span>'+
         '<span class="tr-chan"><img src="'+c.thumb+'" alt="" loading="lazy">'+
           '<span style="min-width:0"><span class="nm">'+esc(c.name)+'</span>'+
-          '<span class="sub">'+kind+' · 영상 '+c.n+'개</span></span></span>'+
-        '<span class="tr-num">'+(R.sort==='rate'?'+'+fmtNum(c.rate)+'/h':fmtNum(c.views))+'</span>'+
+          '<span class="sub">'+subFn(c)+'</span></span></span>'+
+        '<span class="tr-num">'+numFn(c)+'</span>'+
         '<span class="tr-num muted">'+(c.subs?fmtNum(c.subs):'—')+'</span>'+
       close;
-    }).join('')+'</div>';
+    }).join('')+'</div>');
 }
-
 
 /* ===== 검색 결과 캐시 (같은 조건이면 유닛 0) ===== */
 const CACHE_STORE='yt_search_cache', HIST_STORE='yt_kw_history', CACHE_HOURS=6;

@@ -1,6 +1,5 @@
 {
   "_설명": "지켜볼 채널을 찾는 검색어 목록입니다. 실행할 때마다 keywords를 순서대로 몇 개씩 돌아가며 채널을 찾아 channels에 쌓습니다. channels 배열은 자동으로 채워지니 직접 건드리지 마세요.",
-
   "keywords": [
     "연예인추천템",
     "연예인 추천템",
@@ -14,7 +13,6 @@
     "연예인 필수템",
     "연예인 픽",
     "연예인 사용템",
-
     "연예인 화장품 추천",
     "연예인 뷰티템",
     "연예인 스킨케어",
@@ -32,7 +30,6 @@
     "연예인 집들이 선물",
     "연예인 인테리어",
     "연예인 가전제품",
-
     "셀럽템",
     "셀럽 추천",
     "셀럽 쇼핑",
@@ -44,7 +41,6 @@
     "메이크업 아티스트 추천템",
     "연예인 코디 정보",
     "연예인 착용 제품",
-
     "방송에서 나온 제품",
     "드라마 협찬템",
     "예능 나온 제품",
@@ -57,7 +53,6 @@
     "요즘 핫한 제품",
     "화제의 제품",
     "SNS 화제템",
-
     "올리브영 추천템",
     "다이소 추천템",
     "쿠팡 추천템",
@@ -67,10 +62,220 @@
     "언박싱 리뷰",
     "내돈내산 리뷰"
   ],
-
   "maxChannels": 600,
   "videosPerChannel": 6,
   "keepDays": 60,
-
-  "channels": []
+  "channels": [
+    {
+      "id": "UClcybvgYb7X7dRKtg7LRiTQ",
+      "name": "쇼핑이멀전시",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUlcybvgYb7X7dRKtg7LRiTQ"
+    },
+    {
+      "id": "UCWf_qAeERJ7KyGctmgFP8Hg",
+      "name": "셀럽힛템",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUWf_qAeERJ7KyGctmgFP8Hg"
+    },
+    {
+      "id": "UCDWRw3hBQK56XDkFkWvTnZw",
+      "name": "똑똑한 쇼핑",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUDWRw3hBQK56XDkFkWvTnZw"
+    },
+    {
+      "id": "UC8RHNLOi2B9mqoADsgA5pYA",
+      "name": "스타일하우스",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UU8RHNLOi2B9mqoADsgA5pYA"
+    },
+    {
+      "id": "UCfqNLqPQZtIcRUWpyaRTs8Q",
+      "name": "햅삐패밀리",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUfqNLqPQZtIcRUWpyaRTs8Q"
+    },
+    {
+      "id": "UCWBhmfoJI7NnW3sLtNaMqWA",
+      "name": "리뷰어컵",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUWBhmfoJI7NnW3sLtNaMqWA"
+    },
+    {
+      "id": "UC1CWhzicPP7XOHjdANEE7aw",
+      "name": "IMOS 전소미",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UU1CWhzicPP7XOHjdANEE7aw"
+    },
+    {
+      "id": "UCWjCX7GqsBvqOSmi40mBUBA",
+      "name": "셀템하우스",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUWjCX7GqsBvqOSmi40mBUBA"
+    },
+    {
+      "id": "UCOyqDQ0TlMcNCXtO-F0O2cQ",
+      "name": "햇님의 취향가게",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUOyqDQ0TlMcNCXtO-F0O2cQ"
+    },
+    {
+      "id": "UCf_fFxxScFBnbJoVWeh0HJQ",
+      "name": "반짝픽",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUf_fFxxScFBnbJoVWeh0HJQ"
+    },
+    {
+      "id": "UCJb7z052EzyfyYlR7y7bxTA",
+      "name": "인싸픽",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUJb7z052EzyfyYlR7y7bxTA"
+    },
+    {
+      "id": "UCI2CLUzKkpcNXmOqNue68dw",
+      "name": "뷰티픽",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUI2CLUzKkpcNXmOqNue68dw"
+    },
+    {
+      "id": "UCkIZOE5YJpBtxzp9VyNCLmQ",
+      "name": "원픽꿀템",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUkIZOE5YJpBtxzp9VyNCLmQ"
+    },
+    {
+      "id": "UCc1I7UrAPX6m-myYKmaZl7w",
+      "name": "고준희 GO",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUc1I7UrAPX6m-myYKmaZl7w"
+    },
+    {
+      "id": "UCFTRxOI4mEMhAw0StzZHDyg",
+      "name": "쇼핑카트",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUFTRxOI4mEMhAw0StzZHDyg"
+    },
+    {
+      "id": "UCfXp9zjXf49v3mqS6gi1G0Q",
+      "name": "현장속으로",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUfXp9zjXf49v3mqS6gi1G0Q"
+    },
+    {
+      "id": "UCK6AYYdEWuoqkmO_3FGWExQ",
+      "name": "부업뚝딱",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUK6AYYdEWuoqkmO_3FGWExQ"
+    },
+    {
+      "id": "UCcudWSylWbpKj4FgT0xVX1w",
+      "name": "온도스토리",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUcudWSylWbpKj4FgT0xVX1w"
+    },
+    {
+      "id": "UCUGdIVDhvXHPdEZY8mpbXmA",
+      "name": "모두의꿀템",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUUGdIVDhvXHPdEZY8mpbXmA"
+    },
+    {
+      "id": "UCchRZl7m_2EZgY60m9qNPDg",
+      "name": "엘르 코리아_ELLE KOREA",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUchRZl7m_2EZgY60m9qNPDg"
+    },
+    {
+      "id": "UCtX1yD3V5kpg61rU0AEJIdw",
+      "name": "여돌의아이템",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUtX1yD3V5kpg61rU0AEJIdw"
+    },
+    {
+      "id": "UC64IJVwgC5RI8jU83mWVkDA",
+      "name": "Story Point",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UU64IJVwgC5RI8jU83mWVkDA"
+    },
+    {
+      "id": "UC_8NapzNGbb63Hv9D0cCX_A",
+      "name": "뷰티정체",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UU_8NapzNGbb63Hv9D0cCX_A"
+    },
+    {
+      "id": "UCnbaUDSu38aynavjB6dtqSg",
+      "name": "어바웃아이템",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUnbaUDSu38aynavjB6dtqSg"
+    },
+    {
+      "id": "UCWXV_clr7nz_TJmLes0w1BQ",
+      "name": "다비교",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUWXV_clr7nz_TJmLes0w1BQ"
+    },
+    {
+      "id": "UCfHnlNqAgapCloIh5FuUsMA",
+      "name": "캐치템",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUfHnlNqAgapCloIh5FuUsMA"
+    },
+    {
+      "id": "UCf4G6tUX58PlwR_ypVadarA",
+      "name": "썰토끼_v",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUf4G6tUX58PlwR_ypVadarA"
+    },
+    {
+      "id": "UCmhBHADRGT_QABj4jFFvm9g",
+      "name": "초로템",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUmhBHADRGT_QABj4jFFvm9g"
+    },
+    {
+      "id": "UCjfUTOtXyN-HnV1hm-VUZ_g",
+      "name": "셀럽토끼",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UUjfUTOtXyN-HnV1hm-VUZ_g"
+    },
+    {
+      "id": "UC_T1s1vwTLFWu98pMc2Rnpw",
+      "name": "별의조각픽",
+      "from": "연예인추천템",
+      "addedAt": "2026-08-08T13:14:05.067Z",
+      "uploads": "UU_T1s1vwTLFWu98pMc2Rnpw"
+    }
+  ],
+  "_turn": 2
 }

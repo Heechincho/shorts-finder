@@ -691,7 +691,7 @@ async function runSearch(force){
 
 
 /* ===== 내 분야 레이더 ===== */
-const RD={type:'short',sort:'score',sub:'all',minv:'0',view:'video'};
+const RD={type:'short',sort:'score',sub:'all',minv:'10000',view:'video'};
 const RADAR_URL='data/radar.json';
 const RADAR_FALLBACK='https://raw.githubusercontent.com/Heechincho/shorts-finder/main/data/radar.json';
 let rdItems=null, rdChans=[], rdInfo='';
@@ -704,8 +704,8 @@ function pgRadar(){
     '<div class="flabel">구독자 구간</div><div class="row">'+chipRow('sub',[
       {v:'all',l:'전체'},{v:'0-10000',l:'0~1만 (급성장)'},{v:'10000-50000',l:'1만~5만'},
       {v:'50000-100000',l:'5만~10만'},{v:'100000-999999999',l:'10만+'}],RD.sub)+'</div>'+
-    '<div class="flabel">최소 조회수</div><div class="row">'+chipRow('minv',[
-      {v:'0',l:'전체'},{v:'10000',l:'1만 이상'},{v:'100000',l:'10만 이상'}],RD.minv)+'</div>'+
+    '<div class="flabel">최소 조회수 <span style="font-weight:400;letter-spacing:0;text-transform:none;opacity:.75">구독자가 적으면 지수만 커집니다</span></div><div class="row">'+chipRow('minv',[
+      {v:'0',l:'전체'},{v:'10000',l:'1만 이상'},{v:'100000',l:'10만 이상'},{v:'1000000',l:'100만 이상'}],RD.minv)+'</div>'+
     '<div class="flabel">정렬</div><div class="row">'+chipRow('sort',[
       {v:'score',l:'떡상지수 순'},{v:'rate',l:'🔥 급등순'},
       {v:'views',l:'조회수순'},{v:'date',l:'최신순'}],RD.sort)+'</div>'+

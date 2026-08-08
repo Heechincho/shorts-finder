@@ -275,7 +275,406 @@
       "from": "연예인추천템",
       "addedAt": "2026-08-08T13:14:05.067Z",
       "uploads": "UU_T1s1vwTLFWu98pMc2Rnpw"
+    },
+    {
+      "id": "UCDWm1A5ombv9IR0AJJCvrNg",
+      "name": "셀럽도니",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUDWm1A5ombv9IR0AJJCvrNg"
+    },
+    {
+      "id": "UCrUMQ87cXR3SNC2ujElBrwQ",
+      "name": "인어뷰티",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUrUMQ87cXR3SNC2ujElBrwQ"
+    },
+    {
+      "id": "UCF24NMvY6K0wUUaRR2jscQA",
+      "name": "일분일초",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUF24NMvY6K0wUUaRR2jscQA"
+    },
+    {
+      "id": "UCpXj1iaBylJxJ-g3kgCxfZA",
+      "name": "유어디어",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUpXj1iaBylJxJ-g3kgCxfZA"
+    },
+    {
+      "id": "UCWaWvDRyhmSKOQWah7t7wuA",
+      "name": "일일칠 - 117",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUWaWvDRyhmSKOQWah7t7wuA"
+    },
+    {
+      "id": "UCN8KgL5XZ6ZsA5WGSdfJCkQ",
+      "name": "빵별",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUN8KgL5XZ6ZsA5WGSdfJCkQ"
+    },
+    {
+      "id": "UCXc72M-ahP0VIE5QiIIwEiw",
+      "name": "칼로리 퇴근중",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUXc72M-ahP0VIE5QiIIwEiw"
+    },
+    {
+      "id": "UCwA3Gik5ZOnXKKV3RF1A8gQ",
+      "name": "꿀단지",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUwA3Gik5ZOnXKKV3RF1A8gQ"
+    },
+    {
+      "id": "UCKS2r_4ncQKExyzQ0dvQE_A",
+      "name": "셀럽온",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUKS2r_4ncQKExyzQ0dvQE_A"
+    },
+    {
+      "id": "UCeqC47YCPs3TdiZA7w29Kag",
+      "name": "셀럽찐리뷰",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUeqC47YCPs3TdiZA7w29Kag"
+    },
+    {
+      "id": "UCrPbgj0RV6sLriBoGU3192g",
+      "name": "스타템컷",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUrPbgj0RV6sLriBoGU3192g"
+    },
+    {
+      "id": "UC9u7VG9VYj1-RC19Blhbalw",
+      "name": "꿀템아카이브",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UU9u7VG9VYj1-RC19Blhbalw"
+    },
+    {
+      "id": "UCZVSqdf9XTgaCQo7fPRiAiA",
+      "name": "잇픽오",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUZVSqdf9XTgaCQo7fPRiAiA"
+    },
+    {
+      "id": "UChKSdfQkRXg25odJHXiB7WA",
+      "name": "해피셀럽",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUhKSdfQkRXg25odJHXiB7WA"
+    },
+    {
+      "id": "UCxb-tmarwq0Oyl79MT9Sv1w",
+      "name": "스타원픽",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUxb-tmarwq0Oyl79MT9Sv1w"
+    },
+    {
+      "id": "UCev_FLjA2O6_o0C8NfmwTDw",
+      "name": "모던룩북",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUev_FLjA2O6_o0C8NfmwTDw"
+    },
+    {
+      "id": "UC_1F_h0Onp0HmyX6HBAhWSw",
+      "name": "스타픽룸",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UU_1F_h0Onp0HmyX6HBAhWSw"
+    },
+    {
+      "id": "UC7ccYqImTNeQjehgMd-6ovQ",
+      "name": "깔롱스타",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UU7ccYqImTNeQjehgMd-6ovQ"
+    },
+    {
+      "id": "UC5eKXmnH2b8gSjYEidnhy-w",
+      "name": "픽스타",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UU5eKXmnH2b8gSjYEidnhy-w"
+    },
+    {
+      "id": "UCim2LcpwPuyhVP3H7LtMJNA",
+      "name": "유쾌백곰",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUim2LcpwPuyhVP3H7LtMJNA"
+    },
+    {
+      "id": "UCeba1gBft2h7se3tWqmPvmQ",
+      "name": "스타파우치랩",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUeba1gBft2h7se3tWqmPvmQ"
+    },
+    {
+      "id": "UCmXpr28Uj2iPvanoST1OUPw",
+      "name": "1분리뷰연구소",
+      "from": "연예인템",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUmXpr28Uj2iPvanoST1OUPw"
+    },
+    {
+      "id": "UCAMGWbOnDd9dpAK7BO0Wftw",
+      "name": "개과천선 서인영",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUAMGWbOnDd9dpAK7BO0Wftw"
+    },
+    {
+      "id": "UCmGuoyyw2sGcx3OW8te7D_A",
+      "name": "예능공장",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUmGuoyyw2sGcx3OW8te7D_A"
+    },
+    {
+      "id": "UCqFTdAP2rY2Fn8iF8P2biog",
+      "name": "맛있는쀼끼",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUqFTdAP2rY2Fn8iF8P2biog"
+    },
+    {
+      "id": "UCyNPgH7_QEsoW4PbLJHmi2Q",
+      "name": "유머굿템",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUyNPgH7_QEsoW4PbLJHmi2Q"
+    },
+    {
+      "id": "UCA9kvKQdNxslWm5IKZgXS_A",
+      "name": "안녕하세요 최화정이에요",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUA9kvKQdNxslWm5IKZgXS_A"
+    },
+    {
+      "id": "UCkOJ7CpknOjyHgk3sOIQA_g",
+      "name": "찐 여배우들",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUkOJ7CpknOjyHgk3sOIQA_g"
+    },
+    {
+      "id": "UCdYr-oAFinkSJtDeZ_38Gzw",
+      "name": "셀럽패션",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUdYr-oAFinkSJtDeZ_38Gzw"
+    },
+    {
+      "id": "UCKh253c8h7Dxgbw2eQU9vSQ",
+      "name": "카니입니다",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUKh253c8h7Dxgbw2eQU9vSQ"
+    },
+    {
+      "id": "UCag6Qu6uHjQKPvBI5MW12AQ",
+      "name": "고소영",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUag6Qu6uHjQKPvBI5MW12AQ"
+    },
+    {
+      "id": "UCZJuv8TeIOxlMCyByC4Iy5A",
+      "name": "부업국",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUZJuv8TeIOxlMCyByC4Iy5A"
+    },
+    {
+      "id": "UCtkRVaUSpkuhqdKv39oBXKA",
+      "name": "밉지않은 관종언니",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUtkRVaUSpkuhqdKv39oBXKA"
+    },
+    {
+      "id": "UChqQOyVGaaRI-dUTAbH1ajA",
+      "name": "보그디그",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUhqQOyVGaaRI-dUTAbH1ajA"
+    },
+    {
+      "id": "UCrIQPjBZzzgw8ovos0pCQtw",
+      "name": "배워야산다",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUrIQPjBZzzgw8ovos0pCQtw"
+    },
+    {
+      "id": "UCjAHaa33aBPrdM9NETn39Bg",
+      "name": "셀럽꿀템",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUjAHaa33aBPrdM9NETn39Bg"
+    },
+    {
+      "id": "UCFBW8UcsBRd-HZHaNMNr7_w",
+      "name": "연예소식뉴스",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUFBW8UcsBRd-HZHaNMNr7_w"
+    },
+    {
+      "id": "UC7zqW45liqpGvEuFeyRwrmA",
+      "name": "출구없태연",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UU7zqW45liqpGvEuFeyRwrmA"
+    },
+    {
+      "id": "UCV6zwqLmF2WrcfbmTMMDN2w",
+      "name": "예능다모여",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUV6zwqLmF2WrcfbmTMMDN2w"
+    },
+    {
+      "id": "UCaTRZlxqOnm_QWMX2063z4Q",
+      "name": "너굴의 쇼츠상점",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUaTRZlxqOnm_QWMX2063z4Q"
+    },
+    {
+      "id": "UCVtWFBePPdgGULIJo1J1Xaw",
+      "name": "그냥 이미주",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUVtWFBePPdgGULIJo1J1Xaw"
+    },
+    {
+      "id": "UCdR4VGqKKH_uERdsWQX-NFQ",
+      "name": "픽미미",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUdR4VGqKKH_uERdsWQX-NFQ"
+    },
+    {
+      "id": "UCy84pu9zehcKYZ40jU595aA",
+      "name": "미니로운생활",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUy84pu9zehcKYZ40jU595aA"
+    },
+    {
+      "id": "UCnwu3n--W9bbMsKQGyybKSQ",
+      "name": "지연이라면",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUnwu3n--W9bbMsKQGyybKSQ"
+    },
+    {
+      "id": "UCmS562ABlgIARdv_y10TXtg",
+      "name": "소소비",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUmS562ABlgIARdv_y10TXtg"
+    },
+    {
+      "id": "UC9Ozb41qlL1CTnlsaxmKaGw",
+      "name": "안소희",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UU9Ozb41qlL1CTnlsaxmKaGw"
+    },
+    {
+      "id": "UCB9jzo97ZxA5Kl6JDfX0UPw",
+      "name": "김민지 KIMMINGEE",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUB9jzo97ZxA5Kl6JDfX0UPw"
+    },
+    {
+      "id": "UC-Yazufh_CaFEw0pPLgxxUw",
+      "name": "연예인시장",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UU-Yazufh_CaFEw0pPLgxxUw"
+    },
+    {
+      "id": "UCdOccpjUtItcCHpnEFxIvAw",
+      "name": "찐픽줍줍",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUdOccpjUtItcCHpnEFxIvAw"
+    },
+    {
+      "id": "UC_CBSLqGT_tSctpoVfLOgwA",
+      "name": "셀럽뷰티트래커",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UU_CBSLqGT_tSctpoVfLOgwA"
+    },
+    {
+      "id": "UCNU9t09cSx--S6H_pceF35w",
+      "name": "수익 스토리",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUNU9t09cSx--S6H_pceF35w"
+    },
+    {
+      "id": "UCl80DrPc-KHHaX_pG_-bsSg",
+      "name": "똑주부",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUl80DrPc-KHHaX_pG_-bsSg"
+    },
+    {
+      "id": "UCWJoI_lraA0TL7yzt2pg1eg",
+      "name": "옷덕후",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUWJoI_lraA0TL7yzt2pg1eg"
+    },
+    {
+      "id": "UCc3l8yRrqOdwXJut-WCK3yg",
+      "name": "미디어온",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUc3l8yRrqOdwXJut-WCK3yg"
+    },
+    {
+      "id": "UCmid9Rk7-WpQh5IHhTqv2hQ",
+      "name": "픽트렌",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUmid9Rk7-WpQh5IHhTqv2hQ"
+    },
+    {
+      "id": "UC5mP3pECh1o20x8XU4vO-ZA",
+      "name": "록터뷰",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UU5mP3pECh1o20x8XU4vO-ZA"
+    },
+    {
+      "id": "UCTNGqKvdNOM8PdsSPUadY5g",
+      "name": "오늘치트키",
+      "from": "연예인 쇼핑",
+      "addedAt": "2026-08-08T19:00:13.634Z",
+      "uploads": "UUTNGqKvdNOM8PdsSPUadY5g"
     }
   ],
-  "_turn": 2
+  "_turn": 4
 }

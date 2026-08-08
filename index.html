@@ -257,6 +257,7 @@ const PAGES={
 };
 
 const $=id=>document.getElementById(id);
+const put=(id,html)=>{const e=$(id); if(e) e.innerHTML=html;};
 const esc=s=>String(s==null?'':s).replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const ls={
   get(k,d){ try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;} },
@@ -649,6 +650,7 @@ function pgTrend(){
   if(tItems.length) drawTrend(); else loadTrend();
 }
 function drawTrend(){
+  if(!$('tout')) return;
   let base=tItems.slice();
   if(T.type==='short') base=base.filter(v=>v.dur>0&&v.dur<=180);
   else if(T.type==='long') base=base.filter(v=>v.dur>180);
@@ -669,16 +671,16 @@ function drawTrend(){
   else if(T.sort==='date') list.sort((a,b)=>new Date(b.publishedAt||0)-new Date(a.publishedAt||0));
   else list.sort((a,b)=>(b.rate||b.daily)-(a.rate||a.daily));
 
-  $('tcnt').innerHTML='<b>'+list.length+'개</b> 표시 중 · 수집 '+tItems.length+'개';
+  put('tcnt','<b>'+list.length+'개</b> 표시 중 · 수집 '+tItems.length+'개');
   const known=tItems.filter(v=>v.dur>0).length;
-  $('tout').innerHTML=list.length
+  put('tout',list.length
     ? '<div class="grid">'+list.map(v=>cardHTML(v,null,v.rank||null)).join('')+'</div>'
     : '<div class="msg">'+(T.type==='short'&&!known
         ? '<strong>영상 길이 정보가 없어요</strong>수집 스크립트가 dur 값을 저장하는지 확인해주세요.'
-        : '조건에 맞는 영상이 없어요. 타입이나 카테고리를 넓혀보세요.')+'</div>';
+        : '조건에 맞는 영상이 없어요. 타입이나 카테고리를 넓혀보세요.')+'</div>');
 }
 async function loadTrend(force){
-  $('tout').innerHTML='<div class="msg"><span class="spin"></span> 불러오는 중…</div>';
+  put('tout','<div class="msg"><span class="spin"></span> 불러오는 중…</div>');
   try{
     let raw=null, viaFallback=false;
     try{
@@ -730,16 +732,18 @@ async function loadTrend(force){
     tInfo='✅ '+tItems.length+'개 수집'+(when?' · 마지막 '+esc(when):'')+
       (known?'':' · <b>길이 정보 없음</b>')+extra+
       (viaFallback?' · <b>저장소에서 직접 불러왔어요</b> (미리보기 모드)':'');
-    $('tinfo').innerHTML=tInfo;
+    put('tinfo',tInfo);
     if(!known&&T.type==='short'){ T.type='all';
       document.querySelectorAll('.chip[data-g="type"]').forEach(b=>b.classList.toggle('on',b.dataset.v==='all')); }
-    drawTrend();
-    if($('page').querySelector('#cat')===null&&tItems.some(v=>v.category)) pgTrend();
+    if(current==='trend'){
+      if(!$('cat')&&tItems.some(v=>v.category)) pgTrend(); else drawTrend();
+    }
   }catch(e){
     const m=e.message||'';
-    $('tinfo').textContent='불러오기 실패';
-    $('tout').innerHTML='<div class="err"><b>'+
-      (/HTTP 404/.test(m)?'data/trending.json 을 찾을 수 없어요. 자동 수집이 돌았는지 확인해주세요.':esc(m))+'</b></div>';
+    put('tinfo','불러오기 실패');
+    put('tout','<div class="err"><b>'+
+      (/HTTP 404/.test(m)?'data/trending.json 을 찾을 수 없어요. 자동 수집이 돌았는지 확인해주세요.':esc(m))+'</b></div>');
+    put('rout','<div class="err"><b>순위를 만들 데이터를 불러오지 못했어요.</b></div>');
   }
 }
 async function fillDurations(){
@@ -753,7 +757,7 @@ async function fillDurations(){
   try{
     for(let i=0;i<miss.length;i+=50){
       const b=miss.slice(i,i+50);
-      $('tinfo').innerHTML='<span class="spin"></span> 영상 길이 확인 중… '+Math.min(i+50,miss.length)+'/'+miss.length;
+      put('tinfo','<span class="spin"></span> 영상 길이 확인 중… '+Math.min(i+50,miss.length)+'/'+miss.length);
       const d=await yt('videos',{part:'contentDetails',id:b.join(','),key:key},1); used++;
       (d.items||[]).forEach(it=>cache[it.id]=toSec(it.contentDetails&&it.contentDetails.duration));
       b.forEach(id=>{ if(cache[id]===undefined) cache[id]=0; });
@@ -779,7 +783,7 @@ function pgRank(){
   '</div>'+
   '<div id="rout"><div class="msg"><span class="spin"></span> 불러오는 중…</div></div>';
   bindChips(R,()=>drawRank());
-  if(tItems.length) drawRank(); else loadTrend().then(drawRank);
+  if(tItems.length) drawRank(); else loadTrend().then(()=>{ if(current==='rank') drawRank(); });
 }
 function drawRank(){
   if(!$('rout')) return;

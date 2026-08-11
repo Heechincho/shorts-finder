@@ -368,13 +368,6 @@
       "uploads": "UUZVSqdf9XTgaCQo7fPRiAiA"
     },
     {
-      "id": "UChKSdfQkRXg25odJHXiB7WA",
-      "name": "해피셀럽",
-      "from": "연예인템",
-      "addedAt": "2026-08-08T19:00:13.634Z",
-      "uploads": "UUhKSdfQkRXg25odJHXiB7WA"
-    },
-    {
       "id": "UCxb-tmarwq0Oyl79MT9Sv1w",
       "name": "스타원픽",
       "from": "연예인템",
@@ -705,7 +698,7 @@
     },
     {
       "id": "UCRyWIuXf379iSt3HH5h95jQ",
-      "name": "무드셀럽",
+      "name": "사고말고",
       "from": "연예인 애용템",
       "addedAt": "2026-08-09T02:30:35.943Z",
       "uploads": "UURyWIuXf379iSt3HH5h95jQ"
@@ -1213,13 +1206,6 @@
       "from": "연예인 잇템",
       "addedAt": "2026-08-09T13:17:17.483Z",
       "uploads": "UUhakb9e3lsNbsy4aDW9UOMw"
-    },
-    {
-      "id": "UCj36QU2xaKry6P2Ht_vtoPQ",
-      "name": "그거어디꺼",
-      "from": "연예인 잇템",
-      "addedAt": "2026-08-09T13:17:17.483Z",
-      "uploads": "UUj36QU2xaKry6P2Ht_vtoPQ"
     },
     {
       "id": "UCVA9bgM1ki-v51lp6oqszUA",
@@ -3348,7 +3334,329 @@
       "from": "연예인 주방템",
       "addedAt": "2026-08-11T13:45:03.931Z",
       "uploads": "UUvAfsLphWte-hHkw9IzOtDA"
+    },
+    {
+      "id": "UCpTva11UGlX1nDn9YDc9d7A",
+      "name": "셀럽디깅",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUpTva11UGlX1nDn9YDc9d7A"
+    },
+    {
+      "id": "UCBXlGJGQyK7yUbq3UbGcY0w",
+      "name": "건강지원24",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUBXlGJGQyK7yUbq3UbGcY0w"
+    },
+    {
+      "id": "UCGV9ULJRlLVMB9P2KL78bvA",
+      "name": "셀로그",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUGV9ULJRlLVMB9P2KL78bvA"
+    },
+    {
+      "id": "UCXUm_FlPPTa651htebVWGVA",
+      "name": "꿀템노트zip",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUXUm_FlPPTa651htebVWGVA"
+    },
+    {
+      "id": "UCz2jb3nAhnfNuxI3_qA7XJQ",
+      "name": "YOUNG'S TOY",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUz2jb3nAhnfNuxI3_qA7XJQ"
+    },
+    {
+      "id": "UCQUUZ5YwRDe0IEHdKnCMZFw",
+      "name": "꼼지락토끼",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUQUUZ5YwRDe0IEHdKnCMZFw"
+    },
+    {
+      "id": "UC7LbfQh9mSOmpk4G4laFD-Q",
+      "name": "쇼핑의기술",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UU7LbfQh9mSOmpk4G4laFD-Q"
+    },
+    {
+      "id": "UC5z8yP8GeTL4xVFHj8lQQdA",
+      "name": "생활연구소",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UU5z8yP8GeTL4xVFHj8lQQdA"
+    },
+    {
+      "id": "UCdOXvUKE0IMzKUx44-6cmbg",
+      "name": "셀럽냥",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUdOXvUKE0IMzKUx44-6cmbg"
+    },
+    {
+      "id": "UC3USYb7zKKBZfkjOZysSfwA",
+      "name": "셀럽마켓",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UU3USYb7zKKBZfkjOZysSfwA"
+    },
+    {
+      "id": "UC8yz1qLoDKUIG8kMCYbqg4A",
+      "name": "꿀팁담아",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UU8yz1qLoDKUIG8kMCYbqg4A"
+    },
+    {
+      "id": "UCWebze0EvhB9g3iNV51lARA",
+      "name": "시니어지원24",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUWebze0EvhB9g3iNV51lARA"
+    },
+    {
+      "id": "UCOBOQySnA5CVV5HIaBKqtKw",
+      "name": "셀럽써치K",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUOBOQySnA5CVV5HIaBKqtKw"
+    },
+    {
+      "id": "UCF-6cz0o5qNNqHpSRmqbzgw",
+      "name": "셀럽츄",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUF-6cz0o5qNNqHpSRmqbzgw"
+    },
+    {
+      "id": "UClIt2U77dsfK_tGHHyIVlhA",
+      "name": "숫자브리핑",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUlIt2U77dsfK_tGHHyIVlhA"
+    },
+    {
+      "id": "UCkw89jKo1-R3SV9J0-bwRbg",
+      "name": "푸핳",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUkw89jKo1-R3SV9J0-bwRbg"
+    },
+    {
+      "id": "UC9wd1ZY4rY5Hv7uDZU4SZaA",
+      "name": "손자tv",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UU9wd1ZY4rY5Hv7uDZU4SZaA"
+    },
+    {
+      "id": "UC2BcioxdPrlecf7TK0CKLMA",
+      "name": "백세만세 건강통신",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UU2BcioxdPrlecf7TK0CKLMA"
+    },
+    {
+      "id": "UCNYsUUZLvKTIwEJbPmIQ-mw",
+      "name": "숏냥이",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUNYsUUZLvKTIwEJbPmIQ-mw"
+    },
+    {
+      "id": "UCLBBWDT4s2rTlVDULQ-wAKQ",
+      "name": "셀럽celove",
+      "from": "연예인 집들이 선물",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UULBBWDT4s2rTlVDULQ-wAKQ"
+    },
+    {
+      "id": "UCBbJv4YWyu89pP1tg9laatw",
+      "name": "탐구생활",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUBbJv4YWyu89pP1tg9laatw"
+    },
+    {
+      "id": "UCPdUis4nRiFIs8fsx_46MeA",
+      "name": "내일뷰티",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUPdUis4nRiFIs8fsx_46MeA"
+    },
+    {
+      "id": "UCFCtZJTuJhE18k8IXwmXTYQ",
+      "name": "EBSDocumentary (EBS 다큐)",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUFCtZJTuJhE18k8IXwmXTYQ"
+    },
+    {
+      "id": "UCmPwArWf76QEMw2VOnuK8sg",
+      "name": "엄지원 Umjeewon",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUmPwArWf76QEMw2VOnuK8sg"
+    },
+    {
+      "id": "UC0wNauoCVIfU_xtWwrczFiA",
+      "name": "김나영의 nofilterTV(노필터티비)",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UU0wNauoCVIfU_xtWwrczFiA"
+    },
+    {
+      "id": "UCcRVxK-cBX7AsOHJ6MOTSew",
+      "name": "내사랑 류이서",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUcRVxK-cBX7AsOHJ6MOTSew"
+    },
+    {
+      "id": "UCGsJRpGI3iFpf0lIUIgbsBw",
+      "name": "KBS StarTV: 인물사전",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUGsJRpGI3iFpf0lIUIgbsBw"
+    },
+    {
+      "id": "UC6SSDAsu4E06brZG-QNSuLw",
+      "name": "행가집",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UU6SSDAsu4E06brZG-QNSuLw"
+    },
+    {
+      "id": "UCLjhg55HzH7x8O62RGakufQ",
+      "name": "썰한잔",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UULjhg55HzH7x8O62RGakufQ"
+    },
+    {
+      "id": "UCGValzU_2R1s9RGYKQiUhZg",
+      "name": "퍼플식스TV",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUGValzU_2R1s9RGYKQiUhZg"
+    },
+    {
+      "id": "UCEXhh3iQnEu45HOcXz2ay9g",
+      "name": "유이홈",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUEXhh3iQnEu45HOcXz2ay9g"
+    },
+    {
+      "id": "UCHvFsjOvYeHXJfxTok2a4NA",
+      "name": "날리",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUHvFsjOvYeHXJfxTok2a4NA"
+    },
+    {
+      "id": "UCUDrGYAi-_ekP1IF5185tug",
+      "name": "이슈연구소",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUUDrGYAi-_ekP1IF5185tug"
+    },
+    {
+      "id": "UCsfe-fjSfvloVr2Wzi5Ad6Q",
+      "name": "폴리컴퍼니",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUsfe-fjSfvloVr2Wzi5Ad6Q"
+    },
+    {
+      "id": "UCj3LfARKs2hmDuIHhPYIO2A",
+      "name": "꼼수살림",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUj3LfARKs2hmDuIHhPYIO2A"
+    },
+    {
+      "id": "UCdvZUV_gsA2GMkbEllYoH4A",
+      "name": "이슈 PICKER",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUdvZUV_gsA2GMkbEllYoH4A"
+    },
+    {
+      "id": "UCw1lIyoeLTqCv0NYWJqr4Mw",
+      "name": "뉴마이하우스",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUw1lIyoeLTqCv0NYWJqr4Mw"
+    },
+    {
+      "id": "UCC4FFJBa4R3NcXuR0QtnvlQ",
+      "name": "완판추천템",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUC4FFJBa4R3NcXuR0QtnvlQ"
+    },
+    {
+      "id": "UCeWGu6oX8iuyT9sJ5I3Izkg",
+      "name": "99hp_tv",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUeWGu6oX8iuyT9sJ5I3Izkg"
+    },
+    {
+      "id": "UC3RUioX3TxYjsJBN9nieqEQ",
+      "name": "캥거루아저씨",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UU3RUioX3TxYjsJBN9nieqEQ"
+    },
+    {
+      "id": "UCWgMnByUTR8Q4EJxMElqMlw",
+      "name": "TEMSPOON 템스푼",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUWgMnByUTR8Q4EJxMElqMlw"
+    },
+    {
+      "id": "UCBgYVJPLjqXcBcWPT_fDJcA",
+      "name": "로컬튜브㉿",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUBgYVJPLjqXcBcWPT_fDJcA"
+    },
+    {
+      "id": "UCIzb13YYNR8lzbNlxWVniig",
+      "name": "홈꾸집",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUIzb13YYNR8lzbNlxWVniig"
+    },
+    {
+      "id": "UC7gK2D_WyNFLtXD9bfd9-og",
+      "name": "서원모터스",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UU7gK2D_WyNFLtXD9bfd9-og"
+    },
+    {
+      "id": "UCOBOunLQecX0QKdaVNsseKA",
+      "name": "김꿀템",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUOBOunLQecX0QKdaVNsseKA"
+    },
+    {
+      "id": "UCL5cN36Q1MIZqAUAv8-dcdQ",
+      "name": "달큐레이터",
+      "from": "연예인 인테리어",
+      "addedAt": "2026-08-11T19:27:09.857Z",
+      "uploads": "UUL5cN36Q1MIZqAUAv8-dcdQ"
     }
   ],
-  "_turn": 26
+  "_turn": 28
 }

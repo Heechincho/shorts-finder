@@ -3252,13 +3252,6 @@
       "uploads": "UUAFYVw0fsZqp2eQxYAiyPAw"
     },
     {
-      "id": "UC73HMVukHC-H4FHgDBouyrQ",
-      "name": "스마트주방",
-      "from": "연예인 주방템",
-      "addedAt": "2026-08-11T13:45:03.931Z",
-      "uploads": "UU73HMVukHC-H4FHgDBouyrQ"
-    },
-    {
       "id": "UCfddN4YYdYWO9HJHBUPlfSw",
       "name": "로꿀뷰 ro.s_view",
       "from": "연예인 주방템",
@@ -3292,13 +3285,6 @@
       "from": "연예인 주방템",
       "addedAt": "2026-08-11T13:45:03.931Z",
       "uploads": "UUNHBj0x4Gk90_19y89MH3JQ"
-    },
-    {
-      "id": "UCK9fgixqWrjZTrjAqA-KFdA",
-      "name": "꿀정보부엌",
-      "from": "연예인 주방템",
-      "addedAt": "2026-08-11T13:45:03.931Z",
-      "uploads": "UUK9fgixqWrjZTrjAqA-KFdA"
     },
     {
       "id": "UC1znStabOqKjtXVx3btASfQ",
@@ -3651,13 +3637,6 @@
       "uploads": "UUUWC2bbFjtNQsyN0jXYOkuA"
     },
     {
-      "id": "UCzQE7-1gFCDg4rqXYO5QnRw",
-      "name": "생활꿀팁사전",
-      "from": "연예인 가전제품",
-      "addedAt": "2026-08-12T02:47:16.793Z",
-      "uploads": "UUzQE7-1gFCDg4rqXYO5QnRw"
-    },
-    {
       "id": "UCH3S55p7rEyqZRJWv3DzeIg",
       "name": "꿀팁신호등",
       "from": "연예인 가전제품",
@@ -3735,13 +3714,6 @@
       "uploads": "UUILloyY_jdoZIpbpWwz0PgQ"
     },
     {
-      "id": "UCy9O-UkrwLYsaO6YT4xk7AQ",
-      "name": "알짜살림장",
-      "from": "연예인 가전제품",
-      "addedAt": "2026-08-12T02:47:16.793Z",
-      "uploads": "UUy9O-UkrwLYsaO6YT4xk7AQ"
-    },
-    {
       "id": "UCBxIZdkXtTvPqQoIpVPkL6w",
       "name": "나만의공간",
       "from": "연예인 가전제품",
@@ -3756,25 +3728,11 @@
       "uploads": "UUGweRWpnhK8HPQDd5EJOupg"
     },
     {
-      "id": "UCj-n7ksBEOpvPtb18Osdz7g",
-      "name": "살림꿀팁방",
-      "from": "연예인 가전제품",
-      "addedAt": "2026-08-12T02:47:16.793Z",
-      "uploads": "UUj-n7ksBEOpvPtb18Osdz7g"
-    },
-    {
       "id": "UC9I_c-fUF0agD8za7JN0ptA",
       "name": "일상백과",
       "from": "연예인 가전제품",
       "addedAt": "2026-08-12T02:47:16.793Z",
       "uploads": "UU9I_c-fUF0agD8za7JN0ptA"
-    },
-    {
-      "id": "UC2ulE-xg_mWIi15U59nQ2_w",
-      "name": "유영살림",
-      "from": "연예인 가전제품",
-      "addedAt": "2026-08-12T02:47:16.793Z",
-      "uploads": "UU2ulE-xg_mWIi15U59nQ2_w"
     },
     {
       "id": "UCGG7hZe1ufLf_Kn7GSCu0Cg",
@@ -4258,7 +4216,14 @@
       "from": "방송에서 나온 제품",
       "addedAt": "2026-08-23T07:02:56.404Z",
       "uploads": "UU1peKM3uX4v-KK6yckCy3Eg"
+    },
+    {
+      "id": "UCeGeH05_jDHo8ccLl-V_qbw",
+      "name": "템.포.착.(템을 포착하는 채널)",
+      "from": "예능 나온 제품",
+      "addedAt": "2026-08-24T19:01:13.709Z",
+      "uploads": "UUeGeH05_jDHo8ccLl-V_qbw"
     }
   ],
-  "_turn": 42
+  "_turn": 44
 }

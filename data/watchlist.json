@@ -572,7 +572,7 @@
     },
     {
       "id": "UCmS562ABlgIARdv_y10TXtg",
-      "name": "소소비",
+      "name": "홈쇼P!CK",
       "from": "연예인 쇼핑",
       "addedAt": "2026-08-08T19:00:13.634Z",
       "uploads": "UUmS562ABlgIARdv_y10TXtg"
@@ -4258,7 +4258,14 @@
       "from": "완판템 추천",
       "addedAt": "2026-08-26T13:18:06.749Z",
       "uploads": "UUBceQkRVUWX4rTXs1uL5Q9w"
+    },
+    {
+      "id": "UCb8_UiUdnM9S7r1aYPAsSMw",
+      "name": "헤블 HEBLE",
+      "from": "인생템 추천",
+      "addedAt": "2026-08-28T22:23:29.902Z",
+      "uploads": "UUb8_UiUdnM9S7r1aYPAsSMw"
     }
   ],
-  "_turn": 48
+  "_turn": 50
 }

@@ -8,30 +8,27 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
   :root{
-    --bg:#DDF3EB; --side:#FFFFFF; --surface:#FFFFFF; --surface-2:#F1F1F3; --surface-3:#E7E7EA;
-    --line:#E4E4E8; --line-2:#D7D7DC;
-    --gold:#B9840B; --gold-bright:#EA580C; --apricot:#EA580C;
-    --text:#16181D; --text-muted:#6B7280;
-    --danger:#DB3554; --up:#12966A; --ok:#12966A;
-    --shadow:0 1px 2px rgba(15,16,20,.05), 0 1px 3px rgba(15,16,20,.04);
-    --shadow-hi:0 14px 30px -10px rgba(15,16,20,.16);
+    --bg:#E3F5EC; --side:#F2FBF6; --surface:#F2FBF6; --surface-2:#D8EEE1; --surface-3:#C6E4D3;
+    --gold:#B9840B; --gold-bright:#E85A20; --apricot:#E85A20;
+    --text:#152B21; --text-muted:#5D7C6C; --line:#C4E0D0;
+    --danger:#C23452; --up:#0F8F5F; --ok:#0F8F5F;
+    --shadow:0 1px 2px rgba(15,50,35,.08), 0 1px 3px rgba(15,50,35,.05);
+    --shadow-hi:0 10px 24px -8px rgba(15,50,35,.22);
     --ease:cubic-bezier(.22,1,.36,1);
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#0B1815; --side:#18191D; --surface:#18191D; --surface-2:#1F2024; --surface-3:#282A30;
-      --line:#2C2D33; --line-2:#3A3B42;
+      --bg:#0D110F; --side:#161C19; --surface:#161C19; --surface-2:#1D2420; --surface-3:#263029;
       --gold:#F0B429; --gold-bright:#FF7A3D; --apricot:#FF7A3D;
-      --text:#EEEFF2; --text-muted:#93969E;
+      --text:#EBEFE9; --text-muted:#8FA097; --line:#2B362F;
       --danger:#FF6B80; --up:#33D690; --ok:#33D690;
       --shadow:0 1px 2px rgba(0,0,0,.35); --shadow-hi:0 16px 32px -10px rgba(0,0,0,.55);
     }
   }
   :root[data-theme="dark"]{
-    --bg:#0B1815; --side:#18191D; --surface:#18191D; --surface-2:#1F2024; --surface-3:#282A30;
-    --line:#2C2D33; --line-2:#3A3B42;
+    --bg:#0D110F; --side:#161C19; --surface:#161C19; --surface-2:#1D2420; --surface-3:#263029;
     --gold:#F0B429; --gold-bright:#FF7A3D; --apricot:#FF7A3D;
-    --text:#EEEFF2; --text-muted:#93969E;
+    --text:#EBEFE9; --text-muted:#8FA097; --line:#2B362F;
     --danger:#FF6B80; --up:#33D690; --ok:#33D690;
     --shadow:0 1px 2px rgba(0,0,0,.35); --shadow-hi:0 16px 32px -10px rgba(0,0,0,.55);
   }
@@ -58,10 +55,9 @@
   .logo b{font-size:15px;font-weight:700;letter-spacing:-.01em;}
   .menu-label{font-size:10px;letter-spacing:.14em;color:var(--text-muted);padding:0 8px 10px;text-transform:uppercase;
     font-family:"IBM Plex Mono",monospace;}
-  .nav{display:flex;flex-direction:column;gap:5px;position:relative;}
+  .nav{display:flex;flex-direction:column;gap:2px;position:relative;}
   .nav a{position:relative;display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:9px;
-    font-size:13.5px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    transition:color .18s var(--ease),background .18s var(--ease);cursor:pointer;}
+    font-size:13.5px;color:var(--text-muted);transition:color .18s var(--ease),background .18s var(--ease);cursor:pointer;}
   .nav a:hover{background:var(--surface-2);color:var(--text);}
   .nav a.on{background:var(--gold-bright);color:#fff;font-weight:700;
     box-shadow:0 6px 16px -6px color-mix(in srgb, var(--gold-bright) 60%, transparent);}
@@ -88,86 +84,13 @@
     font-weight:700;width:100%;margin-bottom:9px;}
   .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
   .row + .flabel{margin-top:18px;}
-  .toolbar{gap:10px;background:var(--surface-2);border:1px solid var(--line-2);
-    border-radius:12px;padding:5px;width:fit-content;}
-  .toolbar .chip,.toolbar .btn{height:42px;box-sizing:border-box;
-    display:inline-flex;align-items:center;}
-  .toolbar .segmented{background:var(--surface);}
-  .toolbar .selectpill{background:transparent;border-color:transparent;}
-  .toolbar .selectpill:hover{background:var(--surface-3);}
-  .toolbar .divider{width:1px;height:22px;background:var(--line-2);margin:0 3px;flex-shrink:0;}
 
-  .chip.chip-sm{padding:6px 13px;font-size:12.5px;}
-
-  /* 검색창 캡슐형 */
-  .searchbar-capsule{background:var(--surface-2);border:1px solid var(--line);border-radius:14px;
-    padding:5px 6px 5px 16px;gap:10px;
-    transition:border-color .16s var(--ease), box-shadow .16s var(--ease);}
-  .searchbar-capsule:focus-within{border-color:var(--gold-bright);
-    box-shadow:0 0 0 3px color-mix(in srgb, var(--gold-bright) 18%, transparent);}
-  .searchbar-capsule .search-ic{font-size:16px;color:var(--text-muted);flex-shrink:0;}
-  .searchbar-capsule input{background:transparent !important;border:none !important;
-    padding:11px 0 !important;box-shadow:none !important;}
-  .searchbar-capsule input:focus{box-shadow:none !important;}
-  .searchbar-capsule .go{border-radius:10px;padding:11px 22px;flex-shrink:0;}
-
-  /* 세그먼트 컨트롤 (영상 타입 스위치) */
-  .segmented{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);
-    border-radius:11px;padding:3px;height:42px;box-sizing:border-box;gap:2px;}
-  .segmented .chip{border:none;border-radius:8px;background:transparent;box-shadow:none;
-    height:auto;padding:0 16px;}
-  .segmented .chip:hover{transform:none;box-shadow:none;background:var(--surface-3);color:var(--text);}
-  .segmented .chip:active{transform:scale(.94);}
-  .segmented .chip.on{background:var(--gold-bright);color:#fff;
-    box-shadow:0 3px 8px -3px color-mix(in srgb, var(--gold-bright) 55%, transparent);}
-  .segmented .chip.on:hover{background:var(--gold-bright);}
-
-  /* 아이콘 라벨 셀렉트 필 */
-  .selectpill{display:inline-flex;align-items:center;gap:6px;height:42px;
-    padding:0 8px 0 14px;background:var(--surface-2);border:1px solid var(--line);
-    border-radius:11px;cursor:pointer;transition:border-color .16s var(--ease);}
-  .selectpill:hover{border-color:color-mix(in srgb, var(--gold-bright) 40%, var(--line));}
-  .selectpill:focus-within{border-color:var(--gold-bright);
-    box-shadow:0 0 0 3px color-mix(in srgb, var(--gold-bright) 18%, transparent);}
-  .selectpill .pill-ic{font-size:14px;flex-shrink:0;}
-  .selectpill select{border:none !important;background:transparent !important;
-    padding:0 20px 0 2px !important;height:auto;font-size:13.5px;font-weight:600;}
-  .selectpill select:focus{box-shadow:none !important;}
-
-  /* 프리셋 배너형 버튼 */
-  .preset-banner{position:relative;overflow:hidden;width:100%;display:flex;align-items:center;gap:14px;
-    margin-top:14px;padding:14px 18px;border-radius:12px;cursor:pointer;text-align:left;
-    background:color-mix(in srgb, var(--gold-bright) 7%, var(--surface));
-    border:1px solid color-mix(in srgb, var(--gold-bright) 30%, var(--line-2));
-    transition:transform .1s cubic-bezier(.4,0,.2,1), border-color .16s var(--ease), box-shadow .16s var(--ease), background .16s var(--ease);}
-  .preset-banner:hover{border-color:var(--gold-bright);
-    background:color-mix(in srgb, var(--gold-bright) 11%, var(--surface));
-    box-shadow:0 8px 20px -10px color-mix(in srgb, var(--gold-bright) 45%, transparent);transform:translateY(-1px);}
-  .preset-banner:active{transform:translateY(0) scale(.99);transition-duration:.05s;}
-  .preset-banner:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb, var(--gold-bright) 35%, transparent);}
-  .pb-icon{font-size:22px;flex-shrink:0;}
-  .pb-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
-  .pb-text b{font-size:14px;color:var(--text);}
-  .pb-text small{font-size:11.5px;color:var(--text-muted);font-weight:400;}
-  .pb-arrow{font-size:16px;color:var(--gold-bright);flex-shrink:0;transition:transform .16s var(--ease);}
-  .preset-banner:hover .pb-arrow{transform:translateX(3px);}
-  .preset-banner.active{background:linear-gradient(135deg,var(--gold-bright),var(--gold));
-    border-style:solid;border-color:var(--gold-bright);}
-  .preset-banner.active .pb-text b,.preset-banner.active .pb-text small{color:#fff;}
-  .preset-banner.active .pb-arrow{color:#fff;transform:rotate(90deg);}
-
-  .chip{position:relative;overflow:hidden;background:var(--surface-2);border:1px solid var(--line-2);color:var(--text-muted);
-    padding:7.5px 15px;border-radius:10px;font-size:13px;cursor:pointer;box-shadow:none;
-    transition:background .16s var(--ease),color .16s var(--ease),border-color .16s var(--ease),
-      transform .1s cubic-bezier(.4,0,.2,1), box-shadow .16s var(--ease);}
-  .chip:hover{color:var(--text);background:var(--surface-3);border-color:color-mix(in srgb, var(--gold-bright) 35%, var(--line-2));
-    transform:translateY(-1px);}
-  .chip:active{transform:scale(.94) translateY(0);box-shadow:inset 0 1px 3px rgba(0,0,0,.12);transition-duration:.05s;}
-  .chip:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb, var(--gold-bright) 35%, transparent);}
-  .chip.on{background:color-mix(in srgb, var(--gold-bright) 14%, var(--surface));
-    border-color:color-mix(in srgb, var(--gold-bright) 45%, var(--line-2));
-    color:color-mix(in srgb, var(--gold-bright) 78%, var(--text));font-weight:700;box-shadow:none;}
-  .chip.on:hover{background:color-mix(in srgb, var(--gold-bright) 20%, var(--surface));}
+  .chip{background:var(--surface-2);border:1px solid var(--line);color:var(--text-muted);
+    padding:7.5px 15px;border-radius:20px;font-size:13px;cursor:pointer;
+    transition:background .16s var(--ease),color .16s var(--ease),border-color .16s var(--ease),transform .12s var(--ease);}
+  .chip:hover{color:var(--text);border-color:color-mix(in srgb, var(--gold-bright) 45%, var(--line));}
+  .chip:active{transform:scale(.94);}
+  .chip.on{background:var(--gold-bright);border-color:var(--gold-bright);color:#fff;font-weight:700;}
   .chip small{display:block;font-size:10px;opacity:.75;font-weight:400;}
 
   input[type=text],input[type=password],select{
@@ -176,45 +99,29 @@
     transition:border-color .16s var(--ease), box-shadow .16s var(--ease);}
   input:focus,select:focus{outline:none;border-color:var(--gold-bright);
     box-shadow:0 0 0 3px color-mix(in srgb, var(--gold-bright) 20%, transparent);}
-  select{cursor:pointer;appearance:none;-webkit-appearance:none;-moz-appearance:none;
-    padding-right:32px;
-    background-image:
-      linear-gradient(45deg,transparent 50%, var(--text-muted) 50%),
-      linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
-    background-position:calc(100% - 17px) calc(50% - 2px), calc(100% - 12px) calc(50% - 2px);
-    background-size:5px 5px, 5px 5px; background-repeat:no-repeat;
-    transition:border-color .16s var(--ease), box-shadow .16s var(--ease), background-color .16s var(--ease);}
-  select:hover{border-color:color-mix(in srgb, var(--gold-bright) 40%, var(--line));}
   .searchbar{display:flex;gap:9px;margin-bottom:16px;}
   .searchbar input{flex:1;min-width:0;padding:14px 16px;font-size:15px;}
   .go{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--gold-bright),var(--gold));
     border:none;color:#fff;
     padding:14px 30px;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap;
-    transition:transform .1s cubic-bezier(.4,0,.2,1), filter .16s var(--ease), box-shadow .16s var(--ease);
+    transition:transform .12s var(--ease), filter .16s var(--ease);
     box-shadow:0 8px 20px -8px color-mix(in srgb, var(--gold-bright) 65%, transparent);}
-  .go::after{content:'';position:absolute;inset:0;pointer-events:none;
-    background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);
-    transform:translateX(-130%);transition:transform .55s ease;}
-  .go:hover{filter:brightness(1.06);transform:translateY(-1px);
-    box-shadow:0 12px 26px -8px color-mix(in srgb, var(--gold-bright) 70%, transparent);}
-  .go:hover::after{transform:translateX(130%);}
-  .go:active{transform:translateY(0) scale(.97);filter:brightness(.97);transition-duration:.05s;
-    box-shadow:0 4px 10px -6px color-mix(in srgb, var(--gold-bright) 55%, transparent);}
-  .go:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb, var(--gold-bright) 35%, transparent),
-    0 8px 20px -8px color-mix(in srgb, var(--gold-bright) 65%, transparent);}
+  .go:hover{filter:brightness(1.06);}
+  .go:active{transform:scale(.97);}
   .go:disabled{opacity:.5;cursor:not-allowed;transform:none;filter:none;}
   .go.block{width:100%;justify-content:center;}
   .btn{position:relative;overflow:hidden;background:var(--surface-2);border:1px solid var(--line);color:var(--text);
     padding:10px 16px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;
-    box-shadow:0 1px 2px rgba(0,0,0,.03);
-    transition:transform .1s cubic-bezier(.4,0,.2,1), border-color .16s var(--ease), box-shadow .16s var(--ease);}
-  .btn:hover{border-color:color-mix(in srgb, var(--gold-bright) 45%, var(--line));
-    transform:translateY(-1px);box-shadow:0 6px 14px -6px rgba(0,0,0,.12);}
-  .btn:active{transform:translateY(0) scale(.965);box-shadow:inset 0 1px 3px rgba(0,0,0,.1);transition-duration:.05s;}
-  .btn:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb, var(--gold-bright) 35%, transparent);}
-  .ripple{position:absolute;border-radius:50%;background:currentColor;opacity:.32;transform:scale(0);
-    animation:rip .5s var(--ease) forwards;pointer-events:none;}
+    transition:transform .12s var(--ease), border-color .16s var(--ease);}
+  .btn:hover{border-color:color-mix(in srgb, var(--gold-bright) 45%, var(--line));}
+  .btn:active{transform:scale(.965);}
+  .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.55);transform:scale(0);
+    animation:rip .55s var(--ease) forwards;pointer-events:none;}
   @keyframes rip{to{transform:scale(2.6);opacity:0;}}
+
+  .selects{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px;}
+  .selects label{display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;}
+  .selects select{width:100%;}
 
   .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px;}
   .spacer{flex:1;}
@@ -267,7 +174,7 @@
   .preset{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);
     display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;}
   .preset span{flex:1;min-width:220px;font-size:12px;color:var(--text-muted);line-height:1.7;}
-  .btn.active{background:var(--gold-bright);border-color:var(--gold-bright);color:#fff;}
+  .preset .btn.active{background:var(--gold-bright);border-color:var(--gold-bright);color:#fff;}
   .warn{display:block;color:var(--apricot);font-size:10px;font-weight:700;margin-top:1px;}
   .analyze{background:var(--surface);}
   .astats{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:10px;margin-bottom:12px;}
@@ -275,8 +182,8 @@
   .astats b{display:block;font-size:18px;font-weight:700;color:var(--gold-bright);font-family:"IBM Plex Mono",monospace;}
   .astats span{display:block;font-size:11px;color:var(--text-muted);margin-top:3px;}
   .awords{display:flex;gap:7px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--text-muted);}
-  .awords em{font-style:normal;background:var(--surface-2);border:1px solid var(--line-2);
-    border-radius:10px;padding:5px 11px;font-size:12.5px;color:var(--text);}
+  .awords em{font-style:normal;background:var(--surface-2);border:1px solid var(--line);
+    border-radius:20px;padding:5px 11px;font-size:12.5px;color:var(--text);}
   .awords em i{font-style:normal;color:var(--gold-bright);font-weight:700;font-family:"IBM Plex Mono",monospace;}
   .favwrap{display:flex;flex-direction:column;gap:7px;}
   .memo{width:100%;min-height:62px;resize:vertical;background:var(--surface);
@@ -286,30 +193,9 @@
   .memo:focus{outline:none;border-color:var(--gold-bright);}
   .memo.saved{border-color:var(--ok);}
   .chip.hist{font-size:12px;padding:6px 12px;}
-  /* 상세 필터 접기/펼치기 */
-  .adv{margin-top:16px;}
-  .adv summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;
-    padding:11px 15px;border-radius:10px;background:var(--surface);border:1px solid var(--line-2);
-    font-size:13px;font-weight:600;color:var(--text-muted);user-select:none;
-    transition:background .16s var(--ease), color .16s var(--ease),
-      transform .1s cubic-bezier(.4,0,.2,1), box-shadow .16s var(--ease);}
-  .adv summary::-webkit-details-marker{display:none;}
-  .adv summary:hover{color:var(--text);background:var(--surface-3);}
-  .adv summary:active{transform:scale(.985);box-shadow:inset 0 1px 3px rgba(0,0,0,.1);transition-duration:.05s;}
-  .adv summary:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb, var(--gold-bright) 35%, transparent);}
-  .adv summary::after{content:'▾';margin-left:auto;transition:transform .18s var(--ease);color:var(--gold-bright);}
-  .adv[open] summary::after{transform:rotate(180deg);}
-  .adv[open] summary{border-radius:10px 10px 0 0;}
-  .adv-body{border:1px solid var(--line);border-top:none;border-radius:0 0 10px 10px;padding:16px 16px 2px;}
-
-  /* 결과 등급 요약 (한눈에 보기) */
-  .stat-strip{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
-  .stat-strip .stile{flex:1;min-width:130px;display:flex;align-items:center;gap:10px;
-    background:var(--surface);border:1px solid var(--line);border-radius:12px;
-    padding:12px 14px;box-shadow:var(--shadow);}
-  .stat-strip .sdot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-  .stat-strip b{display:block;font-size:19px;font-weight:700;font-family:"IBM Plex Mono",monospace;}
-  .stat-strip span{display:block;font-size:11px;color:var(--text-muted);margin-top:1px;}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;font-size:12px;color:var(--text-muted);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .ldot{width:8px;height:8px;border-radius:50%;display:inline-block;}
 
   /* 표 */
   .tbl{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);}
@@ -386,58 +272,6 @@
     transition:opacity .25s var(--ease), transform .25s var(--ease);z-index:50;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-  /* ===== 레이더 페이지 전용 "소나/HUD" 스타일 (다른 페이지에는 영향 없음) ===== */
-  .phead-radar .ic{background:radial-gradient(circle,#0D2A1F,#04100B);
-    border-color:rgba(75,227,160,.4);color:#4BE3A0;}
-  .radar-banner{background:linear-gradient(135deg,#04120D,#0A1A14) !important;
-    border-color:rgba(75,227,160,.35) !important;color:#B9E8D3 !important;}
-  .radar-banner a{color:#4BE3A0 !important;}
-  .radar-hud{
-    --surface:rgba(6,20,15,.55); --surface-2:rgba(75,227,160,.08); --surface-3:rgba(75,227,160,.14);
-    --gold:#FFB454; --gold-bright:#4BE3A0; --apricot:#FF6B6B;
-    --text:#DFF7EC; --text-muted:#7FA898; --line:rgba(75,227,160,.25); --line-2:rgba(75,227,160,.4);
-    --danger:#FF5C5C; --up:#4BE3A0; --ok:#4BE3A0;
-    --shadow:0 0 0 1px rgba(75,227,160,.08), 0 8px 24px rgba(0,0,0,.5);
-    --shadow-hi:0 0 26px rgba(75,227,160,.35), 0 16px 40px rgba(0,0,0,.6);
-    position:relative;overflow:hidden;isolation:isolate;
-    background:radial-gradient(ellipse at 50% 40%,#07211A 0%,#03110C 60%,#020A07 100%);
-    border-radius:18px;padding:28px 26px 36px;
-    font-family:"IBM Plex Mono",monospace;
-  }
-  .radar-hud::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
-    background-image:
-      repeating-radial-gradient(circle at 50% 42%, rgba(75,227,160,.16) 0, rgba(75,227,160,.16) 1px, transparent 1px, transparent 64px),
-      radial-gradient(rgba(75,227,160,.10) 1px, transparent 1px);
-    background-size:auto, 20px 20px;}
-  .radar-hud::after{content:'';position:absolute;inset:-10%;z-index:0;pointer-events:none;
-    background:conic-gradient(from 0deg at 50% 42%, rgba(75,227,160,.30), transparent 22%, transparent 100%);
-    animation:radarsweep 7s linear infinite; mix-blend-mode:screen;}
-  @keyframes radarsweep{to{transform:rotate(360deg);}}
-  .radar-hud > *{position:relative;z-index:1;}
-  .radar-hud .panel,.radar-hud .card,.radar-hud .chcard,.radar-hud .tbl,
-  .radar-hud .note,.radar-hud .astats div,.radar-hud .msg{
-    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
-  .radar-hud .panel{border-radius:12px;}
-  .radar-hud .flabel{font-family:"IBM Plex Mono",monospace;letter-spacing:.18em;color:var(--gold-bright);}
-  .radar-hud .flabel::before{content:'▸ ';}
-  .radar-hud .chip{border-radius:5px;font-family:"IBM Plex Mono",monospace;}
-  .radar-hud .chip.on{background:rgba(75,227,160,.16);border-color:rgba(75,227,160,.55);
-    color:#4BE3A0;text-shadow:0 0 10px rgba(75,227,160,.55);box-shadow:0 0 16px rgba(75,227,160,.6);}
-  .radar-hud .card,.radar-hud .chcard{border-radius:10px;}
-  .radar-hud .card{position:relative;}
-  .radar-hud .card::before,.radar-hud .card::after{content:'';position:absolute;width:16px;height:16px;
-    z-index:2;pointer-events:none;opacity:.55;transition:opacity .2s var(--ease);}
-  .radar-hud .card::before{top:7px;left:7px;border-top:2px solid var(--gold-bright);border-left:2px solid var(--gold-bright);}
-  .radar-hud .card::after{bottom:7px;right:7px;border-bottom:2px solid var(--gold-bright);border-right:2px solid var(--gold-bright);}
-  .radar-hud .card:hover::before,.radar-hud .card:hover::after{opacity:1;}
-  .radar-hud .card:hover,.radar-hud .chcard:hover{box-shadow:inset 0 0 0 1px rgba(75,227,160,.3),var(--shadow-hi);}
-  .radar-hud .tbl{border-radius:10px;}
-  .radar-hud .astats div{border-radius:8px;}
-  .radar-hud .note{background:rgba(75,227,160,.04);border-radius:8px;padding:12px 16px;border:1px solid var(--line);}
-  .radar-hud .msg{background:rgba(75,227,160,.03);border-radius:12px;}
-  .radar-hud .msg strong{color:var(--gold-bright);}
-  .radar-hud .count b,.radar-hud .astats b{text-shadow:0 0 12px rgba(75,227,160,.5);}
-
   @media (max-width:860px){
     .app{flex-direction:column;}
     .side{width:100%;height:auto;position:static;padding:14px;}
@@ -498,7 +332,7 @@ function ripple(btn,e){
   btn.appendChild(el); setTimeout(()=>el.remove(),600);
 }
 document.addEventListener('click',e=>{
-  const b=e.target.closest('.go,.btn,.chip'); if(b) ripple(b,e);
+  const b=e.target.closest('.go,.btn'); if(b) ripple(b,e);
 });
 const KEY_STORE='yt_finder_key', DUR_STORE='yt_dur_cache', FAV_STORE='yt_favs', USE_STORE='yt_used';
 const DATA_URL='data/trending.json';
@@ -726,9 +560,8 @@ function go(p){
   document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.page===p));
   const m=PAGES[p]||PAGES.search;
   $('pgIcon').textContent=m.ic; $('pgTitle').textContent=m.t; $('pgDesc').textContent=m.d;
-  $('pgIcon').closest('.phead').classList.toggle('phead-radar',p==='radar');
   $('banner').innerHTML = (!getKey()&&p!=='key'&&p!=='trend')
-    ? '<div class="banner'+(p==='radar'?' radar-banner':'')+'">🔑 아직 API 키가 없어요. <a onclick="go(\'key\')">지금 등록하기</a> — 무료이고 5분이면 됩니다.</div>' : '';
+    ? '<div class="banner">🔑 아직 API 키가 없어요. <a onclick="go(\'key\')">지금 등록하기</a> — 무료이고 5분이면 됩니다.</div>' : '';
   ({radar:pgRadar,search:pgSearch,trend:pgTrend,rank:pgRank,fav:pgFav,key:pgKey}[p]||pgSearch)();
   window.scrollTo({top:0});
 }
@@ -759,54 +592,45 @@ let sResults=[],sFetched=0;
 function pgSearch(){
   $('page').innerHTML=
   '<div class="panel">'+
-    '<div class="searchbar searchbar-capsule">'+
-      '<span class="search-ic">🔍</span>'+
-      '<input type="text" id="q" placeholder="예: 건조과일, 홈메이드 간식" value="건조과일">'+
-      '<button class="go" id="btnGo">검색</button>'+
-    '</div>'+
-    '<div class="row" id="histrow"></div>'+
-    '<div class="flabel">관심 주제 <span style="font-weight:400;letter-spacing:0;text-transform:none;opacity:.75">눌러서 검색어에 바로 채워요</span></div>'+
-    '<div class="row">'+
-      CATEGORIES.map(c=>'<button class="chip chip-sm'+(c.kw===S.cat?' on':'')+'" data-g="cat" data-v="'+c.kw+'">'+c.l+'</button>').join('')+'</div>'+
-    '<div class="row toolbar" style="margin-top:14px">'+
-      '<div class="segmented">'+chipRow('type',[{v:'short',l:'쇼츠'},{v:'long',l:'롱폼'}],S.type)+'</div>'+
-      '<div class="divider"></div>'+
-      '<label class="selectpill"><span class="pill-ic">📅</span><select id="days">'+
+    '<div class="flabel">관심 주제</div><div class="row">'+
+      CATEGORIES.map(c=>'<button class="chip'+(c.kw===S.cat?' on':'')+'" data-g="cat" data-v="'+c.kw+'">'+c.l+'</button>').join('')+'</div>'+
+    '<div class="flabel">영상 타입</div><div class="row">'+chipRow('type',[
+      {v:'short',l:'쇼츠',s:'3분 이하'},{v:'long',l:'롱폼',s:'3분 초과'}],S.type)+'</div>'+
+    '<div class="flabel">검색 범위 <span style="font-weight:400;letter-spacing:0;text-transform:none;opacity:.75">넓힐수록 결과가 많지만 하루 사용량을 더 씁니다</span></div><div class="row">'+chipRow('depth',[
+      {v:'fast',l:'빠르게',s:'~100개 · 200유닛'},{v:'normal',l:'보통',s:'~300개 · 600유닛'},
+      {v:'deep',l:'넓게',s:'~600개 · 1,200유닛'},{v:'max',l:'최대',s:'~1,200개 · 2,400유닛'}],S.depth)+'</div>'+
+    '<div class="flabel">구독자 구간</div><div class="row">'+chipRow('sub',[
+      {v:'all',l:'전체'},{v:'0-10000',l:'0~1만 (급성장)'},{v:'10000-50000',l:'1만~5만'},
+      {v:'50000-100000',l:'5만~10만'},{v:'100000-999999999',l:'10만+'}],S.sub)+'</div>'+
+    '<div class="flabel">최소 조회수 <span style="font-weight:400;letter-spacing:0;text-transform:none;opacity:.75">지수가 높아도 조회수가 낮으면 배울 게 없어요</span></div><div class="row">'+chipRow('minv',[
+      {v:'0',l:'전체'},{v:'10000',l:'1만 이상'},{v:'100000',l:'10만 이상'},{v:'1000000',l:'100만 이상'}],S.minv)+'</div>'+
+    '<div class="flabel">정렬 기준</div><div class="row">'+chipRow('sort',[
+      {v:'score',l:'떡상지수 순'},{v:'views',l:'조회수 높은 순'},
+      {v:'daily',l:'일일 조회수 순'},{v:'subs',l:'구독자 많은 순'}],S.sort)+'</div>'+
+    '<div class="flabel">보기 방식 <span style="font-weight:400;letter-spacing:0;text-transform:none;opacity:.75">같은 검색 결과를 두 가지로 볼 수 있어요 · 추가 사용량 없음</span></div><div class="row">'+chipRow('view',[
+      {v:'video',l:'🎬 영상으로 보기'},{v:'channel',l:'📊 채널로 묶어보기'}],S.view)+'</div>'+
+    '<div class="preset"><button class="btn" id="btnPreset">🎯 배울 만한 것만 보기</button>'+
+      '<span>떡상지수 5x 이상 · 조회수 10만 이상 · 구독자 1만~5만 을 한 번에 적용해요. '+
+      '알고리즘을 탔고(지수), 실제로 컸고(조회수), 나도 따라 할 만한 규모(구독자) — 셋을 다 만족하는 영상만 남깁니다.</span></div>'+
+    '<div class="selects" style="margin-top:20px;margin-bottom:0">'+
+      '<div><label>검색 키워드 (직접 입력도 가능)</label><input type="text" id="q" style="width:100%" placeholder="예: 건조과일, 홈메이드 간식" value="건조과일"></div>'+
+      '<div><label>기간</label><select id="days">'+
         '<option value="3">최근 3일</option><option value="7">최근 7일</option>'+
         '<option value="14">최근 14일</option><option value="30" selected>최근 30일</option>'+
         '<option value="60">최근 60일</option><option value="90">최근 90일</option>'+
-        '<option value="180">최근 180일</option></select></label>'+
-      '<div class="divider"></div>'+
-      '<label class="selectpill"><span class="pill-ic">🌍</span><select id="region">'+
+        '<option value="180">최근 180일</option></select></div>'+
+      '<div><label>지역</label><select id="region">'+
         '<option value="KR" selected>대한민국</option><option value="US">미국</option>'+
-        '<option value="JP">일본</option><option value="">전체</option></select></label>'+
+        '<option value="JP">일본</option><option value="">전체</option></select></div>'+
+      '<div style="display:flex;align-items:flex-end"><button class="go block" id="btnGo">검색</button></div>'+
     '</div>'+
-    '<button class="preset-banner" id="btnPreset">'+
-      '<span class="pb-icon">🎯</span>'+
-      '<span class="pb-text"><b>배울 만한 것만 보기</b><small>떡상지수 5x 이상 · 조회수 10만 이상 · 구독자 1만~5만을 한 번에 적용</small></span>'+
-      '<span class="pb-arrow">→</span>'+
-    '</button>'+
-    '<details class="adv"><summary>⚙️ 상세 필터 · 검색 범위 · 구독자 구간 · 최소 조회수 · 정렬 · 보기 방식</summary>'+
-      '<div class="adv-body">'+
-        '<div class="flabel">검색 범위 <span style="font-weight:400;letter-spacing:0;text-transform:none;opacity:.75">넓힐수록 결과가 많지만 하루 사용량을 더 씁니다</span></div><div class="row">'+chipRow('depth',[
-          {v:'fast',l:'빠르게',s:'~100개 · 200유닛'},{v:'normal',l:'보통',s:'~300개 · 600유닛'},
-          {v:'deep',l:'넓게',s:'~600개 · 1,200유닛'},{v:'max',l:'최대',s:'~1,200개 · 2,400유닛'}],S.depth)+'</div>'+
-        '<div class="flabel">구독자 구간</div><div class="row">'+chipRow('sub',[
-          {v:'all',l:'전체'},{v:'0-10000',l:'0~1만 (급성장)'},{v:'10000-50000',l:'1만~5만'},
-          {v:'50000-100000',l:'5만~10만'},{v:'100000-999999999',l:'10만+'}],S.sub)+'</div>'+
-        '<div class="flabel">최소 조회수 <span style="font-weight:400;letter-spacing:0;text-transform:none;opacity:.75">지수가 높아도 조회수가 낮으면 배울 게 없어요</span></div><div class="row">'+chipRow('minv',[
-          {v:'0',l:'전체'},{v:'10000',l:'1만 이상'},{v:'100000',l:'10만 이상'},{v:'1000000',l:'100만 이상'}],S.minv)+'</div>'+
-        '<div class="flabel">정렬 기준</div><div class="row">'+chipRow('sort',[
-          {v:'score',l:'떡상지수 순'},{v:'views',l:'조회수 높은 순'},
-          {v:'daily',l:'일일 조회수 순'},{v:'subs',l:'구독자 많은 순'}],S.sort)+'</div>'+
-        '<div class="flabel">보기 방식 <span style="font-weight:400;letter-spacing:0;text-transform:none;opacity:.75">같은 검색 결과를 두 가지로 볼 수 있어요 · 추가 사용량 없음</span></div><div class="row">'+chipRow('view',[
-          {v:'video',l:'🎬 영상으로 보기'},{v:'channel',l:'📊 채널로 묶어보기'}],S.view)+'</div>'+
-        '<div class="note">🎯 배울 만한 것만 보기는 떡상지수 5x 이상 · 조회수 10만 이상 · 구독자 1만~5만 을 한 번에 적용해요. '+
-          '알고리즘을 탔고(지수), 실제로 컸고(조회수), 나도 따라 할 만한 규모(구독자) — 셋을 다 만족하는 영상만 남깁니다.</div>'+
-      '</div>'+
-    '</details>'+
+    '<div class="row" style="margin-top:14px" id="histrow"></div>'+
   '</div>'+
-  '<div id="statstrip"></div>'+
+  '<div class="legend">'+
+    '<span><span class="ldot" style="background:var(--gold-bright)"></span>떡상지수 10 이상 (대박)</span>'+
+    '<span><span class="ldot" style="background:var(--apricot)"></span>5~10 (떡상)</span>'+
+    '<span><span class="ldot" style="background:var(--text-muted)"></span>5 미만</span>'+
+  '</div>'+
   '<div class="bar"><span class="count" id="cnt"></span><span class="spacer"></span><span class="quota" id="qt"></span></div>'+
   '<div id="out"></div>';
 
@@ -823,8 +647,7 @@ function pgSearch(){
     ['sub','minv','sort'].forEach(g=>document.querySelectorAll('.chip[data-g="'+g+'"]').forEach(b=>
       b.classList.toggle('on', b.dataset.v===S[g])));
     $('btnPreset').classList.toggle('active',S.pick);
-    $('btnPreset').querySelector('.pb-icon').textContent=S.pick?'✓':'🎯';
-    $('btnPreset').querySelector('.pb-text b').textContent=S.pick?'적용 중 · 눌러서 해제':'배울 만한 것만 보기';
+    $('btnPreset').textContent=S.pick?'✓ 배울 만한 것만 보는 중 (해제)':'🎯 배울 만한 것만 보기';
     if(sResults.length) drawSearch();
   };
   $('q').addEventListener('keydown',e=>{ if(e.key==='Enter') runSearch(false); });
@@ -853,25 +676,12 @@ function drawSearch(){
   else if(S.sort==='daily') list.sort((a,b)=>b.daily-a.daily);
   else if(S.sort==='subs') list.sort((a,b)=>b.subs-a.subs);
   else list.sort((a,b)=>b.score-a.score);
-  if(S.view==='channel'){ put('statstrip',''); drawSearchChannels(list); return; }
+  if(S.view==='channel'){ drawSearchChannels(list); return; }
 
   $('cnt').innerHTML='<b>'+list.length+'개</b> 영상 · 유튜브에서 '+sFetched+'개 수집 후 걸러냈어요';
-  put('statstrip', tierStrip(list));
   $('out').innerHTML=list.length
     ? analyze(list)+'<div class="grid">'+list.map((v,i)=>cardHTML(v,i)).join('')+'</div>'
     : '<div class="msg">이 조건에 맞는 영상이 없어요. 구독자 구간을 넓혀보세요.</div>';
-}
-// 결과를 떡상지수 등급별로 한눈에 요약 (대박/떡상/일반)
-function tierStrip(list){
-  if(!list.length) return '';
-  const jackpot=list.filter(v=>v.score>=10).length;
-  const hot=list.filter(v=>v.score>=5&&v.score<10).length;
-  const normal=list.length-jackpot-hot;
-  return '<div class="stat-strip">'+
-    '<div class="stile"><span class="sdot" style="background:var(--gold-bright)"></span><div><b>'+jackpot+'개</b><span>대박 · 10x 이상</span></div></div>'+
-    '<div class="stile"><span class="sdot" style="background:var(--apricot)"></span><div><b>'+hot+'개</b><span>떡상 · 5~10x</span></div></div>'+
-    '<div class="stile"><span class="sdot" style="background:var(--text-muted)"></span><div><b>'+normal+'개</b><span>일반 · 5x 미만</span></div></div>'+
-  '</div>';
 }
 
 // 같은 검색 결과를 채널 단위로 묶어서 보여줍니다 (추가 호출 없음)
@@ -910,7 +720,6 @@ function drawSearchChannels(list){
 async function runSearch(force){
   const key=getKey(); if(!key){ $('out').innerHTML=needKey(); return; }
   const q=$('q').value.trim(); if(!q){ $('out').innerHTML='<div class="msg">검색어를 입력해주세요.</div>'; return; }
-  put('statstrip','');
   const days=parseInt($('days').value), region=$('region').value;
   const ck=cacheKey(q,days,region);
   if(!force){
@@ -967,7 +776,6 @@ let rdItems=null, rdChans=[], rdInfo='';
 
 function pgRadar(){
   $('page').innerHTML=
-  '<div class="radar-hud">'+
   '<div class="panel">'+
     '<div class="flabel">영상 타입</div><div class="row">'+chipRow('type',[
       {v:'short',l:'쇼츠',s:'3분 이하'},{v:'long',l:'롱폼',s:'3분 초과'},{v:'all',l:'전체'}],RD.type)+'</div>'+
@@ -984,8 +792,7 @@ function pgRadar(){
     '<div class="note" id="rdinfo">'+(rdInfo||'<span class="spin"></span> 불러오는 중…')+'</div>'+
   '</div>'+
   '<div class="bar"><span class="count" id="rdcnt"></span></div>'+
-  '<div id="rdout"><div class="msg"><span class="spin"></span> 불러오는 중…</div></div>'+
-  '</div>';
+  '<div id="rdout"><div class="msg"><span class="spin"></span> 불러오는 중…</div></div>';
   bindChips(RD,()=>{ if(rdItems) drawRadar(); });
   if(rdItems) drawRadar(); else loadRadar();
 }

@@ -2672,7 +2672,7 @@
     },
     {
       "id": "UCtA_oHDkvy8oIgSZVHm_NHA",
-      "name": "한결뉴스 / HN-Times",
+      "name": "한결뉴스 / HN-News",
       "from": "연예인 건강식품",
       "addedAt": "2026-08-10T19:18:47.434Z",
       "uploads": "UUtA_oHDkvy8oIgSZVHm_NHA"
@@ -4258,7 +4258,14 @@
       "from": "화제의 제품",
       "addedAt": "2026-09-07T04:46:28.010Z",
       "uploads": "UUc_P6Rnlz8u2zyj8lzfCifQ"
+    },
+    {
+      "id": "UCwx6n_4OcLgzAGdty0RWCoA",
+      "name": "워크맨-Workman",
+      "from": "올리브영 추천템",
+      "addedAt": "2026-09-07T12:38:49.108Z",
+      "uploads": "UUwx6n_4OcLgzAGdty0RWCoA"
     }
   ],
-  "_turn": 52
+  "_turn": 54
 }

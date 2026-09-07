@@ -4036,13 +4036,6 @@
       "uploads": "UUvUjLeBAQrAMBfnVGi6VPEg"
     },
     {
-      "id": "UCbauQCSBSvgtA8XfHTySbWA",
-      "name": "셀럽쇼핑로그",
-      "from": "셀럽 쇼핑",
-      "addedAt": "2026-08-12T07:54:34.098Z",
-      "uploads": "UUbauQCSBSvgtA8XfHTySbWA"
-    },
-    {
       "id": "UC5aOYq1tR5ykECfOc0keb_w",
       "name": "김이영 LeeyeongKim",
       "from": "아이돌 추천템",
@@ -4258,7 +4251,14 @@
       "from": "인생템 추천",
       "addedAt": "2026-08-28T22:23:29.902Z",
       "uploads": "UUb8_UiUdnM9S7r1aYPAsSMw"
+    },
+    {
+      "id": "UCc_P6Rnlz8u2zyj8lzfCifQ",
+      "name": "여기는한국",
+      "from": "화제의 제품",
+      "addedAt": "2026-09-07T04:46:28.010Z",
+      "uploads": "UUc_P6Rnlz8u2zyj8lzfCifQ"
     }
   ],
-  "_turn": 50
+  "_turn": 52
 }

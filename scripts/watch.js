@@ -22,8 +22,8 @@ const REGION = process.env.REGION || 'KR';
 const MAX_UNITS = +(process.env.MAX_UNITS || 3000);  // 이번 실행에서 쓸 최대 유닛
 const SEED_PER_RUN = +(process.env.SEED_PER_RUN || 2); // 한 번에 탐색할 키워드 수
 
-const WATCH = 'data/watchlist.json';
-const OUT = 'data/radar.json';
+const WATCH = process.env.WATCH_FILE || 'data/watchlist.json';
+const OUT = process.env.RADAR_OUT || 'data/radar.json';
 
 let used = 0;   // 이번 실행에서 쓴 유닛
 

@@ -281,7 +281,15 @@
     .main{padding:18px 14px 60px;}
   }
 
+  .rd-category-filter{border:0;padding:0;margin:0 0 22px;min-width:0}
+  .rd-category-filter legend{font-size:16px;font-weight:600;padding:0}
+  .rd-category-filter p{font-size:14px;color:var(--text-muted);margin:8px 0 12px}
+  .rd-category-filter label{display:flex;align-items:center;gap:9px;min-height:44px;padding:8px 14px;border:1px solid var(--line);border-radius:9px;font-size:16px;cursor:pointer;background:var(--surface)}
+  .rd-category-filter label:has(input:checked){background:var(--surface-2);border-color:var(--text-muted)}
+  .rd-category-filter input{width:18px;height:18px;margin:0;accent-color:var(--gold-bright)}
+  .rd-category-filter label:focus-within{outline:2px solid var(--gold-bright);outline-offset:2px}
 </style>
+<link rel="stylesheet" href="senior.css">
 </head>
 <body>
 <div class="app">
@@ -294,6 +302,7 @@
     <div class="menu-label">메뉴</div>
     <nav class="nav" id="nav">
       <a data-page="search"><span class="ic">🔍</span>조회수 폭발 쇼츠 찾기</a>
+      <a href="#senior" data-page="senior"><span class="ic">◎</span>중장년 콘텐츠 레이더</a>
       <a data-page="radar"><span class="ic">🎯</span>내 분야 레이더</a>
       <a data-page="trend"><span class="ic">🔥</span>터진 영상</a>
       <a data-page="rank"><span class="ic">📈</span>채널 랭킹</a>
@@ -317,6 +326,8 @@
 </div>
 <div class="toast" id="toast"></div>
 
+<script src="senior-topics.js"></script>
+<script src="senior.js"></script>
 <script>
 /* ===== 공통 ===== */
 let toastT=null;
@@ -368,6 +379,7 @@ const DEPTHS={
 };
 const PAGES={
   search:{ic:'🔍',t:'조회수 폭발 쇼츠 찾기',d:'검색 한 번으로 영상과 채널을 같이 봅니다'},
+  senior:{ic:'◎',t:'중장년 콘텐츠 레이더',d:'생활에 도움이 되는 주제에서 다음 콘텐츠를 찾으세요'},
   radar:{ic:'🎯',t:'내 분야 레이더',d:'지켜보는 채널의 최신 영상'},
   trend:{ic:'🔥',t:'터진 영상',d:'급등하는 영상 확인'},
   rank:{ic:'📈',t:'채널 랭킹',d:'조회수 기준 채널 순위'},
@@ -560,9 +572,9 @@ function go(p){
   document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.page===p));
   const m=PAGES[p]||PAGES.search;
   $('pgIcon').textContent=m.ic; $('pgTitle').textContent=m.t; $('pgDesc').textContent=m.d;
-  $('banner').innerHTML = (!getKey()&&p!=='key'&&p!=='trend')
+  $('banner').innerHTML = (!getKey()&&p!=='key'&&p!=='trend'&&p!=='senior')
     ? '<div class="banner">🔑 아직 API 키가 없어요. <a onclick="go(\'key\')">지금 등록하기</a> — 무료이고 5분이면 됩니다.</div>' : '';
-  ({radar:pgRadar,search:pgSearch,trend:pgTrend,rank:pgRank,fav:pgFav,key:pgKey}[p]||pgSearch)();
+  ({senior:pgSenior,radar:pgRadar,search:pgSearch,trend:pgTrend,rank:pgRank,fav:pgFav,key:pgKey}[p]||pgSearch)();
   window.scrollTo({top:0});
 }
 window.go=go;
@@ -769,14 +781,44 @@ async function runSearch(force){
 
 
 /* ===== 내 분야 레이더 ===== */
-const RD={type:'short',sort:'score',sub:'all',minv:'10000',view:'video'};
+const RD={type:'short',sort:'score',sub:'all',minv:'10000',view:'video',categories:[]};
+const RD_CATEGORIES=[
+  {id:'health',label:'건강',keywords:['건강','의학','병원','의사','건강검진','혈압','혈당','당뇨','관절','허리','무릎','근력','걷기','수면','영양','식단']},
+  {id:'travel',label:'여행',keywords:['여행','관광','숙소','호텔','항공','기차여행','온천','휴양','제주','캠핑']},
+  {id:'property',label:'부동산',keywords:['부동산','재개발','재건축','아파트','노후주거','노후 주거','실버타운','상속','전원주택','전세','월세','청약','취득세','양도세','재산세']},
+  {id:'finance',label:'재테크',keywords:['재테크','연금','은퇴','생활비','가계부','예금','적금','저축','투자','주식','ETF','금리','금융','보이스피싱']},
+  {id:'shopping',label:'쇼핑',keywords:['쇼핑','구매','추천템','꿀템','생활용품','가전','청소기','세탁기','워킹화','직구','반품','할인','가성비']},
+  {id:'hobby',label:'취미',keywords:['취미','텃밭','식물','원예','사진','등산','트레킹','요리','레시피','악기','기타','피아노','그림','드로잉','낚시','뜨개','독서']},
+  {id:'digital',label:'AI/디지털',keywords:['AI','인공지능','챗GPT','ChatGPT','디지털','스마트폰','컴퓨터','앱','어플','키오스크','영상 편집','영상편집','딥페이크']}
+];
+// Empty selection means all. Multiple categories are combined with OR.
+function radarCategoryMatches(video,selected=RD.categories){
+  if(!selected.length) return true;
+  const text=[video.title,video.description,Array.isArray(video.tags)?video.tags.join(' '):video.tags]
+    .filter(Boolean).join(' ').normalize('NFKC').toLowerCase();
+  return RD_CATEGORIES.filter(c=>selected.includes(c.id)).some(c=>c.keywords.some(keyword=>{
+    const word=keyword.toLowerCase();
+    // Do not match AI inside unrelated English words such as hair or chair.
+    return /^[a-z]+$/.test(word)
+      ? new RegExp('(^|[^a-z0-9])'+word+'(?=$|[^a-z0-9])','i').test(text)
+      : text.includes(word);
+  }));
+}
+
 const RADAR_URL='data/radar.json';
 const RADAR_FALLBACK='https://raw.githubusercontent.com/Heechincho/shorts-finder/main/data/radar.json';
 let rdItems=null, rdChans=[], rdInfo='';
 
 function pgRadar(){
-  $('page').innerHTML=
+  $('page').innerHTML='<a class="senior-entry" href="#senior" onclick="go(\'senior\');return false">◎ 중장년 콘텐츠 레이더 <span>부동산부터 AI까지, 7개 분야 탐색 →</span></a>'+
   '<div class="panel">'+
+    '<fieldset class="rd-category-filter"><legend>카테고리</legend>'+
+      '<p id="rd-category-help">여러 개 선택할 수 있어요. 선택하지 않으면 전체 결과를 표시합니다.</p>'+
+      '<div class="row">'+RD_CATEGORIES.map(c=>
+        '<label><input type="checkbox" name="rd-category" value="'+c.id+'"'+
+        (RD.categories.includes(c.id)?' checked':'')+' aria-describedby="rd-category-help">'+c.label+'</label>').join('')+'</div>'+
+      '<p class="rd-category-detail">영상 제목·설명·태그에 선택한 분야의 키워드가 하나라도 포함되면 표시합니다.</p>'+
+    '</fieldset>'+
     '<div class="flabel">영상 타입</div><div class="row">'+chipRow('type',[
       {v:'short',l:'쇼츠',s:'3분 이하'},{v:'long',l:'롱폼',s:'3분 초과'},{v:'all',l:'전체'}],RD.type)+'</div>'+
     '<div class="flabel">구독자 구간</div><div class="row">'+chipRow('sub',[
@@ -794,6 +836,12 @@ function pgRadar(){
   '<div class="bar"><span class="count" id="rdcnt"></span></div>'+
   '<div id="rdout"><div class="msg"><span class="spin"></span> 불러오는 중…</div></div>';
   bindChips(RD,()=>{ if(rdItems) drawRadar(); });
+  document.querySelectorAll('input[name="rd-category"]').forEach(input=>{
+    input.onchange=()=>{
+      RD.categories=Array.from(document.querySelectorAll('input[name="rd-category"]:checked'),el=>el.value);
+      if(rdItems) drawRadar();
+    };
+  });
   if(rdItems) drawRadar(); else loadRadar();
 }
 
@@ -833,7 +881,7 @@ async function loadRadar(){
 
 function drawRadar(){
   if(!$('rdout')) return;
-  let list=rdItems.slice();
+  let list=rdItems.filter(v=>radarCategoryMatches(v));
   if(RD.type==='short') list=list.filter(v=>v.dur>0&&v.dur<=180);
   else if(RD.type==='long') list=list.filter(v=>v.dur>180);
   if(RD.sub!=='all'){ const [lo,hi]=RD.sub.split('-').map(Number);
@@ -843,6 +891,10 @@ function drawRadar(){
 
   if(RD.view==='channel'){
     let chans=rdChans.slice();
+    if(RD.categories.length){
+      const matchedChannels=new Set(list.map(v=>v.channelId));
+      chans=chans.filter(c=>matchedChannels.has(c.channelId));
+    }
     if(RD.sub!=='all'){ const [lo,hi]=RD.sub.split('-').map(Number);
       chans=chans.filter(c=>c.subs>=lo&&c.subs<=hi); }
     if(RD.type==='short') chans=chans.filter(c=>c.shorts>0);
@@ -853,7 +905,7 @@ function drawRadar(){
     chans=chans.slice(0,60);
     put('rdcnt','채널 <b>'+chans.length+'개</b>');
     const medal=i=>i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
-    put('rdout','<div class="chgrid">'+chans.map((c,i)=>
+    put('rdout',!chans.length?'<div class="msg">조건에 맞는 채널이 없어요. 카테고리나 다른 필터를 넓혀보세요.</div>':'<div class="chgrid">'+chans.map((c,i)=>
       '<a class="chcard" href="https://www.youtube.com/channel/'+c.channelId+'" target="_blank" rel="noopener">'+
         '<div class="chrank'+(i<3?' top':'')+'">'+medal(i)+'</div>'+
         '<img class="chimg" src="'+c.thumb+'" alt="" loading="lazy">'+
@@ -875,7 +927,7 @@ function drawRadar(){
   put('rdcnt','<b>'+list.length+'개</b> 영상 · 수집 '+rdItems.length+'개');
   put('rdout', list.length
     ? analyze(list)+'<div class="grid">'+list.map((v,i)=>cardHTML(v,i)).join('')+'</div>'
-    : '<div class="msg">조건에 맞는 영상이 없어요. 구간을 넓혀보세요.</div>');
+    : '<div class="msg">조건에 맞는 영상이 없어요. 카테고리나 다른 필터를 넓혀보세요.</div>');
 }
 
 /* ===== 2. 터진 영상 ===== */
@@ -1333,7 +1385,7 @@ window.clearKey=function(){ setKey(''); $('k').value=''; $('ks').textContent='�
 /* ===== 시작 ===== */
 showUsed();
 const start=(location.hash||'').replace('#','');
-go(PAGES[start]?start:'radar');
+go(PAGES[start]?start:'senior');
 </script>
 </body>
 </html>

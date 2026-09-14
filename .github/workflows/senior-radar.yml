@@ -1,0 +1,32 @@
+name: 중장년 콘텐츠 레이더 수집
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: senior-radar-collector
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Collect senior topics
+        run: node scripts/watch.js
+        env:
+          YT_API_KEY: ${{ secrets.YT_API_KEY }}
+          WATCH_FILE: data/senior-watchlist.json
+          RADAR_OUT: data/senior-radar.json
+          MAX_UNITS: '1000'
+          SEED_PER_RUN: '2'
+      - name: Save results
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/senior-watchlist.json data/senior-radar.json
+          git diff --staged --quiet || git commit -m 'Update senior radar data'
+          git pull --rebase
+          git push

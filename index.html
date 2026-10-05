@@ -560,9 +560,9 @@ function go(p){
   document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.page===p));
   const m=PAGES[p]||PAGES.search;
   $('pgIcon').textContent=m.ic; $('pgTitle').textContent=m.t; $('pgDesc').textContent=m.d;
-  $('banner').innerHTML = (!getKey()&&p!=='key'&&p!=='trend'&&p!=='senior')
+  $('banner').innerHTML = (!getKey()&&p!=='key'&&p!=='trend')
     ? '<div class="banner">🔑 아직 API 키가 없어요. <a onclick="go(\'key\')">지금 등록하기</a> — 무료이고 5분이면 됩니다.</div>' : '';
-  ({senior:pgSenior,radar:pgRadar,search:pgSearch,trend:pgTrend,rank:pgRank,fav:pgFav,key:pgKey}[p]||pgSearch)();
+  ({radar:pgRadar,search:pgSearch,trend:pgTrend,rank:pgRank,fav:pgFav,key:pgKey}[p]||pgSearch)();
   window.scrollTo({top:0});
 }
 window.go=go;

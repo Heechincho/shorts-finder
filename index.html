@@ -295,6 +295,18 @@
 .mc-empty{grid-column:1/-1;text-align:center;padding:48px 20px;border:1px dashed var(--line);border-radius:16px;color:var(--text-muted)}.mc-empty strong{color:var(--text);font-size:16px}.mc-empty p{font-size:12px;line-height:1.8}.mc-guide{margin-top:20px}
 @media(max-width:560px){.mc-searchbar{flex-direction:column}.mc-searchbar .go{width:100%}.mc-filters{gap:14px}.mc-search-panel{padding:18px 16px}}
 
+
+/* Reference-matched collector only; other menus retain their original theme. */
+body.material-view{--bg:#0b0e14;--side:#11151d;--surface:#171a20;--surface-2:#1e232c;--surface-3:#2b3341;--text:#edf1f8;--text-muted:#929bab;--line:#2b303a;--gold:#2775ee;--gold-bright:#398bff;--apricot:#69a9ff;--shadow:none;--shadow-hi:0 12px 28px #0004;background:var(--bg)}
+.material-view .side{width:205px;padding:20px 12px;border-color:#212733}.material-view .logo b{font-size:13px}.material-view .nav a{font-size:12px;padding:11px 8px}.material-view .nav a.on{background:#226cf0;box-shadow:none}.material-view .logo-mark{background:#236ff0}
+.material-view .main{padding:28px 26px 70px}.material-view .phead{display:none}.material-view #page{max-width:950px;margin:auto}.material-view #banner{max-width:950px;margin:auto}.material-view .banner{font-size:12px;padding:10px 16px;margin-bottom:14px}
+.mc-reference-head{text-align:center;margin:0 0 28px}.mc-eyebrow{display:inline-block;background:#12223b;color:#8cbaff;border:1px solid #233f66;border-radius:20px;font-size:10px;padding:4px 12px}.mc-reference-head h1{font-size:28px;letter-spacing:-1px;margin:12px 0 8px}.mc-reference-head p{font-size:13px;color:var(--text-muted);margin:0;line-height:1.7}
+.material-view .mc-search-panel{padding:24px;border-radius:14px;margin-bottom:12px;background:#181b20;border:1px solid #2b2d34}.mc-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mc-choice-grid .chip{border-radius:10px;padding:13px 10px;min-height:58px;background:#1e222a;border:1px solid #303541;color:#c9d0df;font-size:14px;font-weight:700;line-height:1.5}.mc-choice-grid .chip.on{background:#246df0;border-color:#367cfb;color:#fff}.mc-choice-grid small{display:block;font-size:10px;font-weight:400;color:inherit;opacity:.75;margin-top:2px}.mc-section-label{margin-top:16px}
+.material-view .mc-collect-main{width:100%;margin-top:16px;border-radius:10px;padding:16px;font-size:19px;background:linear-gradient(#4398ff,#2779f5);box-shadow:0 5px 20px #1463e636}.mc-remaining{text-align:center;font-size:11px;color:#9aa6bb;margin-top:12px}.mc-remaining b{color:#e5eaf5}.mc-dots{color:#2b7fff;letter-spacing:2px;margin-right:7px}.mc-key-state{margin-top:14px;padding-top:14px;border-top:1px solid #262b34;text-align:center}.mc-key-state button{background:none;border:0;color:#53c9ac;font-size:11px;cursor:pointer}.material-view .mc-feedback{font-size:11px;text-align:center;margin-top:9px}.mc-save-notice{background:#242018;border:1px solid #51432a;border-radius:9px;padding:11px 15px;text-align:center;color:#dab575;font-size:11px;line-height:1.6;margin-bottom:14px}
+.material-view .mc-direct{padding:18px 22px;border-radius:12px}.material-view .mc-searchbar{margin-bottom:10px}.material-view .mc-searchbar input{font-size:13px;padding:12px 14px}.material-view .mc-searchbar .go{font-size:13px;padding:12px 24px;background:#246df0;box-shadow:none}.mc-suggestions summary{font-size:11px;color:var(--text-muted);cursor:pointer}.mc-suggestions .mc-keywords{margin-top:12px}.material-view .mc-pattern{background:#161b24}.material-view .card{border-radius:12px}.material-view .tag.jackpot{color:white;background:#246df0}
+@media(max-width:860px){.material-view .side{width:100%;padding:12px 14px}.material-view .main{padding:22px 14px 50px}.material-view .nav a{padding:8px 12px}.mc-reference-head h1{font-size:25px}}
+@media(max-width:480px){.material-view .mc-search-panel{padding:16px}.mc-choice-grid .chip{font-size:13px;padding:12px 5px}.mc-choice-grid small{font-size:9px}.mc-reference-head p{font-size:12px}.mc-remaining{font-size:10px}.material-view .mc-direct{padding:16px}.material-view .mc-searchbar{flex-direction:row}.material-view .mc-searchbar .go{width:auto;padding:10px 16px}}
+
 </style>
 </head>
 <body>
@@ -387,17 +399,24 @@ function pgCollector(){
   const rows=MC.filter==='보관함'?records.filter(v=>v.saved):mcVisible(records), runs=mcRuns();
   const remain=MC.scope==='half'?Math.max(0,2-runs.used):(runs.used===0?1:0);
   const options=(name,choices)=>choices.map(([value,label])=>'<button type="button" class="chip'+(MC[name]===value?' on':'')+'" data-mc-option="'+name+'" data-value="'+value+'" '+(MC.busy?'disabled':'')+'>'+label+'</button>').join('');
-  $('page').innerHTML=`<section class="panel mc-search-panel">
-    <div class="flabel">어떤 한국 경험을 찾고 있나요?</div>
-    <form id="mcSearchForm" class="searchbar mc-searchbar"><input type="text" id="mcQuery" aria-label="소재 검색어" placeholder="예: 외국인 한국 야구장, 한국 음식 첫 반응" autocomplete="off" maxlength="200" ${MC.busy?'disabled':''}><button class="go" id="mcSearch" ${MC.busy?'disabled':''}>${MC.busy?'검색 중…':'검색'}</button></form>
-    <div class="mc-recommend-label">추천 검색어 <span>누르면 검색창에 입력됩니다</span></div><div class="mc-keywords" id="mcKeywords"></div>
-    <div class="mc-filters"><div><span class="mc-label">기간</span><div class="row">${options('period',[['30','최근 30일'],['90','최근 90일'],['any','기간 무관']])}</div></div><div><span class="mc-label">영상 길이</span><div class="row">${options('duration',[['any','8분 이상'],['long','20분 초과']])}</div></div></div>
-    <div class="mc-feedback" id="mcStatus" role="status" aria-live="polite"></div>
-    <details class="mc-auto"><summary>추천 검색어 여러 개를 한 번에 수집</summary><div class="mc-auto-body"><div class="row">${options('scope',[['half','절반씩 · 6개'],['all','전체 · 12개']])}<button type="button" class="btn" id="mcStart" ${MC.busy||remain<=0?'disabled':''}>추천어 수집 시작</button><span>오늘 ${remain}회 남음</span></div><p class="note" id="mcPlanned"></p><p class="note">직접 검색은 위 검색창에서 실행하세요. 추천어 일괄 수집 횟수는 한국 시간 자정에 초기화됩니다. YouTube API 한도와는 별개입니다.</p></div></details>
+  $('page').innerHTML=`<div class="mc-reference-head"><span class="mc-eyebrow">한국 경험 · 반응 영상</span><h1>유튜브 소재 수집기</h1><p>외국인의 한국 경험 영상을 찾아 S·A·B·C 등급으로 정리해 드려요</p></div>
+    <section class="panel mc-search-panel">
+      <div class="mc-label">수집 범위</div><div class="mc-choice-grid">${options('scope',[['half','절반씩<small>하루 2번까지 가능 · 평소 추천</small>'],['all','전체 한 번에<small>오늘 치 2번을 한 번에 사용</small>']])}</div>
+      <div class="mc-label mc-section-label">기간</div><div class="mc-choice-grid">${options('period',[['90','최근 90일<small>새로 올라온 영상 위주 · 평소 추천</small>'],['any','년도 상관없이<small>오래된 영상까지 전부 뒤져요</small>']])}</div>
+      <button type="button" class="go mc-collect-main" id="mcStart" ${MC.busy||remain<=0?'disabled':''}>${MC.busy?'수집 중…':'▶ 수집 시작'}</button>
+      <div class="mc-remaining"><span class="mc-dots">${'■ '.repeat(Math.max(0,2-runs.used))}</span>오늘 남은 실행 <b>${Math.max(0,2-runs.used)}번</b> · 지금 선택은 <b>${MC.scope==='half'?1:2}번</b> 사용</div>
+      <div class="mc-key-state"><button type="button" id="mcKey">${getKey()?'🔑 키 저장됨 ✓ · 변경하기':'🔑 YouTube API 키 등록하기'}</button></div>
+      <div id="mcStatus" class="mc-feedback" role="status" aria-live="polite"></div>
+    </section>
+    <div class="mc-save-notice">📁 목록은 통화기록처럼 위에 쌓여요 — 1주일 지난 건 알아서 정리 · 쓸 영상은 ＋ 체크로 보관!</div>
+    <section class="panel mc-direct"><div class="mc-label">검색어로 직접 찾기</div>
+      <form id="mcSearchForm" class="searchbar mc-searchbar"><input type="text" id="mcQuery" aria-label="소재 검색어" placeholder="예: 외국인 한국 야구장, 한국 음식 첫 반응" autocomplete="off" maxlength="200" ${MC.busy?'disabled':''}><button class="go" id="mcSearch" ${MC.busy?'disabled':''}>검색</button></form>
+      <details class="mc-suggestions"><summary>추천 검색어 12개 · 검색 조건 보기</summary><div class="mc-keywords" id="mcKeywords"></div><div class="mc-filters"><div><span class="mc-label">영상 길이</span><div class="row">${options('duration',[['any','8분 이상'],['long','20분 초과']])}</div></div></div><p class="note" id="mcPlanned"></p><p class="note">직접 검색에도 위 기간·영상 길이가 적용됩니다. 수집 횟수는 한국 시간 자정에 초기화되며 YouTube API 한도와는 별개예요.</p></details>
     </section>
     <div class="mc-resultbar"><h2>수집한 영상 <span>${rows.length}</span></h2><label>정렬 <select id="mcSort"><option value="new">최신 수집순</option><option value="score">떡상지수순</option><option value="views">조회수순</option><option value="daily">일평균 조회수순</option></select></label></div>
     <div class="row mc-tabs" id="mcTabs"></div><div id="mcPattern"></div><div class="grid" id="mcGrid"></div>
     <details class="mc-guide"><summary>등급·보관 기준 보기</summary><p class="note">등급은 수집 당시 구독자 500명 이상 영상의 보정 지수 순위입니다. 지수 = 조회수 ÷ max(구독자, 1,000). 일평균은 업로드 후 평균으로, 실제 어제 조회수가 아닙니다. NEW는 마지막 수집에서 처음 발견한 영상입니다. 일반 목록은 채널당 최대 3개, 보관함에서는 체크한 영상을 모두 볼 수 있어요. 미보관 영상은 수집 후 7일이 지나면 정리됩니다. 기록은 이 브라우저에 저장됩니다.</p></details>`;
+  $('mcKey').onclick=()=>go('key');
   $('mcQuery').value=MC.query||'';
   $('mcQuery').oninput=e=>{MC.query=e.target.value;};
   $('mcSearchForm').onsubmit=e=>{e.preventDefault();mcStart('custom');};
@@ -697,6 +716,7 @@ function needKey(){
 let current='';
 function go(p){
   current=p;
+  document.body.classList.toggle('material-view',p==='collector');
   location.hash=p;
   document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.page===p));
   const m=PAGES[p]||PAGES.search;
@@ -1518,4 +1538,5 @@ go(PAGES[start]?start:'search');
 </script>
 </body>
 </html>
+
 

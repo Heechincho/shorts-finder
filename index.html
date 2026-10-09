@@ -294,6 +294,7 @@
     <div class="menu-label">메뉴</div>
     <nav class="nav" id="nav">
       <a data-page="search"><span class="ic">🔍</span>조회수 폭발 쇼츠 찾기</a>
+      <a href="#collector" data-page="collector"><span class="ic">▣</span>소재 수집기</a>
       <a data-page="radar"><span class="ic">🎯</span>내 분야 레이더</a>
       <a data-page="trend"><span class="ic">🔥</span>터진 영상</a>
       <a data-page="rank"><span class="ic">📈</span>채널 랭킹</a>
@@ -318,6 +319,110 @@
 <div class="toast" id="toast"></div>
 
 <script>
+/* ===== 소재 수집기: 키워드 설정 ===== */
+const MATERIAL_KEYWORDS = [
+  '외국인 한국 여행 브이로그', '외국인 한국 한달살기', '외국인 한국 첫 방문',
+  '외국인 한국 음식 반응', '외국인 한국 지하철 반응', '외국인 한국 기차 KTX 반응',
+  '외국인 서울 여행', '외국인 부산 여행', '외국인 제주도 여행',
+  '외국인 한국 야구장', '외국인 한국 문화충격', '외국인 한국 시골 체험'
+];
+const MC_STORE='yt_material_records_v1', MC_RUNS='yt_material_runs_v1';
+const MC={scope:'half',period:'90',duration:'any',filter:'전체',busy:false,message:''};
+function mcDay(){ return new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()); }
+function mcRuns(){ const r=ls.get(MC_RUNS,null); return r&&r.day===mcDay()?r:{day:mcDay(),used:0}; }
+function mcWrite(key,value){ localStorage.setItem(key,JSON.stringify(value)); }
+function mcRecords(){
+  const raw=ls.get(MC_STORE,[]), cutoff=Date.now()-7*86400000;
+  const kept=(Array.isArray(raw)?raw:[]).filter(v=>v.saved||v.collectedAt>cutoff);
+  if(kept.length!==raw.length) mcWrite(MC_STORE,kept);
+  return kept;
+}
+function mcTags(title){ return [/["“”‘’「」『』]|'[^']+'/.test(title)?'인용형':null,/[?？]/.test(title)?'질문형':null,/[0-9０-９]/.test(title)?'숫자형':null].filter(Boolean); }
+function mcRank(items){
+  const eligible=items.filter(v=>v.subs>=500).sort((a,b)=>b.score-a.score||b.views-a.views||a.id.localeCompare(b.id));
+  eligible.forEach((v,i)=>{const p=i/eligible.length;v.grade=p<.05?'S':p<.2?'A':p<.5?'B':'C';});
+  items.filter(v=>v.subs<500).forEach(v=>v.grade='소형채널');
+  return items.sort((a,b)=>b.score-a.score||b.views-a.views||a.id.localeCompare(b.id));
+}
+function mcVisible(items){
+  const counts=new Map();
+  return [...items].sort((a,b)=>b.collectedAt-a.collectedAt||b.score-a.score).filter(v=>{
+    const n=counts.get(v.channelId)||0; counts.set(v.channelId,n+1); return n<3;
+  });
+}
+function mcSafe(value){ return String(value??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function mcCard(v,i){
+  const wrap=document.createElement('div');
+  wrap.innerHTML=cardHTML({...v,title:mcSafe(v.title),channel:mcSafe(v.channel),thumb:mcSafe(v.thumb)},i);
+  const card=wrap.firstElementChild;
+  card.querySelectorAll('.tag,.fav').forEach(n=>n.remove());
+  const badge=document.createElement('div');badge.className='tag jackpot';badge.textContent=v.grade;card.querySelector('.thumbwrap').append(badge);
+  const save=document.createElement('button');save.className='fav'+(v.saved?' on':'');save.textContent=v.saved?'✓':'＋';save.title=v.saved?'보관 해제':'자동 정리 없이 보관';save.setAttribute('aria-label',save.title);save.setAttribute('aria-pressed',String(!!v.saved));
+  save.onclick=()=>{try{const rows=mcRecords(); const item=rows.find(x=>x.id===v.id); if(item){item.saved=!item.saved;mcWrite(MC_STORE,rows);pgCollector();}}catch(e){toast('브라우저 저장 공간이 부족해 보관하지 못했어요');}};
+  card.querySelector('.thumbwrap').append(save);
+  const meta=document.createElement('div');meta.className='note';meta.textContent=(v.isNew?'NEW · ':'')+mcTags(v.title).join(' · ')+' · 업로드 '+v.publishedAt.slice(0,10)+' · 수집 '+new Date(v.collectedAt).toLocaleString('ko-KR');
+  card.querySelector('.cbody').append(meta);
+  card.querySelector('.cline span').textContent='일평균 조회수';
+  if(v.subs===0) card.querySelector('.cstats div span').textContent='0';
+  card.querySelectorAll('.cline b')[1].textContent=v.score.toFixed(1)+'x';
+  return card;
+}
+function pgCollector(){
+  if(current!=='collector') return;
+  let records;try{records=mcRecords();}catch(e){records=ls.get(MC_STORE,[]);MC.message='저장 공간을 확인해 주세요. 자동 정리를 저장하지 못했어요.';}
+  const rows=mcVisible(records),runs=mcRuns();
+  const remain=MC.scope==='half'?2-runs.used:(runs.used===0?1:0);
+  const options=(name,choices)=>choices.map(([value,label])=>'<button class="chip'+(MC[name]===value?' on':'')+'" data-mc-option="'+name+'" data-value="'+value+'" '+(MC.busy?'disabled':'')+'>'+label+'</button>').join('');
+  $('page').innerHTML='<div class="panel"><div class="flabel">수집 범위</div><div>'+options('scope',[['half','절반씩'],['all','전체 한 번에']])+'</div><div class="flabel" style="margin-top:18px">기간</div><div>'+options('period',[['90','최근 90일'],['any','기간 무관']])+'</div><div class="flabel" style="margin-top:18px">영상 길이</div><div>'+options('duration',[['any','8분 이상'],['long','20분 초과 (long)']])+'</div><div class="note">절반씩: 첫 6개 → 다음 6개, 하루 2회. 전체: 12개, 하루 1회. 한국 시간 자정에 초기화됩니다.<br>8분 이상은 검색 후 실제 길이로 걸러냅니다. 한국어 편집 여부는 제목·검색 언어 기준으로 후보를 찾으며 영상 확인이 필요합니다.</div><button class="go" id="mcStart" '+(MC.busy||remain<=0?'disabled':'')+'>'+(MC.busy?'수집 중…':'수집 시작')+'</button><p>오늘 남은 실행 '+Math.max(0,remain)+'번</p><p id="mcStatus" role="status" aria-live="polite"></p></div><div id="mcPattern"></div><div class="panel" id="mcTabs"></div><div class="note">NEW = 가장 최근 수집에서 처음 발견한 영상 · 일평균 = 조회수 ÷ 경과일(최소 1일) · 지수 = 조회수 ÷ max(구독자, 1,000)<br>등급은 각 수집 결과의 구독자 500명 이상 영상 내 상대 순위입니다. 같은 채널은 전체 목록에서 최신 순 최대 3개를 표시합니다. 체크한 영상은 기간 제한 없이 이 브라우저에 보관됩니다.</div><div class="grid" id="mcGrid"></div>';
+  $('mcStatus').textContent=MC.message;
+  $('page').querySelectorAll('[data-mc-option]').forEach(b=>b.onclick=()=>{MC[b.dataset.mcOption]=b.dataset.value;pgCollector();});
+  $('mcStart').onclick=mcStart;
+  const top=[...rows].sort((a,b)=>b.score-a.score).slice(0,20);
+  if(top.length){$('mcPattern').innerHTML='<div class="panel analyze"><div class="flabel">상위 '+top.length+'개의 패턴 태그</div><div class="astats">'+['인용형','질문형','숫자형'].map(t=>'<div><b>'+Math.round(top.filter(v=>mcTags(v.title).includes(t)).length/top.length*100)+'%</b><span>'+t+'</span></div>').join('')+'</div></div>';}
+  ['S','A','B','C','NEW','전체'].forEach(t=>{const count=rows.filter(v=>t==='전체'||(t==='NEW'?v.isNew:v.grade===t)).length;const b=document.createElement('button');b.className='chip'+(MC.filter===t?' on':'');b.textContent=t+' '+count;b.onclick=()=>{MC.filter=t;pgCollector();};$('mcTabs').append(b);});
+  const filtered=rows.filter(v=>MC.filter==='전체'||(MC.filter==='NEW'?v.isNew:v.grade===MC.filter));
+  filtered.forEach((v,i)=>$('mcGrid').append(mcCard(v,i)));
+  if(!filtered.length) $('mcGrid').textContent='표시할 영상이 없어요. 수집을 시작하거나 다른 탭을 선택해 주세요.';
+}
+async function mcCollect(){
+  const key=getKey();if(!key){toast('API 키 설정에서 키를 먼저 등록해 주세요');return;}
+  const runs=mcRuns(), weight=MC.scope==='all'?2:1;
+  if(runs.used+weight>2){toast('오늘 실행 횟수를 모두 사용했어요');return;}
+  const keywords=weight===2?MATERIAL_KEYWORDS:MATERIAL_KEYWORDS.slice(runs.used*6,runs.used*6+6);
+  const period=MC.period,duration=MC.duration;
+  // Reserve before the first request: reloads and partial failures cannot reset the daily limit.
+  try{mcWrite(MC_RUNS,{day:runs.day,used:runs.used+weight});}catch(e){toast('브라우저 저장 공간을 확인해 주세요');return;}
+  MC.busy=true;MC.message='영상 검색을 시작합니다…';pgCollector();
+  try{
+    const ids=new Set();
+    for(let i=0;i<keywords.length;i++){
+      const params={part:'snippet',q:keywords[i],regionCode:'KR',relevanceLanguage:'ko',type:'video',videoDuration:duration,maxResults:25,key};
+      if(period==='90') params.publishedAfter=new Date(Date.now()-90*86400000).toISOString();
+      const result=await yt('search',params,100);
+      (result.items||[]).forEach(v=>{if(v.id&&/^[A-Za-z0-9_-]{11}$/.test(v.id.videoId))ids.add(v.id.videoId);});
+      MC.message='키워드 '+(i+1)+'/'+keywords.length+' 검색 완료';if(current==='collector')$('mcStatus').textContent=MC.message;
+    }
+    const videos=(await batch(key,'videos',[...ids],'snippet,statistics,contentDetails')).filter(v=>v.snippet&&v.statistics&&toSec(v.contentDetails?.duration)>=480&&v.snippet.liveBroadcastContent!=='live'&&v.snippet.liveBroadcastContent!=='upcoming');
+    const channels=await batch(key,'channels',[...new Set(videos.map(v=>v.snippet.channelId))],'statistics');
+    const stats=Object.fromEntries(channels.filter(c=>c.statistics&&!c.statistics.hiddenSubscriberCount&&c.statistics.subscriberCount!=null).map(c=>[c.id,c.statistics]));
+    const valid=videos.filter(v=>stats[v.snippet.channelId]);
+    const raw=Object.fromEntries(valid.map(v=>[v.id,v]));
+    const items=mcRank(enrich(valid,stats).map(v=>({...v,score:v.views/Math.max(v.subs,1000),publishedAt:raw[v.id].snippet.publishedAt,daily:Math.round(v.views/Math.max(1,(Date.now()-Date.parse(raw[v.id].snippet.publishedAt))/86400000))})));
+    const old=mcRecords(),oldMap=new Map(old.map(v=>[v.id,v])),time=Date.now();
+    const incoming=items.map(v=>({...v,collectedAt:time,isNew:!oldMap.has(v.id),saved:!!oldMap.get(v.id)?.saved}));
+    const newIds=new Set(incoming.map(v=>v.id));
+    mcWrite(MC_STORE,[...incoming,...old.filter(v=>!newIds.has(v.id)).map(v=>({...v,isNew:false}))]);
+    MC.message=items.length+'개 수집 완료 · 새 영상 '+incoming.filter(v=>v.isNew).length+'개';
+  }catch(e){MC.message='수집을 완료하지 못했어요: '+errText(e.message||'요청 실패')+'. 기존 기록은 유지됩니다. 실행 횟수는 요청 시작 시 차감됩니다.';}
+  finally{MC.busy=false;pgCollector();}
+}
+async function mcStart(){
+  if(MC.busy)return;
+  if(navigator.locks){await navigator.locks.request('yt-material-collector',{ifAvailable:true},async lock=>{if(!lock){toast('다른 탭에서 수집 중이에요');return;}await mcCollect();});}
+  else await mcCollect();
+}
+setInterval(()=>{if(current==='collector'&&!MC.busy)pgCollector();},60000);
+
 /* ===== 공통 ===== */
 let toastT=null;
 function toast(msg){
@@ -367,6 +472,7 @@ const DEPTHS={
   max:{orders:['viewCount','relevance','date','rating'],pages:6,cost:2400},
 };
 const PAGES={
+  collector:{ic:'▣',t:'유튜브 소재 수집기',d:'외국인의 한국 경험 영상을 S·A·B·C 등급으로 정리'},
   search:{ic:'🔍',t:'조회수 폭발 쇼츠 찾기',d:'검색 한 번으로 영상과 채널을 같이 봅니다'},
   radar:{ic:'🎯',t:'내 분야 레이더',d:'지켜보는 채널의 최신 영상'},
   trend:{ic:'🔥',t:'터진 영상',d:'급등하는 영상 확인'},
@@ -562,7 +668,7 @@ function go(p){
   $('pgIcon').textContent=m.ic; $('pgTitle').textContent=m.t; $('pgDesc').textContent=m.d;
   $('banner').innerHTML = (!getKey()&&p!=='key'&&p!=='trend')
     ? '<div class="banner">🔑 아직 API 키가 없어요. <a onclick="go(\'key\')">지금 등록하기</a> — 무료이고 5분이면 됩니다.</div>' : '';
-  ({radar:pgRadar,search:pgSearch,trend:pgTrend,rank:pgRank,fav:pgFav,key:pgKey}[p]||pgSearch)();
+  ({collector:pgCollector,radar:pgRadar,search:pgSearch,trend:pgTrend,rank:pgRank,fav:pgFav,key:pgKey}[p]||pgSearch)();
   window.scrollTo({top:0});
 }
 window.go=go;

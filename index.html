@@ -307,6 +307,7 @@ body.material-view{--bg:#0b0e14;--side:#11151d;--surface:#171a20;--surface-2:#1e
 @media(max-width:860px){.material-view .side{width:100%;padding:12px 14px}.material-view .main{padding:22px 14px 50px}.material-view .nav a{padding:8px 12px}.mc-reference-head h1{font-size:25px}}
 @media(max-width:480px){.material-view .mc-search-panel{padding:16px}.mc-choice-grid .chip{font-size:13px;padding:12px 5px}.mc-choice-grid small{font-size:9px}.mc-reference-head p{font-size:12px}.mc-remaining{font-size:10px}.material-view .mc-direct{padding:16px}.material-view .mc-searchbar{flex-direction:row}.material-view .mc-searchbar .go{width:auto;padding:10px 16px}}
 
+.mc-progress{margin-top:20px;text-align:left}.mc-progress[hidden]{display:none}#mcProgressTitle{font-size:14px;color:#87b8ff;font-weight:700}.mc-progress progress{width:100%;height:5px;accent-color:#398bff;margin:12px 0}.mc-runlog{background:#0d1118;border:1px solid #232933;border-radius:10px;padding:15px 18px;font-size:12px;line-height:1.7;overflow-wrap:anywhere}.mc-runlog strong{color:#53c9ac;font-weight:500}.mc-runlog p{margin:5px 0 0;color:var(--text-muted)}
 </style>
 </head>
 <body>
@@ -353,8 +354,24 @@ const MATERIAL_KEYWORDS = [
   '외국인 한국 야구장', '외국인 한국 문화충격', '외국인 한국 시골 체험'
 ];
 const MC_STORE='yt_material_records_v1', MC_RUNS='yt_material_runs_v1';
-const MC={scope:'half',period:'90',duration:'any',filter:'전체',query:'',sort:'new',busy:false,message:''};
-function mcDay(){ return new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()); }
+const MC={scope:'half',period:'90',duration:'any',filter:'전체',query:'',sort:'new',busy:false,message:'',progress:null};
+function mcDay(date=new Date()){ return new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit'}).format(date); }
+function mcResetTime(now=new Date()){
+  const day=mcDay(now);let lo=now.getTime(),hi=lo+27*3600000;
+  while(hi-lo>1000){const mid=Math.floor((lo+hi)/2);if(mcDay(new Date(mid))===day)lo=mid;else hi=mid;}
+  return new Date(Math.floor(hi/60000)*60000);
+}
+function mcResetLabel(){return new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',month:'long',day:'numeric',hour:'numeric',minute:'2-digit'}).format(mcResetTime());}
+function mcProgress(){
+  if(current!=='collector'||!$('mcProgress'))return;
+  const p=MC.progress,box=$('mcProgress');box.hidden=!p;if(!p)return;
+  $('mcProgressTitle').textContent=p.stage+' ('+p.done+'/'+p.total+') · 후보 '+p.candidates+'개';
+  $('mcProgressBar').max=Math.max(1,p.total);$('mcProgressBar').value=p.done;
+  $('mcRunInfo').textContent='소재 수집기 가동 — '+p.scope+' · '+p.period+' · 키워드 '+p.total+'개';
+  $('mcKeepInfo').textContent='기존 수집 기록 '+p.existing+'개에 이어서 모아요. 보관 체크 '+p.saved+'개는 유지됩니다.';
+  $('mcCurrentKeyword').textContent=p.keyword?'검색어: '+p.keyword:'';
+}
+
 function mcRuns(){ const r=ls.get(MC_RUNS,null); return r&&r.day===mcDay()?r:{day:mcDay(),used:0}; }
 function mcWrite(key,value){ localStorage.setItem(key,JSON.stringify(value)); }
 function mcRecords(){
@@ -404,18 +421,22 @@ function pgCollector(){
       <div class="mc-label">수집 범위</div><div class="mc-choice-grid">${options('scope',[['half','절반씩<small>하루 2번까지 가능 · 평소 추천</small>'],['all','전체 한 번에<small>오늘 치 2번을 한 번에 사용</small>']])}</div>
       <div class="mc-label mc-section-label">기간</div><div class="mc-choice-grid">${options('period',[['90','최근 90일<small>새로 올라온 영상 위주 · 평소 추천</small>'],['any','년도 상관없이<small>오래된 영상까지 전부 뒤져요</small>']])}</div>
       <button type="button" class="go mc-collect-main" id="mcStart" ${MC.busy||remain<=0?'disabled':''}>${MC.busy?'수집 중…':'▶ 수집 시작'}</button>
-      <div class="mc-remaining"><span class="mc-dots">${'■ '.repeat(Math.max(0,2-runs.used))}</span>오늘 남은 실행 <b>${Math.max(0,2-runs.used)}번</b> · 지금 선택은 <b>${MC.scope==='half'?1:2}번</b> 사용</div>
+      <div class="mc-remaining" id="mcRemaining"><span class="mc-dots">${'■ '.repeat(Math.max(0,2-runs.used))}</span>오늘 남은 실행 <b>${Math.max(0,2-runs.used)}번</b> · 지금 선택은 <b>${MC.scope==='half'?1:2}번</b> 사용</div>
+      <section id="mcProgress" class="mc-progress" hidden><div id="mcProgressTitle" role="status" aria-live="polite"></div><progress id="mcProgressBar" max="1" value="0" aria-label="키워드 검색 진행"></progress><div class="mc-runlog"><strong id="mcRunInfo"></strong><p id="mcKeepInfo"></p><p id="mcCurrentKeyword"></p></div></section>
       <div class="mc-key-state"><button type="button" id="mcKey">${getKey()?'🔑 키 저장됨 ✓ · 변경하기':'🔑 YouTube API 키 등록하기'}</button></div>
       <div id="mcStatus" class="mc-feedback" role="status" aria-live="polite"></div>
     </section>
     <div class="mc-save-notice">📁 목록은 통화기록처럼 위에 쌓여요 — 1주일 지난 건 알아서 정리 · 쓸 영상은 ＋ 체크로 보관!</div>
     <section class="panel mc-direct"><div class="mc-label">검색어로 직접 찾기</div>
       <form id="mcSearchForm" class="searchbar mc-searchbar"><input type="text" id="mcQuery" aria-label="소재 검색어" placeholder="예: 외국인 한국 야구장, 한국 음식 첫 반응" autocomplete="off" maxlength="200" ${MC.busy?'disabled':''}><button class="go" id="mcSearch" ${MC.busy?'disabled':''}>검색</button></form>
-      <details class="mc-suggestions"><summary>추천 검색어 12개 · 검색 조건 보기</summary><div class="mc-keywords" id="mcKeywords"></div><div class="mc-filters"><div><span class="mc-label">영상 길이</span><div class="row">${options('duration',[['any','8분 이상'],['long','20분 초과']])}</div></div></div><p class="note" id="mcPlanned"></p><p class="note">직접 검색에도 위 기간·영상 길이가 적용됩니다. 수집 횟수는 한국 시간 자정에 초기화되며 YouTube API 한도와는 별개예요.</p></details>
+      <details class="mc-suggestions"><summary>추천 검색어 12개 · 검색 조건 보기</summary><div class="mc-keywords" id="mcKeywords"></div><div class="mc-filters"><div><span class="mc-label">영상 길이</span><div class="row">${options('duration',[['any','8분 이상'],['long','20분 초과']])}</div></div></div><p class="note" id="mcPlanned"></p><p class="note">직접 검색에도 위 기간·영상 길이가 적용됩니다. 수집 횟수는 미국 태평양 시간 자정(한국 오후 4시 또는 5시)에 초기화됩니다. 실제 API 잔여량과는 별개예요.</p></details>
     </section>
     <div class="mc-resultbar"><h2>수집한 영상 <span>${rows.length}</span></h2><label>정렬 <select id="mcSort"><option value="new">최신 수집순</option><option value="score">떡상지수순</option><option value="views">조회수순</option><option value="daily">일평균 조회수순</option></select></label></div>
     <div class="row mc-tabs" id="mcTabs"></div><div id="mcPattern"></div><div class="grid" id="mcGrid"></div>
     <details class="mc-guide"><summary>등급·보관 기준 보기</summary><p class="note">등급은 수집 당시 구독자 500명 이상 영상의 보정 지수 순위입니다. 지수 = 조회수 ÷ max(구독자, 1,000). 일평균은 업로드 후 평균으로, 실제 어제 조회수가 아닙니다. NEW는 마지막 수집에서 처음 발견한 영상입니다. 일반 목록은 채널당 최대 3개, 보관함에서는 체크한 영상을 모두 볼 수 있어요. 미보관 영상은 수집 후 7일이 지나면 정리됩니다. 기록은 이 브라우저에 저장됩니다.</p></details>`;
+  if(runs.used>=2)$('mcRemaining').textContent='오늘 실행을 다 썼어요 — '+mcResetLabel()+'에 다시 2번 생겨요';
+  else if(remain===0)$('mcRemaining').textContent='전체 수집에는 2번이 필요해요. 절반씩은 1번 더 실행할 수 있어요.';
+  mcProgress();
   $('mcKey').onclick=()=>go('key');
   $('mcQuery').value=MC.query||'';
   $('mcQuery').oninput=e=>{MC.query=e.target.value;};
@@ -444,17 +465,22 @@ async function mcCollect(mode){
   const period=MC.period,duration=MC.duration;
   // Reserve before the first request: reloads and partial failures cannot reset the daily limit.
   try{if(weight)mcWrite(MC_RUNS,{day:runs.day,used:runs.used+weight});}catch(e){toast('브라우저 저장 공간을 확인해 주세요');return;}
-  MC.busy=true;MC.message='검색 중: '+keywords.join(' / ');pgCollector();
+  MC.busy=true;MC.message='';
+  const existing=ls.get(MC_STORE,[]);
+  MC.progress={done:0,total:keywords.length,candidates:0,stage:'🔍 유튜브 검색 중…',scope:mode==='custom'?'직접 검색':weight===2?'전체':'절반씩',period:period==='any'?'기간 무관':'최근 '+period+'일',existing:existing.length,saved:existing.filter(v=>v.saved).length,keyword:''};pgCollector();
   try{
     const ids=new Set();
     for(let i=0;i<keywords.length;i++){
       const params={part:'snippet',q:keywords[i],regionCode:'KR',relevanceLanguage:'ko',type:'video',videoDuration:duration,maxResults:25,key};
       if(period!=='any') params.publishedAfter=new Date(Date.now()-Number(period)*86400000).toISOString();
+      MC.progress.keyword=keywords[i];mcProgress();
       const result=await yt('search',params,100);
       (result.items||[]).forEach(v=>{if(v.id&&/^[A-Za-z0-9_-]{11}$/.test(v.id.videoId))ids.add(v.id.videoId);});
-      MC.message='키워드 '+(i+1)+'/'+keywords.length+' 검색 완료';if(current==='collector')$('mcStatus').textContent=MC.message;
+      MC.progress.done=i+1;MC.progress.candidates=ids.size;mcProgress();
     }
+    MC.progress.stage='영상 길이·조회수 확인 중…';mcProgress();
     const videos=(await batch(key,'videos',[...ids],'snippet,statistics,contentDetails')).filter(v=>v.snippet&&v.statistics&&toSec(v.contentDetails?.duration)>=480&&v.snippet.liveBroadcastContent!=='live'&&v.snippet.liveBroadcastContent!=='upcoming');
+    MC.progress.stage='채널 구독자 확인 중…';mcProgress();
     const channels=await batch(key,'channels',[...new Set(videos.map(v=>v.snippet.channelId))],'statistics');
     const stats=Object.fromEntries(channels.filter(c=>c.statistics&&!c.statistics.hiddenSubscriberCount&&c.statistics.subscriberCount!=null).map(c=>[c.id,c.statistics]));
     const valid=videos.filter(v=>stats[v.snippet.channelId]);
@@ -464,9 +490,10 @@ async function mcCollect(mode){
     const incoming=items.map(v=>({...v,collectedAt:time,isNew:!oldMap.has(v.id),saved:!!oldMap.get(v.id)?.saved}));
     const newIds=new Set(incoming.map(v=>v.id));
     mcWrite(MC_STORE,[...incoming,...old.filter(v=>!newIds.has(v.id)).map(v=>({...v,isNew:false}))]);
+    MC.progress.stage='✓ 수집 완료';mcProgress();
     MC.filter='전체';
     MC.message='검색 완료: '+keywords.join(' / ')+' · '+items.length+'개 수집 · 새 영상 '+incoming.filter(v=>v.isNew).length+'개';
-  }catch(e){MC.message='수집을 완료하지 못했어요: '+errText(e.message||'요청 실패')+'. 기존 기록은 유지됩니다.'+(weight?' 일괄 수집 횟수는 요청 시작 시 차감됩니다.':'');}
+  }catch(e){if(MC.progress)MC.progress.stage='수집 중단';MC.message='수집을 완료하지 못했어요: '+errText(e.message||'요청 실패')+'. 기존 기록은 유지됩니다.'+(weight?' 일괄 수집 횟수는 요청 시작 시 차감됩니다.':'');}
   finally{MC.busy=false;pgCollector();}
 }
 async function mcStart(mode){
@@ -1538,5 +1565,6 @@ go(PAGES[start]?start:'search');
 </script>
 </body>
 </html>
+
 
 

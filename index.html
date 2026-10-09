@@ -281,6 +281,20 @@
     .main{padding:18px 14px 60px;}
   }
 
+
+/* 소재 수집기 검색 화면 */
+.mc-searchbar{margin-bottom:16px}.mc-searchbar input{width:100%}
+.mc-recommend-label{font-size:12px;font-weight:600;margin-bottom:9px}.mc-recommend-label span{font-weight:400;color:var(--text-muted);margin-left:8px}
+.mc-keywords{display:flex;flex-wrap:wrap;gap:6px}.mc-keyword{font-size:11.5px;padding:6px 10px}
+.mc-filters{display:flex;flex-wrap:wrap;gap:20px;margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+.mc-label{display:block;font-size:12px;color:var(--text-muted);margin-bottom:8px}.mc-filters .chip{font-size:12px;padding:7px 12px}
+.mc-feedback{font-size:12px;line-height:1.7;margin-top:16px;overflow-wrap:anywhere;color:var(--text-muted)}
+.mc-auto{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}.mc-auto summary,.mc-guide summary{cursor:pointer;font-size:12px;color:var(--text-muted)}.mc-auto-body{padding-top:12px}.mc-auto-body .row>span{font-size:12px}
+.mc-resultbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:22px 0 12px}.mc-resultbar h2{font-size:17px;margin:0}.mc-resultbar h2 span{color:var(--gold-bright)}.mc-resultbar label{font-size:12px;color:var(--text-muted)}.mc-resultbar select{font-size:12px;padding:8px}
+.mc-tabs{margin-bottom:16px}.mc-tabs .chip{font-size:12px;padding:7px 13px}.mc-pattern{padding:15px 20px}.mc-pattern .row{gap:24px;font-size:12px}.mc-pattern b{color:var(--gold-bright)}
+.mc-empty{grid-column:1/-1;text-align:center;padding:48px 20px;border:1px dashed var(--line);border-radius:16px;color:var(--text-muted)}.mc-empty strong{color:var(--text);font-size:16px}.mc-empty p{font-size:12px;line-height:1.8}.mc-guide{margin-top:20px}
+@media(max-width:560px){.mc-searchbar{flex-direction:column}.mc-searchbar .go{width:100%}.mc-filters{gap:14px}.mc-search-panel{padding:18px 16px}}
+
 </style>
 </head>
 <body>
@@ -327,7 +341,7 @@ const MATERIAL_KEYWORDS = [
   '외국인 한국 야구장', '외국인 한국 문화충격', '외국인 한국 시골 체험'
 ];
 const MC_STORE='yt_material_records_v1', MC_RUNS='yt_material_runs_v1';
-const MC={scope:'half',period:'90',duration:'any',filter:'전체',busy:false,message:''};
+const MC={scope:'half',period:'90',duration:'any',filter:'전체',query:'',sort:'new',busy:false,message:''};
 function mcDay(){ return new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()); }
 function mcRuns(){ const r=ls.get(MC_RUNS,null); return r&&r.day===mcDay()?r:{day:mcDay(),used:0}; }
 function mcWrite(key,value){ localStorage.setItem(key,JSON.stringify(value)); }
@@ -368,36 +382,55 @@ function mcCard(v,i){
   return card;
 }
 function pgCollector(){
-  if(current!=='collector') return;
-  let records;try{records=mcRecords();}catch(e){records=ls.get(MC_STORE,[]);MC.message='저장 공간을 확인해 주세요. 자동 정리를 저장하지 못했어요.';}
-  const rows=mcVisible(records),runs=mcRuns();
-  const remain=MC.scope==='half'?2-runs.used:(runs.used===0?1:0);
-  const options=(name,choices)=>choices.map(([value,label])=>'<button class="chip'+(MC[name]===value?' on':'')+'" data-mc-option="'+name+'" data-value="'+value+'" '+(MC.busy?'disabled':'')+'>'+label+'</button>').join('');
-  $('page').innerHTML='<div class="panel"><div class="flabel">수집 범위</div><div>'+options('scope',[['half','절반씩'],['all','전체 한 번에']])+'</div><div class="flabel" style="margin-top:18px">기간</div><div>'+options('period',[['90','최근 90일'],['any','기간 무관']])+'</div><div class="flabel" style="margin-top:18px">영상 길이</div><div>'+options('duration',[['any','8분 이상'],['long','20분 초과 (long)']])+'</div><div class="note">절반씩: 첫 6개 → 다음 6개, 하루 2회. 전체: 12개, 하루 1회. 한국 시간 자정에 초기화됩니다.<br>8분 이상은 검색 후 실제 길이로 걸러냅니다. 한국어 편집 여부는 제목·검색 언어 기준으로 후보를 찾으며 영상 확인이 필요합니다.</div><button class="go" id="mcStart" '+(MC.busy||remain<=0?'disabled':'')+'>'+(MC.busy?'수집 중…':'수집 시작')+'</button><p>오늘 남은 실행 '+Math.max(0,remain)+'번</p><p id="mcStatus" role="status" aria-live="polite"></p></div><div id="mcPattern"></div><div class="panel" id="mcTabs"></div><div class="note">NEW = 가장 최근 수집에서 처음 발견한 영상 · 일평균 = 조회수 ÷ 경과일(최소 1일) · 지수 = 조회수 ÷ max(구독자, 1,000)<br>등급은 각 수집 결과의 구독자 500명 이상 영상 내 상대 순위입니다. 같은 채널은 전체 목록에서 최신 순 최대 3개를 표시합니다. 체크한 영상은 기간 제한 없이 이 브라우저에 보관됩니다.</div><div class="grid" id="mcGrid"></div>';
-  $('mcStatus').textContent=MC.message;
+  if(current!=='collector')return;
+  let records;try{records=mcRecords();}catch(e){records=ls.get(MC_STORE,[]);MC.message='브라우저 저장 공간을 확인해 주세요.';}
+  const rows=MC.filter==='보관함'?records.filter(v=>v.saved):mcVisible(records), runs=mcRuns();
+  const remain=MC.scope==='half'?Math.max(0,2-runs.used):(runs.used===0?1:0);
+  const options=(name,choices)=>choices.map(([value,label])=>'<button type="button" class="chip'+(MC[name]===value?' on':'')+'" data-mc-option="'+name+'" data-value="'+value+'" '+(MC.busy?'disabled':'')+'>'+label+'</button>').join('');
+  $('page').innerHTML=`<section class="panel mc-search-panel">
+    <div class="flabel">어떤 한국 경험을 찾고 있나요?</div>
+    <form id="mcSearchForm" class="searchbar mc-searchbar"><input type="text" id="mcQuery" aria-label="소재 검색어" placeholder="예: 외국인 한국 야구장, 한국 음식 첫 반응" autocomplete="off" maxlength="200" ${MC.busy?'disabled':''}><button class="go" id="mcSearch" ${MC.busy?'disabled':''}>${MC.busy?'검색 중…':'검색'}</button></form>
+    <div class="mc-recommend-label">추천 검색어 <span>누르면 검색창에 입력됩니다</span></div><div class="mc-keywords" id="mcKeywords"></div>
+    <div class="mc-filters"><div><span class="mc-label">기간</span><div class="row">${options('period',[['30','최근 30일'],['90','최근 90일'],['any','기간 무관']])}</div></div><div><span class="mc-label">영상 길이</span><div class="row">${options('duration',[['any','8분 이상'],['long','20분 초과']])}</div></div></div>
+    <div class="mc-feedback" id="mcStatus" role="status" aria-live="polite"></div>
+    <details class="mc-auto"><summary>추천 검색어 여러 개를 한 번에 수집</summary><div class="mc-auto-body"><div class="row">${options('scope',[['half','절반씩 · 6개'],['all','전체 · 12개']])}<button type="button" class="btn" id="mcStart" ${MC.busy||remain<=0?'disabled':''}>추천어 수집 시작</button><span>오늘 ${remain}회 남음</span></div><p class="note" id="mcPlanned"></p><p class="note">직접 검색은 위 검색창에서 실행하세요. 추천어 일괄 수집 횟수는 한국 시간 자정에 초기화됩니다. YouTube API 한도와는 별개입니다.</p></div></details>
+    </section>
+    <div class="mc-resultbar"><h2>수집한 영상 <span>${rows.length}</span></h2><label>정렬 <select id="mcSort"><option value="new">최신 수집순</option><option value="score">떡상지수순</option><option value="views">조회수순</option><option value="daily">일평균 조회수순</option></select></label></div>
+    <div class="row mc-tabs" id="mcTabs"></div><div id="mcPattern"></div><div class="grid" id="mcGrid"></div>
+    <details class="mc-guide"><summary>등급·보관 기준 보기</summary><p class="note">등급은 수집 당시 구독자 500명 이상 영상의 보정 지수 순위입니다. 지수 = 조회수 ÷ max(구독자, 1,000). 일평균은 업로드 후 평균으로, 실제 어제 조회수가 아닙니다. NEW는 마지막 수집에서 처음 발견한 영상입니다. 일반 목록은 채널당 최대 3개, 보관함에서는 체크한 영상을 모두 볼 수 있어요. 미보관 영상은 수집 후 7일이 지나면 정리됩니다. 기록은 이 브라우저에 저장됩니다.</p></details>`;
+  $('mcQuery').value=MC.query||'';
+  $('mcQuery').oninput=e=>{MC.query=e.target.value;};
+  $('mcSearchForm').onsubmit=e=>{e.preventDefault();mcStart('custom');};
+  $('mcStart').onclick=()=>mcStart('auto');
   $('page').querySelectorAll('[data-mc-option]').forEach(b=>b.onclick=()=>{MC[b.dataset.mcOption]=b.dataset.value;pgCollector();});
-  $('mcStart').onclick=mcStart;
+  MATERIAL_KEYWORDS.forEach(word=>{const b=document.createElement('button');b.className='chip mc-keyword';b.textContent=word;b.disabled=MC.busy;b.onclick=()=>{MC.query=word;$('mcQuery').value=word;$('mcQuery').focus();};$('mcKeywords').append(b);});
+  $('mcPlanned').textContent='이번 수집 검색어: '+(MC.scope==='all'?MATERIAL_KEYWORDS:MATERIAL_KEYWORDS.slice(runs.used*6,runs.used*6+6)).join(' / ');
+  $('mcStatus').textContent=MC.message||'검색어를 입력하면 한국어 검색 결과에서 8분 이상 영상을 찾아요. 한국어 편집 여부는 영상을 열어 확인해 주세요.';
+  $('mcSort').value=MC.sort||'new';$('mcSort').onchange=e=>{MC.sort=e.target.value;pgCollector();};
+  ['전체','S','A','B','C','NEW','소형채널','보관함'].forEach(t=>{const count=t==='보관함'?records.filter(v=>v.saved).length:mcVisible(records).filter(v=>t==='전체'||(t==='NEW'?v.isNew:v.grade===t)).length;const b=document.createElement('button');b.className='chip'+(MC.filter===t?' on':'');b.textContent=t+' '+count;b.onclick=()=>{MC.filter=t;pgCollector();};$('mcTabs').append(b);});
   const top=[...rows].sort((a,b)=>b.score-a.score).slice(0,20);
-  if(top.length){$('mcPattern').innerHTML='<div class="panel analyze"><div class="flabel">상위 '+top.length+'개의 패턴 태그</div><div class="astats">'+['인용형','질문형','숫자형'].map(t=>'<div><b>'+Math.round(top.filter(v=>mcTags(v.title).includes(t)).length/top.length*100)+'%</b><span>'+t+'</span></div>').join('')+'</div></div>';}
-  ['S','A','B','C','NEW','전체'].forEach(t=>{const count=rows.filter(v=>t==='전체'||(t==='NEW'?v.isNew:v.grade===t)).length;const b=document.createElement('button');b.className='chip'+(MC.filter===t?' on':'');b.textContent=t+' '+count;b.onclick=()=>{MC.filter=t;pgCollector();};$('mcTabs').append(b);});
-  const filtered=rows.filter(v=>MC.filter==='전체'||(MC.filter==='NEW'?v.isNew:v.grade===MC.filter));
+  if(top.length)$('mcPattern').innerHTML='<div class="panel analyze mc-pattern"><div class="flabel">상위 '+top.length+'개 제목 패턴</div><div class="row">'+['인용형','질문형','숫자형'].map(t=>'<span>'+t+' <b>'+Math.round(top.filter(v=>mcTags(v.title).includes(t)).length/top.length*100)+'%</b></span>').join('')+'</div></div>';
+  const filtered=rows.filter(v=>MC.filter==='전체'||MC.filter==='보관함'||(MC.filter==='NEW'?v.isNew:v.grade===MC.filter));
+  filtered.sort((a,b)=>MC.sort==='score'?b.score-a.score:MC.sort==='views'?b.views-a.views:MC.sort==='daily'?b.daily-a.daily:b.collectedAt-a.collectedAt||b.score-a.score);
   filtered.forEach((v,i)=>$('mcGrid').append(mcCard(v,i)));
-  if(!filtered.length) $('mcGrid').textContent='표시할 영상이 없어요. 수집을 시작하거나 다른 탭을 선택해 주세요.';
+  if(!filtered.length)$('mcGrid').innerHTML='<div class="mc-empty"><strong>'+(records.length?'조건에 맞는 영상이 없어요':'검색하면 이곳에 영상이 모여요')+'</strong><p>'+(records.length?'전체 탭이나 다른 등급을 선택해 보세요.':'검색어 입력 → 검색 → 마음에 드는 영상의 ＋ 버튼으로 보관')+'</p></div>';
 }
-async function mcCollect(){
+async function mcCollect(mode){
   const key=getKey();if(!key){toast('API 키 설정에서 키를 먼저 등록해 주세요');return;}
-  const runs=mcRuns(), weight=MC.scope==='all'?2:1;
+  const query=(MC.query||'').trim();
+  if(mode==='custom'&&!query){toast('검색어를 입력해 주세요');$('mcQuery')?.focus();return;}
+  const runs=mcRuns(), weight=mode==='custom'?0:(MC.scope==='all'?2:1);
   if(runs.used+weight>2){toast('오늘 실행 횟수를 모두 사용했어요');return;}
-  const keywords=weight===2?MATERIAL_KEYWORDS:MATERIAL_KEYWORDS.slice(runs.used*6,runs.used*6+6);
+  const keywords=mode==='custom'?[query]:(weight===2?MATERIAL_KEYWORDS:MATERIAL_KEYWORDS.slice(runs.used*6,runs.used*6+6));
   const period=MC.period,duration=MC.duration;
   // Reserve before the first request: reloads and partial failures cannot reset the daily limit.
-  try{mcWrite(MC_RUNS,{day:runs.day,used:runs.used+weight});}catch(e){toast('브라우저 저장 공간을 확인해 주세요');return;}
-  MC.busy=true;MC.message='영상 검색을 시작합니다…';pgCollector();
+  try{if(weight)mcWrite(MC_RUNS,{day:runs.day,used:runs.used+weight});}catch(e){toast('브라우저 저장 공간을 확인해 주세요');return;}
+  MC.busy=true;MC.message='검색 중: '+keywords.join(' / ');pgCollector();
   try{
     const ids=new Set();
     for(let i=0;i<keywords.length;i++){
       const params={part:'snippet',q:keywords[i],regionCode:'KR',relevanceLanguage:'ko',type:'video',videoDuration:duration,maxResults:25,key};
-      if(period==='90') params.publishedAfter=new Date(Date.now()-90*86400000).toISOString();
+      if(period!=='any') params.publishedAfter=new Date(Date.now()-Number(period)*86400000).toISOString();
       const result=await yt('search',params,100);
       (result.items||[]).forEach(v=>{if(v.id&&/^[A-Za-z0-9_-]{11}$/.test(v.id.videoId))ids.add(v.id.videoId);});
       MC.message='키워드 '+(i+1)+'/'+keywords.length+' 검색 완료';if(current==='collector')$('mcStatus').textContent=MC.message;
@@ -412,16 +445,18 @@ async function mcCollect(){
     const incoming=items.map(v=>({...v,collectedAt:time,isNew:!oldMap.has(v.id),saved:!!oldMap.get(v.id)?.saved}));
     const newIds=new Set(incoming.map(v=>v.id));
     mcWrite(MC_STORE,[...incoming,...old.filter(v=>!newIds.has(v.id)).map(v=>({...v,isNew:false}))]);
-    MC.message=items.length+'개 수집 완료 · 새 영상 '+incoming.filter(v=>v.isNew).length+'개';
-  }catch(e){MC.message='수집을 완료하지 못했어요: '+errText(e.message||'요청 실패')+'. 기존 기록은 유지됩니다. 실행 횟수는 요청 시작 시 차감됩니다.';}
+    MC.filter='전체';
+    MC.message='검색 완료: '+keywords.join(' / ')+' · '+items.length+'개 수집 · 새 영상 '+incoming.filter(v=>v.isNew).length+'개';
+  }catch(e){MC.message='수집을 완료하지 못했어요: '+errText(e.message||'요청 실패')+'. 기존 기록은 유지됩니다.'+(weight?' 일괄 수집 횟수는 요청 시작 시 차감됩니다.':'');}
   finally{MC.busy=false;pgCollector();}
 }
-async function mcStart(){
+async function mcStart(mode){
   if(MC.busy)return;
-  if(navigator.locks){await navigator.locks.request('yt-material-collector',{ifAvailable:true},async lock=>{if(!lock){toast('다른 탭에서 수집 중이에요');return;}await mcCollect();});}
-  else await mcCollect();
+  if(navigator.locks){await navigator.locks.request('yt-material-collector',{ifAvailable:true},async lock=>{if(!lock){toast('다른 탭에서 수집 중이에요');return;}await mcCollect(mode);});}
+  else await mcCollect(mode);
 }
-setInterval(()=>{if(current==='collector'&&!MC.busy)pgCollector();},60000);
+// Keep the search input and expanded options stable while the user is editing.
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&current==='collector'&&!MC.busy)pgCollector();});
 
 /* ===== 공통 ===== */
 let toastT=null;
@@ -1483,3 +1518,4 @@ go(PAGES[start]?start:'search');
 </script>
 </body>
 </html>
+

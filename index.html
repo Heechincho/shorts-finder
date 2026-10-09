@@ -351,12 +351,22 @@ body.material-view{--bg:#0b0e14;--side:#11151d;--surface:#171a20;--surface-2:#1e
 
 <script>
 /* ===== 소재 수집기: 키워드 설정 ===== */
-const MATERIAL_KEYWORDS = [
-  '외국인 한국 여행 브이로그', '외국인 한국 한달살기', '외국인 한국 첫 방문',
-  '외국인 한국 음식 반응', '외국인 한국 지하철 반응', '외국인 한국 기차 KTX 반응',
-  '외국인 서울 여행', '외국인 부산 여행', '외국인 제주도 여행',
-  '외국인 한국 야구장', '외국인 한국 문화충격', '외국인 한국 시골 체험'
+// Each half covers all six languages; language hints describe searches, not detected speech.
+const MATERIAL_QUERIES = [
+  {q:'first time in Korea travel vlog',lang:'en',label:'영어'},
+  {q:'путешествие в Южную Корею влог',lang:'ru',label:'러시아어'},
+  {q:'初めての韓国旅行 vlog',lang:'ja',label:'일본어'},
+  {q:'viaje a Corea del Sur vlog',lang:'es',label:'스페인어'},
+  {q:'voyage en Corée du Sud vlog',lang:'fr',label:'프랑스어'},
+  {q:'viagem Coreia do Sul vlog',lang:'pt',label:'포르투갈어'},
+  {q:'Seoul Busan Korea travel vlog',lang:'en',label:'영어'},
+  {q:'Сеул Пусан Корея путешествие влог',lang:'ru',label:'러시아어'},
+  {q:'ソウル 釜山 韓国旅行 vlog',lang:'ja',label:'일본어'},
+  {q:'primera vez en Seúl Corea vlog',lang:'es',label:'스페인어'},
+  {q:'premier voyage Séoul Corée vlog',lang:'fr',label:'프랑스어'},
+  {q:'primeira vez em Seul Coreia vlog',lang:'pt',label:'포르투갈어'}
 ];
+const MATERIAL_KEYWORDS=MATERIAL_QUERIES.map(x=>x.q);
 const MC_STORE='yt_material_records_v1', MC_RUNS='yt_material_runs_v1';
 const MC={scope:'half',period:'90',duration:'any',filter:'전체',query:'',sort:'new',busy:false,message:'',progress:null};
 function mcDay(date=new Date()){ return new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit'}).format(date); }
@@ -454,7 +464,7 @@ function pgCollector(){
   const rows=MC.filter==='보관함'?records.filter(v=>v.saved):mcVisible(records), runs=mcRuns();
   const remain=MC.scope==='half'?Math.max(0,2-runs.used):(runs.used===0?1:0);
   const options=(name,choices)=>choices.map(([value,label])=>'<button type="button" class="chip'+(MC[name]===value?' on':'')+'" data-mc-option="'+name+'" data-value="'+value+'" '+(MC.busy?'disabled':'')+'>'+label+'</button>').join('');
-  $('page').innerHTML=`<div class="mc-reference-head"><span class="mc-eyebrow">한국 경험 · 반응 영상</span><h1>유튜브 소재 수집기</h1><p>외국인의 한국 경험 영상을 찾아 S·A·B·C 등급으로 정리해 드려요</p></div>
+  $('page').innerHTML=`<div class="mc-reference-head"><span class="mc-eyebrow">외국어 원본 · 한국 여행</span><h1>유튜브 소재 수집기</h1><p>외국인의 한국 여행 원본 브이로그를 여러 언어로 찾아드려요</p></div>
     <section class="panel mc-search-panel">
       <div class="mc-label">수집 범위</div><div class="mc-choice-grid">${options('scope',[['half','절반씩<small>하루 2번까지 가능 · 평소 추천</small>'],['all','전체 한 번에<small>오늘 치 2번을 한 번에 사용</small>']])}</div>
       <div class="mc-label mc-section-label">기간</div><div class="mc-choice-grid">${options('period',[['90','최근 90일<small>새로 올라온 영상 위주 · 평소 추천</small>'],['any','년도 상관없이<small>오래된 영상까지 전부 뒤져요</small>']])}</div>
@@ -466,8 +476,8 @@ function pgCollector(){
     </section>
     <div class="mc-save-notice">📁 목록은 통화기록처럼 위에 쌓여요 — 1주일 지난 건 알아서 정리 · 쓸 영상은 ＋ 체크로 보관!</div>
     <section class="panel mc-direct"><div class="mc-label">검색어로 직접 찾기</div>
-      <form id="mcSearchForm" class="searchbar mc-searchbar"><input type="text" id="mcQuery" aria-label="소재 검색어" placeholder="예: 외국인 한국 야구장, 한국 음식 첫 반응" autocomplete="off" maxlength="200" ${MC.busy?'disabled':''}><button class="go" id="mcSearch" ${MC.busy?'disabled':''}>검색</button></form>
-      <details class="mc-suggestions"><summary>추천 검색어 12개 · 검색 조건 보기</summary><div class="mc-keywords" id="mcKeywords"></div><div class="mc-filters"><div><span class="mc-label">영상 길이</span><div class="row">${options('duration',[['any','8분 이상'],['long','20분 초과']])}</div></div></div><p class="note" id="mcPlanned"></p><p class="note">직접 검색에도 위 기간·영상 길이가 적용됩니다. 수집 횟수는 미국 태평양 시간 자정(한국 오후 4시 또는 5시)에 초기화됩니다. 실제 API 잔여량과는 별개예요.</p></details>
+      <form id="mcSearchForm" class="searchbar mc-searchbar"><input type="text" id="mcQuery" aria-label="소재 검색어" placeholder="예: first time in Korea vlog, путешествие в Корею" autocomplete="off" maxlength="200" ${MC.busy?'disabled':''}><button class="go" id="mcSearch" ${MC.busy?'disabled':''}>검색</button></form>
+      <details class="mc-suggestions"><summary>6개 언어 · 추천 검색어 12개 · 검색 조건 보기</summary><div class="mc-keywords" id="mcKeywords"></div><div class="mc-filters"><div><span class="mc-label">영상 길이</span><div class="row">${options('duration',[['any','8분 이상'],['long','20분 초과']])}</div></div></div><p class="note" id="mcPlanned"></p><p class="note">직접 검색에도 위 기간·영상 길이가 적용됩니다. 수집 횟수는 미국 태평양 시간 자정(한국 오후 4시 또는 5시)에 초기화됩니다. 실제 API 잔여량과는 별개예요.</p></details>
     </section>
     <div class="mc-resultbar"><h2>수집한 영상 <span>${rows.length}</span></h2><label>정렬 <select id="mcSort"><option value="new">최신 수집순</option><option value="score">떡상지수순</option><option value="views">조회수순</option><option value="daily">일평균 조회수순</option></select></label></div>
     <div class="row mc-tabs" id="mcTabs"></div><div class="mc-export-row"><button type="button" class="btn" id="mcExport">⇩ 엑셀로 저장 (CSV)</button></div><div id="mcPattern"></div><div id="mcGrid"></div>
@@ -481,9 +491,9 @@ function pgCollector(){
   $('mcSearchForm').onsubmit=e=>{e.preventDefault();mcStart('custom');};
   $('mcStart').onclick=()=>mcStart('auto');
   $('page').querySelectorAll('[data-mc-option]').forEach(b=>b.onclick=()=>{MC[b.dataset.mcOption]=b.dataset.value;pgCollector();});
-  MATERIAL_KEYWORDS.forEach(word=>{const b=document.createElement('button');b.className='chip mc-keyword';b.textContent=word;b.disabled=MC.busy;b.onclick=()=>{MC.query=word;$('mcQuery').value=word;$('mcQuery').focus();};$('mcKeywords').append(b);});
+  MATERIAL_KEYWORDS.forEach(word=>{const b=document.createElement('button');b.className='chip mc-keyword';b.textContent=MATERIAL_QUERIES.find(x=>x.q===word).label+' · '+word;b.disabled=MC.busy;b.onclick=()=>{MC.query=word;$('mcQuery').value=word;$('mcQuery').focus();};$('mcKeywords').append(b);});
   $('mcPlanned').textContent='이번 수집 검색어: '+(MC.scope==='all'?MATERIAL_KEYWORDS:MATERIAL_KEYWORDS.slice(runs.used*6,runs.used*6+6)).join(' / ');
-  $('mcStatus').textContent=MC.message||'검색어를 입력하면 한국어 검색 결과에서 8분 이상 영상을 찾아요. 한국어 편집 여부는 영상을 열어 확인해 주세요.';
+  $('mcStatus').textContent=MC.message||'영어·러시아어·일본어·스페인어·프랑스어·포르투갈어로 한국 여행 원본 후보를 찾아요. 국적·원본 여부는 자동 확정할 수 없으며 영상을 열어 확인해 주세요. 기존 수집 기록도 유지됩니다.';
   $('mcSort').value=MC.sort||'new';$('mcSort').onchange=e=>{MC.sort=e.target.value;pgCollector();};
   ['전체','S','A','B','C','NEW','소형채널','보관함'].forEach(t=>{const count=t==='보관함'?records.filter(v=>v.saved).length:mcVisible(records).filter(v=>t==='전체'||(t==='NEW'?v.isNew:v.grade===t)).length;const b=document.createElement('button');b.className='chip'+(MC.filter===t?' on':'');b.textContent=t+' '+count;b.onclick=()=>{MC.filter=t;pgCollector();};$('mcTabs').append(b);});
   const top=[...rows].sort((a,b)=>b.score-a.score).slice(0,20);
@@ -510,7 +520,9 @@ async function mcCollect(mode){
   try{
     const ids=new Set();
     for(let i=0;i<keywords.length;i++){
-      const params={part:'snippet',q:keywords[i],regionCode:'KR',relevanceLanguage:'ko',type:'video',videoDuration:duration,maxResults:25,key};
+      const params={part:'snippet',q:keywords[i],type:'video',videoDuration:duration,maxResults:25,key};
+      const hint=MATERIAL_QUERIES.find(x=>x.q===keywords[i]);
+      if(hint)params.relevanceLanguage=hint.lang;
       if(period!=='any') params.publishedAfter=new Date(Date.now()-Number(period)*86400000).toISOString();
       MC.progress.keyword=keywords[i];mcProgress();
       const result=await yt('search',params,100);
@@ -592,7 +604,7 @@ const DEPTHS={
   max:{orders:['viewCount','relevance','date','rating'],pages:6,cost:2400},
 };
 const PAGES={
-  collector:{ic:'▣',t:'유튜브 소재 수집기',d:'외국인의 한국 경험 영상을 S·A·B·C 등급으로 정리'},
+  collector:{ic:'▣',t:'유튜브 소재 수집기',d:'외국어 한국 여행 원본 브이로그를 S·A·B·C 등급으로 정리'},
   search:{ic:'🔍',t:'조회수 폭발 쇼츠 찾기',d:'검색 한 번으로 영상과 채널을 같이 봅니다'},
   radar:{ic:'🎯',t:'내 분야 레이더',d:'지켜보는 채널의 최신 영상'},
   trend:{ic:'🔥',t:'터진 영상',d:'급등하는 영상 확인'},
@@ -1604,6 +1616,7 @@ go(PAGES[start]?start:'search');
 </script>
 </body>
 </html>
+
 
 
 

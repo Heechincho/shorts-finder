@@ -378,7 +378,7 @@ function mcQueries(){return MC.searchMode==='vlog'?MATERIAL_QUERIES:WORLD_QUERIE
 function mcQueryBatch(queries,used){const half=Math.ceil(queries.length/2);return queries.slice(used*half,(used+1)*half);}
 
 const MC_STORE='yt_material_records_v1', MC_RUNS='yt_material_runs_v1';
-const MC={scope:'half',period:'90',duration:'all',searchMode:'world',filter:'전체',query:'',sort:'new',viewMin:'',viewMax:'',busy:false,message:'',progress:null};
+const MC={scope:'half',period:'90',duration:'eight',searchMode:'world',filter:'전체',query:'',sort:'new',viewMin:'',viewMax:'',busy:false,message:'',progress:null};
 function mcDay(date=new Date()){ return new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit'}).format(date); }
 function mcResetTime(now=new Date()){
   const day=mcDay(now);let lo=now.getTime(),hi=lo+27*3600000;
@@ -417,6 +417,11 @@ function mcRank(items){const r=mcRules();items.forEach(v=>{v.grade=mcGrade(v,r);
 function mcReason(v){const r=mcRules(),g=mcGrade(v,r);return g==='C'?'B 상한 밖의 영상입니다.':g+' 후보: 구독자 '+r[g].subs.toLocaleString()+'명 미만·조회수 '+r[g].views.toLocaleString()+'회 미만'+(g==='S'?'':' (상위 등급 조건 미충족)');}
 function mcRulePanel(){const r=mcRules();return '<section class="panel mc-rules" aria-labelledby="mcRulesTitle"><h2 id="mcRulesTitle" style="font-size:16px;margin:0">등급 기준 직접 설정</h2><p class="note">아래 숫자를 클릭해 원하는 기준으로 바꾼 뒤 기준 저장을 누르세요. 두 수치가 모두 상한 미만이면 해당 등급을 부여합니다. S부터 차례로 적용하며 B 범위 밖은 C입니다.</p><form id="mcRulesForm"><div class="mc-rule-grid"><b>등급</b><b>구독자 상한 (미만)</b><b>조회수 상한 (미만)</b>'+['S','A','B'].map(g=>'<b>'+g+'</b><input required type="number" min="1" step="1" aria-label="'+g+' 구독자 상한" name="'+g+'subs" value="'+r[g].subs+'"><input required type="number" min="1" step="1" aria-label="'+g+' 조회수 상한" name="'+g+'views" value="'+r[g].views+'">').join('')+'</div><p class="note">S ≤ A ≤ B 순서로 설정하세요. 저장하면 기존 수집 기록에도 즉시 적용됩니다. API 사용량은 들지 않아요.</p><button class="btn" type="submit">기준 저장 · 재분류</button> <button class="btn" type="button" id="mcRulesReset">기본값 복원</button><span id="mcRulesError" role="alert"></span><p class="note">설정은 이 브라우저에 저장되어 새로고침 후에도 유지됩니다. C는 S·A·B 조건에 해당하지 않는 영상입니다.</p></form></section>';}
 
+function mcMatchesDuration(seconds,mode){
+  if(mode==='all')return true;
+  const n=Number(seconds);
+  return Number.isFinite(n)&&n>=(mode==='eight'?480:mode==='long'?1201:300);
+}
 function mcViewRange(min,max){
   const parse=v=>String(v).trim()===''?null:Number(v);
   const lo=parse(min),hi=parse(max);
@@ -491,7 +496,7 @@ function pgCollector(){
   if(current!=='collector')return;
   let records;try{records=mcRecords();}catch(e){records=ls.get(MC_STORE,[]);MC.message='브라우저 저장 공간을 확인해 주세요.';}
   const range=mcViewRange(MC.viewMin,MC.viewMax);
-  const matching=records.filter(v=>mcMatchesViews(v,range));
+  const matching=records.filter(v=>mcMatchesViews(v,range)&&mcMatchesDuration(v.dur,MC.duration));
   const rows=MC.filter==='보관함'?matching.filter(v=>v.saved):mcVisible(matching), runs=mcRuns();
   const filtered=rows.filter(v=>MC.filter==='전체'||MC.filter==='보관함'||(MC.filter==='NEW'?v.isNew:v.grade===MC.filter));
   const remain=MC.scope==='half'?Math.max(0,2-runs.used):(runs.used===0?1:0);
@@ -500,6 +505,7 @@ function pgCollector(){
     <section class="panel mc-search-panel">
       <div class="mc-label">검색 대상</div><div class="mc-choice-grid">${options('searchMode',[['world','한국 여행 전체<small>11개 언어의 여행·음식·관광 영상 검색</small>'],['vlog','다국어 브이로그<small>11개 언어 · 중국어 간체·번체 브이로그 검색</small>']])}</div><div class="mc-label mc-section-label">수집 범위</div><div class="mc-choice-grid">${options('scope',[['half','절반씩<small>하루 2번까지 가능 · 평소 추천</small>'],['all','전체 한 번에<small>오늘 치 2번을 한 번에 사용</small>']])}</div>
       <div class="mc-label mc-section-label">기간</div><div class="mc-choice-grid">${options('period',[['90','최근 90일<small>새로 올라온 영상 위주 · 평소 추천</small>'],['any','년도 상관없이<small>오래된 영상까지 전부 뒤져요</small>']])}</div>
+      <div class="mc-filters"><div><span class="mc-label">영상 길이</span><div class="row">${options('duration',[['all','길이 무관'],['any','5분 이상'],['eight','8분 이상'],['long','20분 초과']])}</div></div></div><p class="note">기본값은 8분 이상입니다. 자동 수집·직접 검색·기존 목록에 함께 적용됩니다. 짧은 영상은 삭제하지 않고 숨깁니다.</p>
       <button type="button" class="go mc-collect-main" id="mcStart" ${MC.busy||remain<=0?'disabled':''}>${MC.busy?'수집 중…':'▶ 수집 시작'}</button>
       <div class="mc-remaining" id="mcRemaining"><span class="mc-dots">${'■ '.repeat(Math.max(0,2-runs.used))}</span>오늘 남은 실행 <b>${Math.max(0,2-runs.used)}번</b> · 지금 선택은 <b>${MC.scope==='half'?1:2}번</b> 사용</div>
       <section id="mcProgress" class="mc-progress" hidden><div id="mcProgressTitle" role="status" aria-live="polite"></div><progress id="mcProgressBar" max="1" value="0" aria-label="키워드 검색 진행"></progress><div class="mc-runlog"><strong id="mcRunInfo"></strong><p id="mcKeepInfo"></p><p id="mcCurrentKeyword"></p></div></section>
@@ -509,7 +515,7 @@ function pgCollector(){
     <div class="mc-save-notice">📁 목록은 통화기록처럼 위에 쌓여요 — 1주일 지난 건 알아서 정리 · 쓸 영상은 ＋ 체크로 보관!</div>
     <section class="panel mc-direct"><div class="mc-label">검색어로 직접 찾기</div>
       <form id="mcSearchForm" class="searchbar mc-searchbar"><input type="text" id="mcQuery" aria-label="소재 검색어" placeholder="예: korea trip, korea travel 또는 원하는 검색어" autocomplete="off" maxlength="200" ${MC.busy?'disabled':''}><button class="go" id="mcSearch" ${MC.busy?'disabled':''}>검색</button></form>
-      <details class="mc-suggestions"><summary>추천 검색어 24개 · 검색 조건 보기</summary><div class="mc-keywords" id="mcKeywords"></div><div class="mc-filters"><div><span class="mc-label">영상 길이</span><div class="row">${options('duration',[['all','길이 무관'],['any','5분 이상'],['eight','8분 이상'],['long','20분 초과']])}</div></div></div><p class="note" id="mcPlanned"></p><p class="note">직접 검색에도 위 기간·영상 길이가 적용됩니다. 수집 횟수는 미국 태평양 시간 자정(한국 오후 4시 또는 5시)에 초기화됩니다. 실제 API 잔여량과는 별개예요.</p></details>
+      <details class="mc-suggestions"><summary>추천 검색어 24개 · 검색 조건 보기</summary><div class="mc-keywords" id="mcKeywords"></div><p class="note" id="mcPlanned"></p><p class="note">직접 검색에도 위 기간·영상 길이가 적용됩니다. 수집 횟수는 미국 태평양 시간 자정(한국 오후 4시 또는 5시)에 초기화됩니다. 실제 API 잔여량과는 별개예요.</p></details>
     </section>
     <p class="note mc-grade-disclosure">S·A·B·C는 구독자·조회수 규모로 정하는 <b>발견 우선순위</b>입니다. 영상 내용·얼굴·실제 음성·원본 여부는 분석하지 않으며, 다른 사람이 사용했는지도 알 수 없습니다.</p>${mcRulePanel()}<div class="mc-resultbar"><h2>수집한 영상 <span>${rows.length}</span></h2><label>정렬 <select id="mcSort"><option value="new">최신 수집순</option><option value="grade">발견 우선순위순</option><option value="subsAsc">구독자 적은 순</option><option value="viewsAsc">조회수 적은 순</option><option value="views">조회수순</option><option value="daily">일평균 조회수순</option></select></label></div>
     <section class="panel"><div class="mc-label">조회수로 필터링</div>
@@ -546,7 +552,7 @@ function pgCollector(){
   filtered.sort((a,b)=>MC.sort==='grade'?'SABC'.indexOf(a.grade)-'SABC'.indexOf(b.grade)||a.subs-b.subs:MC.sort==='subsAsc'?a.subs-b.subs:MC.sort==='viewsAsc'?a.views-b.views:MC.sort==='views'?b.views-a.views:MC.sort==='daily'?b.daily-a.daily:b.collectedAt-a.collectedAt||b.score-a.score);
   $('mcExport').disabled=!filtered.length;$('mcExport').onclick=()=>mcExport(filtered);
   if(filtered.length)mcTable(filtered);
-  if(!filtered.length)$('mcGrid').innerHTML='<div class="mc-empty"><strong>'+(records.length?'조건에 맞는 영상이 없어요':'검색하면 이곳에 영상이 모여요')+'</strong><p>'+(records.length?'조회수 범위를 넓히거나 초기화하고, 전체 탭이나 다른 등급을 선택해 보세요.':'검색어 입력 → 검색 → 마음에 드는 영상의 ＋ 버튼으로 보관')+'</p></div>';
+  if(!filtered.length)$('mcGrid').innerHTML='<div class="mc-empty"><strong>'+(records.length?'조건에 맞는 영상이 없어요':'검색하면 이곳에 영상이 모여요')+'</strong><p>'+(records.length?'영상 길이나 조회수 범위를 넓히고, 전체 탭이나 다른 등급을 선택해 보세요.':'검색어 입력 → 검색 → 마음에 드는 영상의 ＋ 버튼으로 보관')+'</p></div>';
 }
 async function mcCollect(mode){
   const key=getKey();if(!key){toast('API 키 설정에서 키를 먼저 등록해 주세요');return;}
@@ -575,7 +581,7 @@ async function mcCollect(mode){
       MC.progress.done=i+1;MC.progress.candidates=ids.size;mcProgress();
     }
     MC.progress.stage='영상 길이·조회수 확인 중…';mcProgress();
-    const videos=(await batch(key,'videos',[...ids],'snippet,statistics,contentDetails')).filter(v=>v.snippet&&v.statistics&&toSec(v.contentDetails?.duration)>=(duration==='eight'?480:duration==='long'?1201:duration==='all'?0:300)&&v.snippet.liveBroadcastContent!=='live'&&v.snippet.liveBroadcastContent!=='upcoming');
+    const videos=(await batch(key,'videos',[...ids],'snippet,statistics,contentDetails')).filter(v=>v.snippet&&v.statistics&&mcMatchesDuration(toSec(v.contentDetails?.duration),duration)&&v.snippet.liveBroadcastContent!=='live'&&v.snippet.liveBroadcastContent!=='upcoming');
     MC.progress.stage='채널 구독자 확인 중…';mcProgress();
     const channels=await batch(key,'channels',[...new Set(videos.map(v=>v.snippet.channelId))],'statistics');
     const stats=Object.fromEntries(channels.filter(c=>c.statistics&&!c.statistics.hiddenSubscriberCount&&c.statistics.subscriberCount!=null).map(c=>[c.id,c.statistics]));

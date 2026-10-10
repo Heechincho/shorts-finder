@@ -352,24 +352,26 @@ body.material-view{--bg:#0b0e14;--side:#11151d;--surface:#171a20;--surface-2:#1e
 
 <script>
 /* ===== 소재 수집기: 키워드 설정 ===== */
-// Each half covers all six languages; language hints describe searches, not detected speech.
-const MATERIAL_QUERIES = [
-  {q:'first time in Korea travel vlog',lang:'en',label:'영어'},
-  {q:'путешествие в Южную Корею влог',lang:'ru',label:'러시아어'},
-  {q:'初めての韓国旅行 vlog',lang:'ja',label:'일본어'},
-  {q:'viaje a Corea del Sur vlog',lang:'es',label:'스페인어'},
-  {q:'voyage en Corée du Sud vlog',lang:'fr',label:'프랑스어'},
-  {q:'viagem Coreia do Sul vlog',lang:'pt',label:'포르투갈어'},
-  {q:'Seoul Busan Korea travel vlog',lang:'en',label:'영어'},
-  {q:'Сеул Пусан Корея путешествие влог',lang:'ru',label:'러시아어'},
-  {q:'ソウル 釜山 韓国旅行 vlog',lang:'ja',label:'일본어'},
-  {q:'primera vez en Seúl Corea vlog',lang:'es',label:'스페인어'},
-  {q:'premier voyage Séoul Corée vlog',lang:'fr',label:'프랑스어'},
-  {q:'primeira vez em Seul Coreia vlog',lang:'pt',label:'포르투갈어'}
+// Each collection half includes every language; hints are search preferences, not nationality detection.
+const TRAVEL_LANGUAGES = [
+  {lang:'en',label:'영어',queries:['South Korea travel','Seoul Busan Korea trip'],vlog:'vlog'},
+  {lang:'ru',label:'러시아어',queries:['путешествие в Южную Корею','Сеул Пусан поездка в Корею'],vlog:'влог'},
+  {lang:'ar',label:'아랍어',queries:['السفر إلى كوريا الجنوبية','رحلتي إلى سيول كوريا الجنوبية'],vlog:'فلوق'},
+  {lang:'ja',label:'일본어',queries:['韓国旅行','ソウル 釜山 韓国旅行'],vlog:'vlog'},
+  {lang:'zh-Hans',label:'중국어·간체',queries:['韩国旅游','首尔 釜山 韩国旅行'],vlog:'vlog'},
+  {lang:'zh-Hant',label:'중국어·번체',queries:['韓國旅遊','首爾 釜山 韓國旅行'],vlog:'vlog'},
+  {lang:'th',label:'태국어',queries:['เที่ยวเกาหลี','เที่ยวโซล ปูซาน เกาหลี'],vlog:'vlog'},
+  {lang:'fr',label:'프랑스어',queries:['voyage en Corée du Sud','voyage Séoul Busan Corée'],vlog:'vlog'},
+  {lang:'it',label:'이탈리아어',queries:['viaggio in Corea del Sud','viaggio Seul Busan Corea'],vlog:'vlog'},
+  {lang:'es',label:'스페인어',queries:['viaje a Corea del Sur','viaje Seúl Busan Corea'],vlog:'vlog'},
+  {lang:'pt',label:'포르투갈어',queries:['viagem à Coreia do Sul','viagem Seul Busan Coreia'],vlog:'vlog'},
+  {lang:'de',label:'독일어',queries:['Reise nach Südkorea','Seoul Busan Korea Reise'],vlog:'Vlog'}
 ];
+const WORLD_QUERIES=[0,1].flatMap(i=>TRAVEL_LANGUAGES.map(({queries,lang,label})=>({q:queries[i],lang,label})));
+const MATERIAL_QUERIES=[0,1].flatMap(i=>TRAVEL_LANGUAGES.map(({queries,lang,label,vlog})=>({q:queries[i]+' '+vlog,lang,label})));
 const MATERIAL_KEYWORDS=MATERIAL_QUERIES.map(x=>x.q);
-const WORLD_QUERIES=['korea trip','korea travel','south korea trip','south korea travel','korea food travel','korea itinerary','visit korea','travel to korea','seoul travel','busan travel','jeju travel','korea travel guide'].map(q=>({q,label:'국가·언어 제한 없음'}));
 function mcQueries(){return MC.searchMode==='vlog'?MATERIAL_QUERIES:WORLD_QUERIES;}
+function mcQueryBatch(queries,used){const half=Math.ceil(queries.length/2);return queries.slice(used*half,(used+1)*half);}
 
 const MC_STORE='yt_material_records_v1', MC_RUNS='yt_material_runs_v1';
 const MC={scope:'half',period:'90',duration:'all',searchMode:'world',filter:'전체',query:'',sort:'new',busy:false,message:'',progress:null};
@@ -474,9 +476,9 @@ function pgCollector(){
   const rows=MC.filter==='보관함'?records.filter(v=>v.saved):mcVisible(records), runs=mcRuns();
   const remain=MC.scope==='half'?Math.max(0,2-runs.used):(runs.used===0?1:0);
   const options=(name,choices)=>choices.map(([value,label])=>'<button type="button" class="chip'+(MC[name]===value?' on':'')+'" data-mc-option="'+name+'" data-value="'+value+'" '+(MC.busy?'disabled':'')+'>'+label+'</button>').join('');
-  $('page').innerHTML=`<div class="mc-reference-head"><span class="mc-eyebrow">전 세계 여행 영상 · 한국 여행</span><h1>유튜브 소재 수집기</h1><p>korea trip · korea travel — 국가·언어 제한 없이 여행 영상을 찾아요</p></div>
+  $('page').innerHTML=`<div class="mc-reference-head"><span class="mc-eyebrow">전 세계 여행 영상 · 한국 여행</span><h1>유튜브 소재 수집기</h1><p>11개 언어 · 중국어 간체·번체 — 각 언어의 검색어로 한국 여행 영상을 찾아요</p></div>
     <section class="panel mc-search-panel">
-      <div class="mc-label">검색 대상</div><div class="mc-choice-grid">${options('searchMode',[['world','한국 여행 전체<small>korea trip · korea travel · 국가·언어 제한 없음</small>'],['vlog','다국어 브이로그<small>기존 6개 언어의 브이로그 검색</small>']])}</div><div class="mc-label mc-section-label">수집 범위</div><div class="mc-choice-grid">${options('scope',[['half','절반씩<small>하루 2번까지 가능 · 평소 추천</small>'],['all','전체 한 번에<small>오늘 치 2번을 한 번에 사용</small>']])}</div>
+      <div class="mc-label">검색 대상</div><div class="mc-choice-grid">${options('searchMode',[['world','한국 여행 전체<small>11개 언어의 여행·음식·관광 영상 검색</small>'],['vlog','다국어 브이로그<small>11개 언어 · 중국어 간체·번체 브이로그 검색</small>']])}</div><div class="mc-label mc-section-label">수집 범위</div><div class="mc-choice-grid">${options('scope',[['half','절반씩<small>하루 2번까지 가능 · 평소 추천</small>'],['all','전체 한 번에<small>오늘 치 2번을 한 번에 사용</small>']])}</div>
       <div class="mc-label mc-section-label">기간</div><div class="mc-choice-grid">${options('period',[['90','최근 90일<small>새로 올라온 영상 위주 · 평소 추천</small>'],['any','년도 상관없이<small>오래된 영상까지 전부 뒤져요</small>']])}</div>
       <button type="button" class="go mc-collect-main" id="mcStart" ${MC.busy||remain<=0?'disabled':''}>${MC.busy?'수집 중…':'▶ 수집 시작'}</button>
       <div class="mc-remaining" id="mcRemaining"><span class="mc-dots">${'■ '.repeat(Math.max(0,2-runs.used))}</span>오늘 남은 실행 <b>${Math.max(0,2-runs.used)}번</b> · 지금 선택은 <b>${MC.scope==='half'?1:2}번</b> 사용</div>
@@ -487,7 +489,7 @@ function pgCollector(){
     <div class="mc-save-notice">📁 목록은 통화기록처럼 위에 쌓여요 — 1주일 지난 건 알아서 정리 · 쓸 영상은 ＋ 체크로 보관!</div>
     <section class="panel mc-direct"><div class="mc-label">검색어로 직접 찾기</div>
       <form id="mcSearchForm" class="searchbar mc-searchbar"><input type="text" id="mcQuery" aria-label="소재 검색어" placeholder="예: korea trip, korea travel 또는 원하는 검색어" autocomplete="off" maxlength="200" ${MC.busy?'disabled':''}><button class="go" id="mcSearch" ${MC.busy?'disabled':''}>검색</button></form>
-      <details class="mc-suggestions"><summary>추천 검색어 12개 · 검색 조건 보기</summary><div class="mc-keywords" id="mcKeywords"></div><div class="mc-filters"><div><span class="mc-label">영상 길이</span><div class="row">${options('duration',[['all','길이 무관'],['any','5분 이상'],['eight','8분 이상'],['long','20분 초과']])}</div></div></div><p class="note" id="mcPlanned"></p><p class="note">직접 검색에도 위 기간·영상 길이가 적용됩니다. 수집 횟수는 미국 태평양 시간 자정(한국 오후 4시 또는 5시)에 초기화됩니다. 실제 API 잔여량과는 별개예요.</p></details>
+      <details class="mc-suggestions"><summary>추천 검색어 24개 · 검색 조건 보기</summary><div class="mc-keywords" id="mcKeywords"></div><div class="mc-filters"><div><span class="mc-label">영상 길이</span><div class="row">${options('duration',[['all','길이 무관'],['any','5분 이상'],['eight','8분 이상'],['long','20분 초과']])}</div></div></div><p class="note" id="mcPlanned"></p><p class="note">직접 검색에도 위 기간·영상 길이가 적용됩니다. 수집 횟수는 미국 태평양 시간 자정(한국 오후 4시 또는 5시)에 초기화됩니다. 실제 API 잔여량과는 별개예요.</p></details>
     </section>
     <p class="note mc-grade-disclosure">S·A·B·C는 구독자·조회수 규모로 정하는 <b>발견 우선순위</b>입니다. 영상 내용·얼굴·실제 음성·원본 여부는 분석하지 않으며, 다른 사람이 사용했는지도 알 수 없습니다.</p>${mcRulePanel()}<div class="mc-resultbar"><h2>수집한 영상 <span>${rows.length}</span></h2><label>정렬 <select id="mcSort"><option value="new">최신 수집순</option><option value="grade">발견 우선순위순</option><option value="subsAsc">구독자 적은 순</option><option value="viewsAsc">조회수 적은 순</option><option value="views">조회수순</option><option value="daily">일평균 조회수순</option></select></label></div>
     <div class="row mc-tabs" id="mcTabs"></div><div class="mc-export-row"><button type="button" class="btn" id="mcExport">⇩ 엑셀로 저장 (CSV)</button></div><div id="mcPattern"></div><div id="mcGrid"></div>
@@ -503,8 +505,8 @@ function pgCollector(){
   $('mcStart').onclick=()=>mcStart('auto');
   $('page').querySelectorAll('[data-mc-option]').forEach(b=>b.onclick=()=>{MC[b.dataset.mcOption]=b.dataset.value;pgCollector();});
   mcQueries().map(x=>x.q).forEach(word=>{const b=document.createElement('button');b.className='chip mc-keyword';b.textContent=mcQueries().find(x=>x.q===word).label+' · '+word;b.disabled=MC.busy;b.onclick=()=>{MC.query=word;$('mcQuery').value=word;$('mcQuery').focus();};$('mcKeywords').append(b);});
-  $('mcPlanned').textContent='이번 수집 검색어: '+(MC.scope==='all'?mcQueries():mcQueries().slice(runs.used*6,runs.used*6+6)).map(x=>x.q).join(' / ');
-  $('mcStatus').textContent=MC.message||'한국 여행 전체는 브이로그 문구와 국가·언어 조건 없이 검색합니다. 여행 후기·음식·교통·관광 영상도 후보에 포함됩니다. 촬영자 국적·원본 여부는 직접 확인해 주세요. 검색어당 최대 25개로 유튜브 웹 검색과 결과가 다를 수 있습니다.';
+  $('mcPlanned').textContent='이번 수집 검색어: '+(MC.scope==='all'?mcQueries():mcQueryBatch(mcQueries(),runs.used)).map(x=>x.q).join(' / ');
+  $('mcStatus').textContent=MC.message||'영어·러시아어·아랍어·일본어·중국어(간체·번체)·태국어·프랑스어·이탈리아어·스페인어·포르투갈어·독일어 검색어를 사용합니다. 절반씩도 모든 언어를 검색합니다. 여행 후기·음식·교통·관광 영상도 후보에 포함됩니다. 촬영자 국적·원본 여부는 직접 확인해 주세요. 절반씩은 검색 12회, 전체는 24회이며 API 사용량이 증가합니다. 검색어당 최대 25개로 유튜브 웹 검색과 결과가 다를 수 있습니다.';
   $('mcSort').value=MC.sort||'new';$('mcSort').onchange=e=>{MC.sort=e.target.value;pgCollector();};
   ['전체','S','A','B','C','NEW','보관함'].forEach(t=>{const count=t==='보관함'?records.filter(v=>v.saved).length:mcVisible(records).filter(v=>t==='전체'||(t==='NEW'?v.isNew:v.grade===t)).length;const b=document.createElement('button');b.className='chip'+(MC.filter===t?' on':'');b.textContent=t+' '+count;b.onclick=()=>{MC.filter=t;pgCollector();};$('mcTabs').append(b);});
   const top=mcRank([...rows]).slice(0,20);
@@ -522,7 +524,7 @@ async function mcCollect(mode){
   const runs=mcRuns(), weight=mode==='custom'?0:(MC.scope==='all'?2:1);
   if(runs.used+weight>2){toast('오늘 실행 횟수를 모두 사용했어요');return;}
   const selectedQueries=mcQueries();
-  const keywords=mode==='custom'?[query]:(weight===2?selectedQueries:selectedQueries.slice(runs.used*6,runs.used*6+6)).map(x=>x.q);
+  const keywords=mode==='custom'?[query]:(weight===2?selectedQueries:mcQueryBatch(selectedQueries,runs.used)).map(x=>x.q);
   const period=MC.period,duration=MC.duration;
   // Reserve before the first request: reloads and partial failures cannot reset the daily limit.
   try{if(weight)mcWrite(MC_RUNS,{day:runs.day,used:runs.used+weight});}catch(e){toast('브라우저 저장 공간을 확인해 주세요');return;}

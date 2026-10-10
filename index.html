@@ -412,7 +412,7 @@ function mcGrade(v,r=mcRules()){
 }
 function mcRank(items){const r=mcRules();items.forEach(v=>{v.grade=mcGrade(v,r);});return items.sort((a,b)=>'SABC'.indexOf(a.grade)-'SABC'.indexOf(b.grade)||a.subs-b.subs||a.views-b.views);}
 function mcReason(v){const r=mcRules(),g=mcGrade(v,r);return g==='C'?'B 상한 밖의 영상입니다.':g+' 후보: 구독자 '+r[g].subs.toLocaleString()+'명 미만·조회수 '+r[g].views.toLocaleString()+'회 미만'+(g==='S'?'':' (상위 등급 조건 미충족)');}
-function mcRulePanel(){const r=mcRules();return '<details class="panel mc-rules"><summary>등급 기준 보기 · 변경</summary><p class="note">샘플 제작자의 비공개 기준을 복제한 것이 아닌, 직접 조절하는 발견 우선순위입니다. 두 수치가 모두 상한 미만이면 해당 등급을 부여합니다. S부터 차례로 적용하며 B 범위 밖은 C입니다.</p><form id="mcRulesForm"><div class="mc-rule-grid"><b>등급</b><b>구독자 상한 (미만)</b><b>조회수 상한 (미만)</b>'+['S','A','B'].map(g=>'<b>'+g+'</b><input required type="number" min="1" step="1" aria-label="'+g+' 구독자 상한" name="'+g+'subs" value="'+r[g].subs+'"><input required type="number" min="1" step="1" aria-label="'+g+' 조회수 상한" name="'+g+'views" value="'+r[g].views+'">').join('')+'</div><p class="note">S ≤ A ≤ B 순서로 설정하세요. 저장하면 기존 수집 기록에도 즉시 적용됩니다. API 사용량은 들지 않아요.</p><button class="btn" type="submit">기준 저장 · 재분류</button><span id="mcRulesError" role="alert"></span></form></details>';}
+function mcRulePanel(){const r=mcRules();return '<section class="panel mc-rules" aria-labelledby="mcRulesTitle"><h2 id="mcRulesTitle" style="font-size:16px;margin:0">등급 기준 직접 설정</h2><p class="note">아래 숫자를 클릭해 원하는 기준으로 바꾼 뒤 기준 저장을 누르세요. 두 수치가 모두 상한 미만이면 해당 등급을 부여합니다. S부터 차례로 적용하며 B 범위 밖은 C입니다.</p><form id="mcRulesForm"><div class="mc-rule-grid"><b>등급</b><b>구독자 상한 (미만)</b><b>조회수 상한 (미만)</b>'+['S','A','B'].map(g=>'<b>'+g+'</b><input required type="number" min="1" step="1" aria-label="'+g+' 구독자 상한" name="'+g+'subs" value="'+r[g].subs+'"><input required type="number" min="1" step="1" aria-label="'+g+' 조회수 상한" name="'+g+'views" value="'+r[g].views+'">').join('')+'</div><p class="note">S ≤ A ≤ B 순서로 설정하세요. 저장하면 기존 수집 기록에도 즉시 적용됩니다. API 사용량은 들지 않아요.</p><button class="btn" type="submit">기준 저장 · 재분류</button> <button class="btn" type="button" id="mcRulesReset">기본값 복원</button><span id="mcRulesError" role="alert"></span><p class="note">설정은 이 브라우저에 저장되어 새로고침 후에도 유지됩니다. C는 S·A·B 조건에 해당하지 않는 영상입니다.</p></form></section>';}
 
 function mcViewRange(min,max){
   const parse=v=>String(v).trim()===''?null:Number(v);
@@ -525,6 +525,7 @@ function pgCollector(){
   if(runs.used>=2)$('mcRemaining').textContent='오늘 실행을 다 썼어요 — '+mcResetLabel()+'에 다시 2번 생겨요';
   else if(remain===0)$('mcRemaining').textContent='전체 수집에는 2번이 필요해요. 절반씩은 1번 더 실행할 수 있어요.';
   mcProgress();
+  $('mcRulesReset').onclick=()=>{try{mcWrite(MC_RULE_STORE,MC_RULE_DEFAULTS);MC.filter='전체';pgCollector();toast('기본 등급 기준으로 복원했어요');}catch(err){$('mcRulesError').textContent=' 저장하지 못했어요. 브라우저 저장 공간을 확인해 주세요.';}};
   $('mcRulesForm').onsubmit=e=>{e.preventDefault();const fd=new FormData(e.target),r={};for(const g of ['S','A','B'])r[g]={subs:Number(fd.get(g+'subs')),views:Number(fd.get(g+'views'))};if(!mcValidRules(r)){$('mcRulesError').textContent=' 양의 정수로, S ≤ A ≤ B 순서로 입력해 주세요.';return;}try{mcWrite(MC_RULE_STORE,r);MC.filter='전체';pgCollector();toast('새 기준으로 기존 기록까지 재분류했어요');}catch(err){$('mcRulesError').textContent=' 저장하지 못했어요. 브라우저 저장 공간을 확인해 주세요.';}};
   $('mcKey').onclick=()=>go('key');
   $('mcQuery').value=MC.query||'';

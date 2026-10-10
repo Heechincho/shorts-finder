@@ -313,6 +313,7 @@ body.material-view{--bg:#0b0e14;--side:#11151d;--surface:#171a20;--surface-2:#1e
 .mc-export-row{text-align:center;margin:12px 0 18px}.mc-export-row .btn{background:#246df0;color:white;border:0}.mc-export-row .btn:disabled{opacity:.45;cursor:not-allowed}
 .mc-table-scroll{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#13161c}.mc-table{width:100%;min-width:1160px;border-collapse:collapse;font-size:11px}.mc-table th{background:#20252e;color:#a5aec0;text-align:left;padding:12px 10px;white-space:nowrap}.mc-table td{padding:12px 10px;border-top:1px solid #252a34;vertical-align:middle;color:#b2b9c9}.mc-table tr:nth-child(even){background:#171a21}.mc-table tr:hover{background:#1c222d}.mc-table img{width:112px;height:63px;object-fit:cover;border-radius:7px;display:block}.mc-table .mc-title-cell{min-width:190px;max-width:255px;color:#eef2fa;font-size:12px;font-weight:600;line-height:1.6}.mc-title-cell a:hover{color:#75b0ff}.mc-title-cell small{display:block;font-size:10px;font-weight:400;color:#8d97a8;margin-top:5px}.mc-table td:nth-child(n+6){white-space:nowrap}.mc-table input{width:17px;height:17px;accent-color:#398bff;cursor:pointer}.mc-table th:last-child,.mc-table td:last-child{position:sticky;right:0;background:#191e28;text-align:center}.mc-table .mc-date-row td{position:static;background:#20252e;color:#b8c4d8;padding:9px 12px;font-size:11px;text-align:left}.mc-grade{display:inline-block;padding:5px 8px;border-radius:7px;font-weight:700;font-size:13px}.mc-grade-S{background:#3a2229;color:#ff8585}.mc-grade-A{background:#173638;color:#71d9d1}.mc-grade-B{background:#1b3044;color:#6cc8ec}.mc-grade-C,.mc-grade-small{background:#2a2d34;color:#b2b9c9}.mc-new{background:#522b2a;color:#ffaaa0;border-radius:3px;padding:1px 4px;font-size:9px;margin-right:5px}
 .mc-rule-grid{display:grid;grid-template-columns:50px 1fr 1fr;gap:10px;align-items:center;margin:14px 0;font-size:12px}.mc-rule-grid input{min-width:0;width:100%;padding:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:6px;color:var(--text)}.mc-rules summary{cursor:pointer;font-size:13px}.mc-grade-disclosure{margin-bottom:16px}#mcRulesError{color:#ff9191;font-size:12px}
+.mc-view-inputs{align-items:flex-end}.mc-view-inputs label{display:flex;flex-direction:column;gap:8px;flex:1;min-width:160px;font-size:13px}.mc-view-inputs input{width:100%;min-width:0;background:var(--surface-2);color:var(--text);border:1px solid var(--line);padding:11px 13px;border-radius:9px;font:inherit}#mcViewsError{color:var(--danger)}
 </style>
 </head>
 <body>
@@ -374,7 +375,7 @@ function mcQueries(){return MC.searchMode==='vlog'?MATERIAL_QUERIES:WORLD_QUERIE
 function mcQueryBatch(queries,used){const half=Math.ceil(queries.length/2);return queries.slice(used*half,(used+1)*half);}
 
 const MC_STORE='yt_material_records_v1', MC_RUNS='yt_material_runs_v1';
-const MC={scope:'half',period:'90',duration:'all',searchMode:'world',filter:'전체',query:'',sort:'new',busy:false,message:'',progress:null};
+const MC={scope:'half',period:'90',duration:'all',searchMode:'world',filter:'전체',query:'',sort:'new',viewMin:'',viewMax:'',busy:false,message:'',progress:null};
 function mcDay(date=new Date()){ return new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit'}).format(date); }
 function mcResetTime(now=new Date()){
   const day=mcDay(now);let lo=now.getTime(),hi=lo+27*3600000;
@@ -413,6 +414,19 @@ function mcRank(items){const r=mcRules();items.forEach(v=>{v.grade=mcGrade(v,r);
 function mcReason(v){const r=mcRules(),g=mcGrade(v,r);return g==='C'?'B 상한 밖의 영상입니다.':g+' 후보: 구독자 '+r[g].subs.toLocaleString()+'명 미만·조회수 '+r[g].views.toLocaleString()+'회 미만'+(g==='S'?'':' (상위 등급 조건 미충족)');}
 function mcRulePanel(){const r=mcRules();return '<details class="panel mc-rules"><summary>등급 기준 보기 · 변경</summary><p class="note">샘플 제작자의 비공개 기준을 복제한 것이 아닌, 직접 조절하는 발견 우선순위입니다. 두 수치가 모두 상한 미만이면 해당 등급을 부여합니다. S부터 차례로 적용하며 B 범위 밖은 C입니다.</p><form id="mcRulesForm"><div class="mc-rule-grid"><b>등급</b><b>구독자 상한 (미만)</b><b>조회수 상한 (미만)</b>'+['S','A','B'].map(g=>'<b>'+g+'</b><input required type="number" min="1" step="1" aria-label="'+g+' 구독자 상한" name="'+g+'subs" value="'+r[g].subs+'"><input required type="number" min="1" step="1" aria-label="'+g+' 조회수 상한" name="'+g+'views" value="'+r[g].views+'">').join('')+'</div><p class="note">S ≤ A ≤ B 순서로 설정하세요. 저장하면 기존 수집 기록에도 즉시 적용됩니다. API 사용량은 들지 않아요.</p><button class="btn" type="submit">기준 저장 · 재분류</button><span id="mcRulesError" role="alert"></span></form></details>';}
 
+function mcViewRange(min,max){
+  const parse=v=>String(v).trim()===''?null:Number(v);
+  const lo=parse(min),hi=parse(max);
+  if([lo,hi].some(v=>v!==null&&(!Number.isSafeInteger(v)||v<0)))return {error:'조회수는 0 이상의 정수로 입력해 주세요.'};
+  if(lo!==null&&hi!==null&&lo>hi)return {error:'최대 조회수는 최소 조회수 이상이어야 해요.'};
+  return {min:lo,max:hi};
+}
+function mcMatchesViews(v,range){
+  if(range.min===null&&range.max===null)return true;
+  if(v.views===null||v.views===undefined||v.views==='')return false;
+  const count=Number(v.views);
+  return Number.isFinite(count)&&(range.min===null||count>=range.min)&&(range.max===null||count<=range.max);
+}
 function mcVisible(items){
   const counts=new Map();
   return [...items].sort((a,b)=>b.collectedAt-a.collectedAt||b.score-a.score).filter(v=>{
@@ -473,7 +487,10 @@ function mcTable(rows){
 function pgCollector(){
   if(current!=='collector')return;
   let records;try{records=mcRecords();}catch(e){records=ls.get(MC_STORE,[]);MC.message='브라우저 저장 공간을 확인해 주세요.';}
-  const rows=MC.filter==='보관함'?records.filter(v=>v.saved):mcVisible(records), runs=mcRuns();
+  const range=mcViewRange(MC.viewMin,MC.viewMax);
+  const matching=records.filter(v=>mcMatchesViews(v,range));
+  const rows=MC.filter==='보관함'?matching.filter(v=>v.saved):mcVisible(matching), runs=mcRuns();
+  const filtered=rows.filter(v=>MC.filter==='전체'||MC.filter==='보관함'||(MC.filter==='NEW'?v.isNew:v.grade===MC.filter));
   const remain=MC.scope==='half'?Math.max(0,2-runs.used):(runs.used===0?1:0);
   const options=(name,choices)=>choices.map(([value,label])=>'<button type="button" class="chip'+(MC[name]===value?' on':'')+'" data-mc-option="'+name+'" data-value="'+value+'" '+(MC.busy?'disabled':'')+'>'+label+'</button>').join('');
   $('page').innerHTML=`<div class="mc-reference-head"><span class="mc-eyebrow">전 세계 여행 영상 · 한국 여행</span><h1>유튜브 소재 수집기</h1><p>11개 언어 · 중국어 간체·번체 — 각 언어의 검색어로 한국 여행 영상을 찾아요</p></div>
@@ -492,8 +509,19 @@ function pgCollector(){
       <details class="mc-suggestions"><summary>추천 검색어 24개 · 검색 조건 보기</summary><div class="mc-keywords" id="mcKeywords"></div><div class="mc-filters"><div><span class="mc-label">영상 길이</span><div class="row">${options('duration',[['all','길이 무관'],['any','5분 이상'],['eight','8분 이상'],['long','20분 초과']])}</div></div></div><p class="note" id="mcPlanned"></p><p class="note">직접 검색에도 위 기간·영상 길이가 적용됩니다. 수집 횟수는 미국 태평양 시간 자정(한국 오후 4시 또는 5시)에 초기화됩니다. 실제 API 잔여량과는 별개예요.</p></details>
     </section>
     <p class="note mc-grade-disclosure">S·A·B·C는 구독자·조회수 규모로 정하는 <b>발견 우선순위</b>입니다. 영상 내용·얼굴·실제 음성·원본 여부는 분석하지 않으며, 다른 사람이 사용했는지도 알 수 없습니다.</p>${mcRulePanel()}<div class="mc-resultbar"><h2>수집한 영상 <span>${rows.length}</span></h2><label>정렬 <select id="mcSort"><option value="new">최신 수집순</option><option value="grade">발견 우선순위순</option><option value="subsAsc">구독자 적은 순</option><option value="viewsAsc">조회수 적은 순</option><option value="views">조회수순</option><option value="daily">일평균 조회수순</option></select></label></div>
+    <section class="panel"><div class="mc-label">조회수로 필터링</div>
+    <form id="mcViewsForm"><div class="row mc-view-inputs">
+    <label>최소 조회수 (이상)<input type="number" id="mcViewMin" min="0" step="1" placeholder="제한 없음" value="${MC.viewMin}"></label>
+    <label>최대 조회수 (이하)<input type="number" id="mcViewMax" min="0" step="1" placeholder="제한 없음" value="${MC.viewMax}"></label>
+    <button class="btn" type="submit">적용</button><button class="btn" id="mcViewsReset" type="button">초기화</button></div>
+    <p id="mcViewsError" role="alert"></p></form>
+    <div class="row" id="mcViewPresets">${[['','전체'],['10000','1만 이상'],['100000','10만 이상'],['1000000','100만 이상']].map(([value,label])=>'<button type="button" class="chip'+(String(MC.viewMin)===value&&MC.viewMax===''?' on':'')+'" data-min="'+value+'">'+label+'</button>').join('')}</div>
+    <p class="note" aria-live="polite">현재 조건 ${filtered.length}개 · 조회수 조건에 맞는 영상에 등급·보관함 필터가 함께 적용됩니다. 추가 API 사용 없음.</p></section>
     <div class="row mc-tabs" id="mcTabs"></div><div class="mc-export-row"><button type="button" class="btn" id="mcExport">⇩ 엑셀로 저장 (CSV)</button></div><div id="mcPattern"></div><div id="mcGrid"></div>
     <details class="mc-guide"><summary>등급·보관 기준 보기</summary><p class="note">등급은 위에 설정한 구독자·조회수 상한으로 계산하며 작은 채널도 포함합니다. 비율은 등급에 사용하지 않습니다. 일평균은 업로드 후 평균으로, 실제 어제 조회수가 아닙니다. NEW는 마지막 수집에서 처음 발견한 영상입니다. 일반 목록은 채널당 최대 3개, 보관함에서는 체크한 영상을 모두 볼 수 있어요. 미보관 영상은 수집 후 7일이 지나면 정리됩니다. 기록은 이 브라우저에 저장됩니다.</p></details>`;
+  $('mcViewsForm').onsubmit=e=>{e.preventDefault();const min=$('mcViewMin').value,max=$('mcViewMax').value,r=mcViewRange(min,max);if(r.error){$('mcViewsError').textContent=r.error;return;}MC.viewMin=r.min===null?'':String(r.min);MC.viewMax=r.max===null?'':String(r.max);pgCollector();};
+  $('mcViewsReset').onclick=()=>{MC.viewMin='';MC.viewMax='';pgCollector();};
+  $('mcViewPresets').querySelectorAll('button').forEach(b=>b.onclick=()=>{MC.viewMin=b.dataset.min;MC.viewMax='';pgCollector();});
   if(runs.used>=2)$('mcRemaining').textContent='오늘 실행을 다 썼어요 — '+mcResetLabel()+'에 다시 2번 생겨요';
   else if(remain===0)$('mcRemaining').textContent='전체 수집에는 2번이 필요해요. 절반씩은 1번 더 실행할 수 있어요.';
   mcProgress();
@@ -508,14 +536,13 @@ function pgCollector(){
   $('mcPlanned').textContent='이번 수집 검색어: '+(MC.scope==='all'?mcQueries():mcQueryBatch(mcQueries(),runs.used)).map(x=>x.q).join(' / ');
   $('mcStatus').textContent=MC.message||'영어·러시아어·아랍어·일본어·중국어(간체·번체)·태국어·프랑스어·이탈리아어·스페인어·포르투갈어·독일어 검색어를 사용합니다. 절반씩도 모든 언어를 검색합니다. 여행 후기·음식·교통·관광 영상도 후보에 포함됩니다. 촬영자 국적·원본 여부는 직접 확인해 주세요. 절반씩은 검색 12회, 전체는 24회이며 API 사용량이 증가합니다. 검색어당 최대 25개로 유튜브 웹 검색과 결과가 다를 수 있습니다.';
   $('mcSort').value=MC.sort||'new';$('mcSort').onchange=e=>{MC.sort=e.target.value;pgCollector();};
-  ['전체','S','A','B','C','NEW','보관함'].forEach(t=>{const count=t==='보관함'?records.filter(v=>v.saved).length:mcVisible(records).filter(v=>t==='전체'||(t==='NEW'?v.isNew:v.grade===t)).length;const b=document.createElement('button');b.className='chip'+(MC.filter===t?' on':'');b.textContent=t+' '+count;b.onclick=()=>{MC.filter=t;pgCollector();};$('mcTabs').append(b);});
-  const top=mcRank([...rows]).slice(0,20);
+  ['전체','S','A','B','C','NEW','보관함'].forEach(t=>{const count=t==='보관함'?matching.filter(v=>v.saved).length:mcVisible(matching).filter(v=>t==='전체'||(t==='NEW'?v.isNew:v.grade===t)).length;const b=document.createElement('button');b.className='chip'+(MC.filter===t?' on':'');b.textContent=t+' '+count;b.onclick=()=>{MC.filter=t;pgCollector();};$('mcTabs').append(b);});
+  const top=mcRank([...filtered]).slice(0,20);
   if(top.length)$('mcPattern').innerHTML='<div class="panel analyze mc-pattern"><div class="flabel">상위 '+top.length+'개 제목 패턴</div><div class="row">'+['인용형','질문형','숫자형'].map(t=>'<span>'+t+' <b>'+Math.round(top.filter(v=>mcTags(v.title).includes(t)).length/top.length*100)+'%</b></span>').join('')+'</div></div>';
-  const filtered=rows.filter(v=>MC.filter==='전체'||MC.filter==='보관함'||(MC.filter==='NEW'?v.isNew:v.grade===MC.filter));
   filtered.sort((a,b)=>MC.sort==='grade'?'SABC'.indexOf(a.grade)-'SABC'.indexOf(b.grade)||a.subs-b.subs:MC.sort==='subsAsc'?a.subs-b.subs:MC.sort==='viewsAsc'?a.views-b.views:MC.sort==='views'?b.views-a.views:MC.sort==='daily'?b.daily-a.daily:b.collectedAt-a.collectedAt||b.score-a.score);
   $('mcExport').disabled=!filtered.length;$('mcExport').onclick=()=>mcExport(filtered);
   if(filtered.length)mcTable(filtered);
-  if(!filtered.length)$('mcGrid').innerHTML='<div class="mc-empty"><strong>'+(records.length?'조건에 맞는 영상이 없어요':'검색하면 이곳에 영상이 모여요')+'</strong><p>'+(records.length?'전체 탭이나 다른 등급을 선택해 보세요.':'검색어 입력 → 검색 → 마음에 드는 영상의 ＋ 버튼으로 보관')+'</p></div>';
+  if(!filtered.length)$('mcGrid').innerHTML='<div class="mc-empty"><strong>'+(records.length?'조건에 맞는 영상이 없어요':'검색하면 이곳에 영상이 모여요')+'</strong><p>'+(records.length?'조회수 범위를 넓히거나 초기화하고, 전체 탭이나 다른 등급을 선택해 보세요.':'검색어 입력 → 검색 → 마음에 드는 영상의 ＋ 버튼으로 보관')+'</p></div>';
 }
 async function mcCollect(mode){
   const key=getKey();if(!key){toast('API 키 설정에서 키를 먼저 등록해 주세요');return;}

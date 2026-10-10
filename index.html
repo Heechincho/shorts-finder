@@ -315,6 +315,8 @@ body.material-view{--bg:#0b0e14;--side:#11151d;--surface:#171a20;--surface-2:#1e
 .mc-rule-grid{display:grid;grid-template-columns:50px 1fr 1fr;gap:10px;align-items:center;margin:14px 0;font-size:12px}.mc-rule-grid input{min-width:0;width:100%;padding:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:6px;color:var(--text)}.mc-rules summary{cursor:pointer;font-size:13px}.mc-grade-disclosure{margin-bottom:16px}#mcRulesError{color:#ff9191;font-size:12px}
 .mc-view-inputs{align-items:flex-end}.mc-view-inputs label{display:flex;flex-direction:column;gap:8px;flex:1;min-width:160px;font-size:13px}.mc-view-inputs input{width:100%;min-width:0;background:var(--surface-2);color:var(--text);border:1px solid var(--line);padding:11px 13px;border-radius:9px;font:inherit}#mcViewsError{color:var(--danger)}
 </style>
+<link rel="stylesheet" href="production.css">
+<script src="production.js"></script>
 </head>
 <body>
 <div class="app">
@@ -327,6 +329,7 @@ body.material-view{--bg:#0b0e14;--side:#11151d;--surface:#171a20;--surface-2:#1e
     <div class="menu-label">메뉴</div>
     <nav class="nav" id="nav">
       <a data-page="search"><span class="ic">🔍</span>조회수 폭발 쇼츠 찾기</a>
+      <a href="#production" data-page="production"><span class="ic">🎬</span>자동 영상 제작</a>
       <a href="#collector" data-page="collector"><span class="ic">▣</span>소재 수집기</a>
       <a data-page="radar"><span class="ic">🎯</span>내 분야 레이더</a>
       <a data-page="trend"><span class="ic">🔥</span>터진 영상</a>
@@ -477,7 +480,7 @@ function mcTable(rows){
     const url='https://www.youtube.com/watch?v='+encodeURIComponent(v.id),link=()=>{const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';return a;};
     const a=link(),img=document.createElement('img');img.src=v.thumb;img.alt=v.title;img.loading='lazy';a.append(img);td().append(a);
     td().textContent=mcLanguage(v);
-    const title=td();title.className='mc-title-cell';if(v.isNew){const tag=document.createElement('span');tag.className='mc-new';tag.textContent='NEW';title.append(tag);}const name=link();name.textContent=v.title;title.append(name);const tags=document.createElement('small');tags.textContent=mcTags(v.title).join(' · ');title.append(tags);const reason=document.createElement('small');reason.textContent=mcReason(v);title.append(reason);
+    const title=td();title.className='mc-title-cell';if(v.isNew){const tag=document.createElement('span');tag.className='mc-new';tag.textContent='NEW';title.append(tag);}const name=link();name.textContent=v.title;title.append(name);const tags=document.createElement('small');tags.textContent=mcTags(v.title).join(' · ');title.append(tags);const reason=document.createElement('small');reason.textContent=mcReason(v);title.append(reason);const produce=document.createElement('button');produce.className='av-produce';produce.textContent='영상 제작';produce.onclick=()=>avSelect(v);title.append(produce);
     td().textContent=v.channel;td().textContent=fmtNum(v.subs);td().textContent=fmtNum(v.views);td().textContent=fmtDur(v.dur);td().textContent=v.publishedAt.slice(0,10);td().textContent=v.score.toFixed(1)+'x';td().textContent=fmtNum(v.daily)+'/일';
     const check=document.createElement('input');check.type='checkbox';check.checked=!!v.saved;check.setAttribute('aria-label',v.title+' 보관');check.onchange=()=>{try{const all=mcRecords(),found=all.find(x=>x.id===v.id);if(found){found.saved=check.checked;mcWrite(MC_STORE,all);pgCollector();}}catch(e){check.checked=!check.checked;toast('보관하지 못했어요. 저장 공간을 확인해 주세요.');}};td().append(check);body.append(tr);
   });
@@ -646,6 +649,7 @@ const DEPTHS={
   max:{orders:['viewCount','relevance','date','rating'],pages:6,cost:2400},
 };
 const PAGES={
+  production:{ic:"🎬",t:"자동 영상 제작",d:"소재 선택부터 맥 편집기에서 영상 완성까지"},
   collector:{ic:'▣',t:'유튜브 소재 수집기',d:'한국 여행 관련 영상을 국가·언어 제한 없이 수집'},
   search:{ic:'🔍',t:'조회수 폭발 쇼츠 찾기',d:'검색 한 번으로 영상과 채널을 같이 봅니다'},
   radar:{ic:'🎯',t:'내 분야 레이더',d:'지켜보는 채널의 최신 영상'},
@@ -819,6 +823,7 @@ function cardHTML(v,idx,fixedRank){
       '<div class="cline"><span>떡상지수'+
         (v.score>=5&&v.views<10000?' <span class="warn" title="구독자가 적어 지수만 커진 경우예요">⚠︎ 참고 가치 낮음</span>':'')+
         '</span><b style="color:'+scoreColor(v.score)+'">'+(v.subs?v.score.toFixed(1)+'x':'—')+'</b></div>'+
+      '<button class="av-produce" data-produce="'+data+'">이 영상으로 제작</button>'+
       '<div class="btrack"><div class="bfill" style="width:'+
         Math.min(100,(v.score/20)*100)+'%;background:'+scoreColor(v.score)+'"></div></div>'+
     '</div>'+
@@ -841,9 +846,9 @@ function go(p){
   document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.page===p));
   const m=PAGES[p]||PAGES.search;
   $('pgIcon').textContent=m.ic; $('pgTitle').textContent=m.t; $('pgDesc').textContent=m.d;
-  $('banner').innerHTML = (!getKey()&&p!=='key'&&p!=='trend')
+  $('banner').innerHTML = (!getKey()&&p!=='key'&&p!=='trend'&&p!=='production')
     ? '<div class="banner">🔑 아직 API 키가 없어요. <a onclick="go(\'key\')">지금 등록하기</a> — 무료이고 5분이면 됩니다.</div>' : '';
-  ({collector:pgCollector,radar:pgRadar,search:pgSearch,trend:pgTrend,rank:pgRank,fav:pgFav,key:pgKey}[p]||pgSearch)();
+  ({production:pgProduction,collector:pgCollector,radar:pgRadar,search:pgSearch,trend:pgTrend,rank:pgRank,fav:pgFav,key:pgKey}[p]||pgSearch)();
   window.scrollTo({top:0});
 }
 window.go=go;

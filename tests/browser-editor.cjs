@@ -1,0 +1,12 @@
+const vm=require('node:vm'),fs=require('node:fs'),assert=require('node:assert/strict');
+const c=vm.createContext({console,Blob,URL,setTimeout,clearTimeout,window:{addEventListener(){}},document:{addEventListener(){},getElementById(){return null}},localStorage:{getItem(){return null}}});
+vm.runInContext(fs.readFileSync('production.js','utf8'),c);vm.runInContext(fs.readFileSync('browser-editor.js','utf8'),c);
+const run=s=>vm.runInContext(s,c);
+assert.equal(run(String.raw`beSrt('1\n00:00:00,000 --> 00:00:02,500\n첫 자막\n\n2\n00:00:02,500 --> 00:00:03,000\n둘째')[1].start`),2.5);
+assert.throws(()=>run(String.raw`beSrt('1\n00:00:03,000 --> 00:00:02,000\n잘못된 시간')`));
+assert.equal(run(String.raw`beNarration('{"scenes":[{"narration":"안녕","source_start":0,"source_end":2}]}').text`),'안녕');
+assert.throws(()=>run(String.raw`beNarration('{"scenes":[]}')`));assert.throws(()=>run(String.raw`beNarration('/Users/test/photo.png')`));
+assert.equal(run(String.raw`beCues('안녕하세요. 반가워요.',10).at(-1).end`),10);
+assert.equal(run(String.raw`beSrt(beSrtText([{start:0,end:2.5,text:'자막'}]))[0].end`),2.5);
+assert.equal(run(String.raw`beWav({length:160,sampleRate:16000,numberOfChannels:1,getChannelData:()=>new Float32Array(160)}).size`),364);
+console.log('PASS: SRT timing, malformed input, narration JSON, cue allocation, WAV encoding and SRT roundtrip');

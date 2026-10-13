@@ -2063,7 +2063,7 @@
     },
     {
       "id": "UCSw7SDe9xzbXhKlzGMY8b4g",
-      "name": "빼빼로행복하지",
+      "name": "머니차오름",
       "from": "연예인 향수 추천",
       "addedAt": "2026-08-10T08:05:54.649Z",
       "uploads": "UUSw7SDe9xzbXhKlzGMY8b4g"
@@ -4258,7 +4258,14 @@
       "from": "연예인 인생템",
       "addedAt": "2026-09-30T05:36:41.345Z",
       "uploads": "UU1d1uKVAcNqjiFL6GSW0EsQ"
+    },
+    {
+      "id": "UCKZYBi2X3WQ3XCW2Eah-MsA",
+      "name": "월간추천템",
+      "from": "연예인 잇템",
+      "addedAt": "2026-10-13T22:48:03.532Z",
+      "uploads": "UUKZYBi2X3WQ3XCW2Eah-MsA"
     }
   ],
-  "_turn": 8
+  "_turn": 10
 }

@@ -3652,7 +3652,7 @@
     },
     {
       "id": "UCGG7hZe1ufLf_Kn7GSCu0Cg",
-      "name": "홈서핑",
+      "name": "깜찍한고양이",
       "from": "연예인 가전제품",
       "addedAt": "2026-08-12T02:47:16.793Z",
       "uploads": "UUGG7hZe1ufLf_Kn7GSCu0Cg"
@@ -3862,7 +3862,7 @@
     },
     {
       "id": "UCkcl6Ye78spxcWliK5UmzVA",
-      "name": "템토리",
+      "name": "Walkman7080",
       "from": "셀럽 추천",
       "addedAt": "2026-08-12T07:54:34.098Z",
       "uploads": "UUkcl6Ye78spxcWliK5UmzVA"
@@ -4258,7 +4258,14 @@
       "from": "연예인 스킨케어",
       "addedAt": "2026-11-05T06:52:45.015Z",
       "uploads": "UU_ZYRO5U8eGBKAeNxs8qI1g"
+    },
+    {
+      "id": "UCsMKo0kS-Q-duhbE8nyaKbQ",
+      "name": "혜니알",
+      "from": "연예인 헤어템",
+      "addedAt": "2026-11-10T19:46:25.490Z",
+      "uploads": "UUsMKo0kS-Q-duhbE8nyaKbQ"
     }
   ],
-  "_turn": 16
+  "_turn": 18
 }
